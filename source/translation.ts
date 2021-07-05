@@ -13,7 +13,7 @@
     let files = FileTools.GetListOfFiles(`${__dir__}/assets/lang/`, "");
     for(let i in files) readFile(files[i].getName());
     for(let key in all_translation_keys){
-        if(!all_translation_keys[key][Translation.getLanguage()]) all_translation_keys[key][Translation.getLanguage()] = all_translation_keys[key]["en"];
+        all_translation_keys[key][Translation.getLanguage()] ??= all_translation_keys[key].en;
         Translation.addTranslation(key, all_translation_keys[key]);
     }
 })();
