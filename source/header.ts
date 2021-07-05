@@ -19,3 +19,8 @@ IMPORT("ItemAnimHelper");
 const AVA_STUFF: number[] = [];
 
 const addShaped = (id: number, count: number, data: number, mask: string[], keys: (string | number)[]) => Recipes.addShaped({id: id, count: count, data: data}, mask, keys);
+const addShapeless = (id: number, count: number, data: number, ingredients: [number, number][]) => {
+    let ingrobj = [];
+    for(let i in ingredients) ingrobj.push({id: ingredients[i][0], data: ingredients[i][1]});
+    Recipes.addShapeless({id: id, count: count, data: data}, ingrobj);
+}

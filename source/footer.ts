@@ -1,0 +1,1 @@
+Item.addCreativeGroup("AVARITIA", Translation.translate("itemGroup.avaritia"), AVA_STUFF);
