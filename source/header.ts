@@ -15,3 +15,7 @@
 
 IMPORT("TextureWorker");
 IMPORT("ItemAnimHelper");
+
+const AVA_STUFF: number[] = [];
+
+const addShaped = (id: number, count: number, data: number, mask: string[], keys: (string | number)[]) => Recipes.addShaped({id: id, count: count, data: data}, mask, keys);

@@ -12,6 +12,8 @@
     "include": [
         "tools/declarations/*.d.ts",
         "source/header.ts",
-        "source/textures.ts"
+        "source/textures.ts",
+        "source/translation.ts",
+        "source/items/resource.ts",
     ]
 }
