@@ -15,7 +15,8 @@
         "source/textures.ts",
         "source/translation.ts",
         "source/items/resource.ts",
-
+        "source/items/singularity.ts",
+        
         "source/footer.ts"
     ]
 }

@@ -6,7 +6,6 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/.vscode/": true,
-        "**/tools/": true,
         "**/.gitignore": true
     },
     "vscode.tsc.compiler.alertTSConfigChanges": "never"
