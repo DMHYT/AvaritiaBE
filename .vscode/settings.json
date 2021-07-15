@@ -4,9 +4,7 @@
         "**/.svn": true,
         "**/.hg": true,
         "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/.vscode/": true,
-        "**/.gitignore": true
+        "**/.DS_Store": true
     },
     "vscode.tsc.compiler.alertTSConfigChanges": "never"
 }

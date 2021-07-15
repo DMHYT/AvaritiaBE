@@ -9,9 +9,16 @@
             "problemMatcher": []
         },
         {
-            "label": "Build mod",
+            "label": "Build main.js",
             "type": "typescript",
-            "tsconfig": "tsconfig.json",
+            "tsconfig": "source/tsconfig.json",
+            "group": "build",
+            "problemMatcher": ["$tsc"]
+        },
+        {
+            "label": "Build preloader.js",
+            "type": "typescript",
+            "tsconfig": "preloader/tsconfig.json",
             "group": "build",
             "problemMatcher": ["$tsc"]
         }

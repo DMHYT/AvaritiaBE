@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "removeComments": true,
+        "experimentalDecorators": false,
+        "downlevelIteration": true,
+        "target": "ES5",
+        "lib": ["ESNext"],
+        "outFile": "../out/Avaritia BE/preloader.js"
+    },
+    "compileOnSave": false,
+    "include": [
+        "../tools/declarations/preloader.d.ts",
+        "forked_libraries.ts",
+        "textures.ts"
+    ]
+}

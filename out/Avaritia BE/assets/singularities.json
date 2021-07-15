@@ -1,0 +1,17 @@
+{
+    "iron": ["#e6e7e8", "#7f7f7f"],
+    "gold": ["#e8ef23", "#dba213"],
+    "lapis": ["#5a82e2", "#224baf"],
+    "redstone": ["#df0000", "#900000"],
+    "quartz": ["#ffffff", "#94867d"],
+    "copper": ["#e47200", "#89511a"],
+    "tin": ["#a5c7de", "#9ba9b2"],
+    "lead": ["#444072", "#3e3d4e"],
+    "silver": ["#c0c0c0", "#d5d5d5"],
+    "nickel": ["#dee187", "#c4c698"],
+    "diamond": ["#45aca5", "#8fcdc9"],
+    "emerald": ["#5cbe34", "#8cd170"],
+    "fluxed": ["#d62306", "#fffc95"],
+    "platinum": ["#00bfff", "#5a82e2"],
+    "iridium": ["#e6e6fa", "#e6e6fa"]
+}
