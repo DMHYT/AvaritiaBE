@@ -78,22 +78,18 @@ const summon_arrow_rain = (coords: Vector, region: BlockSource) => {
 }
 
 Item.registerNoTargetUseFunction(ItemID.infinity_bow, (item, player) => {
-    BOW_DATA[player] = { timer: 0 };
     Updatable.addUpdatable({
         timer: 0,
         update(){
             if(this.timer == 72000 || !BOW_DATA[player]) this.remove = true;
             this.timer++;
-            BOW_DATA[player].timer = this.timer;
         }
     } as any);
 });
 Item.registerUsingCompleteFunction(ItemID.infinity_bow, (item, player) => {
-    if(BOW_DATA[player]) delete BOW_DATA[player];
     infinity_bow_shoot(item, 13, player);
 });
 Item.registerUsingReleasedFunction(ItemID.infinity_bow, (item, ticks, player) => {
-    if(BOW_DATA[player]) delete BOW_DATA[player];
     infinity_bow_shoot(item, ticks, player);
 });
 
@@ -128,4 +124,4 @@ Item.registerIconOverrideFunction(ItemID.infinity_bow, (item) => {
 
 AVA_STUFF.push(ItemID.infinity_bow);
 cosmic_rarity(ItemID.infinity_bow);
-undestroyable_item(ItemID.infinity_bow);
+undestroyable_item("infinity_bow");

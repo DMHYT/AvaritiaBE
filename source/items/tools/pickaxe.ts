@@ -61,5 +61,5 @@ AVA_STUFF.push(ItemID.infinity_pickaxe);
 INFINITY_TOOLS.push(ItemID.infinity_pickaxe);
 cosmic_rarity(ItemID.infinity_pickaxe);
 cosmic_rarity(ItemID.infinity_hammer);
-undestroyable_item(ItemID.infinity_pickaxe);
-undestroyable_item(ItemID.infinity_hammer);
+undestroyable_item("infinity_pickaxe");
+undestroyable_item("infinity_hammer");

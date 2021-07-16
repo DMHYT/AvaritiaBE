@@ -13,6 +13,7 @@
         "../tools/declarations/*.d.ts",
         "header.ts",
         "translation.ts",
+        "utils.ts",
         "items/matter_cluster.ts",
         "items/resource.ts",
         "items/singularity.ts",

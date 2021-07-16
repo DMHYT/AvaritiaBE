@@ -48,5 +48,5 @@ AVA_STUFF.push(ItemID.infinity_shovel);
 INFINITY_TOOLS.push(ItemID.infinity_shovel);
 cosmic_rarity(ItemID.infinity_shovel);
 cosmic_rarity(ItemID.infinity_destroyer);
-undestroyable_item(ItemID.infinity_shovel);
-undestroyable_item(ItemID.infinity_destroyer);
+undestroyable_item("infinity_shovel");
+undestroyable_item("infinity_destroyer");

@@ -12,7 +12,6 @@
             ],
             result: { path: "assets/animated_items/", name: id }
         });
-        IAHelper.convertTexture("assets/animated_items/", id, "assets/items-opaque", id);
     }
     const obj = FileUtil.readJSON(`${__dir__}/assets/singularities.json`);
     const keys = Object.keys(obj);

@@ -14,4 +14,4 @@ IAHelper.makeAdvancedAnim(ItemID.infinity_sword, "infinity_sword", 1, INFINITY_I
 AVA_STUFF.push(ItemID.infinity_sword);
 INFINITY_TOOLS.push(ItemID.infinity_sword);
 cosmic_rarity(ItemID.infinity_sword);
-undestroyable_item(ItemID.infinity_sword);
+undestroyable_item("infinity_sword");

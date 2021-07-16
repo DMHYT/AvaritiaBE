@@ -31,4 +31,4 @@ IAHelper.makeAdvancedAnim(ItemID.infinity_hoe, "infinity_hoe", 1, INFINITY_ITEM_
 AVA_STUFF.push(ItemID.infinity_hoe);
 INFINITY_TOOLS.push(ItemID.infinity_hoe);
 cosmic_rarity(ItemID.infinity_hoe);
-undestroyable_item(ItemID.infinity_hoe);
+undestroyable_item("infinity_hoe");
