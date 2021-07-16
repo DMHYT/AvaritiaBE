@@ -12,7 +12,8 @@ By using the library you automatically agree to these rules.
 LIBRARY({
 	name: "ToolLib",
 	version: 23,
-	shared: true,
+	// Changed to false because of the modifications
+	shared: false,
 	api: "CoreEngine"
 });
 
@@ -41,28 +42,21 @@ let ToolType = {
 	shovel: {
 		enchantType: Native.EnchantType.shovel,
 		damage: 2,
-		blockTypes: ["dirt"],
-		useItem: function(coords, item, block, player) {
-			if (block.id == 2 && coords.side == 1) {
-				let region = BlockSource.getDefaultForActor(player);
-				region.setBlock(coords.x, coords.y, coords.z, 198, 0);
-				World.playSound(coords.x + .5, coords.y + 1, coords.z + .5, "step.grass", 0.5, 0.8);
-				ToolLib.breakCarriedTool(1, player);
-			}
-		}
+		blockTypes: ["dirt"]
 	},
 
 	pickaxe: {
 		enchantType: Native.EnchantType.pickaxe,
 		damage: 2,
-		blockTypes: ["stone"],
+		blockTypes: ["stone"]
 	},
 
 	axe: {
 		enchantType: Native.EnchantType.axe,
 		damage: 3,
 		blockTypes: ["wood"],
-		useItem: function(coords, item, block, player) {
+		// Changed function name to use it above defined use function
+		defaultUseItem: function(coords, item, block, player) {
 			let region = BlockSource.getDefaultForActor(player);
 			if (block.id == 17) {
 				if (block.data == 0) logID = VanillaTileID.stripped_oak_log;

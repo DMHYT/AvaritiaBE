@@ -6,6 +6,16 @@
         AVA_STUFF.push(ItemID[id]);
     }
 })(["diamond_lattice", "crystal_matrix_ingot", "neutron_pile", "neutron_nugget", "neutronium_ingot", "infinity_catalyst", "infinity_ingot", "record_fragment"]);
+
+Rarity.uncommon(ItemID.diamond_lattice);
+Rarity.rare(ItemID.crystal_matrix_ingot);
+Rarity.uncommon(ItemID.neutron_pile);
+Rarity.uncommon(ItemID.neutron_nugget);
+Rarity.rare(ItemID.neutronium_ingot);
+Rarity.epic(ItemID.infinity_catalyst);
+Rarity.cosmic(ItemID.infinity_ingot);
+Rarity.cosmic(ItemID.record_fragment);
+
 IAHelper.makeCommonAnim(ItemID.neutronium_ingot, "neutronium_ingot", 3, 3);
 IAHelper.makeAdvancedAnim(ItemID.infinity_catalyst, "infinity_catalyst", 1, [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1]);
 IAHelper.makeAdvancedAnim(ItemID.infinity_ingot, "infinity_ingot", 1, [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1]);

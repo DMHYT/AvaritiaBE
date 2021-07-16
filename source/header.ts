@@ -59,12 +59,22 @@ Callback.addCallback("ItemUse", (coords, item, block, isExternal, player) => {
     }
 });
 
-const cosmic_rarity = (id: number) => {
-    let _func = Item.nameOverrideFunctions[id];
-    Item.registerNameOverrideFunction(id, (item, name, name2) => {
-        if(_func) name = _func(item, name, name2) as string;
-        return `${EColor.RED}${name}`;
-    });
+namespace Rarity {
+
+    function makeRarity(id: number, rarity: string): void {
+        let _func = Item.nameOverrideFunctions[id];
+        Item.registerNameOverrideFunction(id, (item, name, name2) => {
+            if(_func) name = (_func(item, name, name2) ?? name) as string;
+            // Fixing stupid bug, when russian 'в' letter appears at the beginning
+            return `${rarity}${name}`.replace("в", "");
+        });
+    }
+
+    export function uncommon(id: number) { makeRarity(id, EColor.GREEN) }
+    export function rare(id: number) { makeRarity(id, EColor.AQUA) }
+    export function epic(id: number) { makeRarity(id, EColor.LIGHT_PURPLE) }
+    export function cosmic(id: number) { makeRarity(id, EColor.RED) }
+    
 }
 
 const VALID_DIRECTIONS = [EBlockSide.DOWN, EBlockSide.UP, EBlockSide.NORTH, EBlockSide.SOUTH, EBlockSide.WEST, EBlockSide.EAST];
@@ -86,10 +96,7 @@ const dropItemRandom = (drop: ItemInstance, world: BlockSource, x: number, y: nu
 const undestroyable_item = (id: string) => Item.getItemById(id)?.setProperties(JSON.stringify({ "minecraft:explodable": false, /* TODO fire res */ }));
 
 const INFINITY_ITEM_FRAMES = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1];
-/*
-const getFireTicks = WRAP_JAVA("com.zhekasmirnov.innercore.api.mode.adaptedscript.AdaptedScriptAPI").Entity.getFireTicks;
-const isEntityOnFire = (entity: number) => getFireTicks(entity) > 1;
-*/
+
 function filterArray<T>(arr: T[], predicate: (item: T) => boolean): T[] {
     const indexes: number[] = [];
     for(let i in arr)

@@ -47,16 +47,19 @@ namespace MatterCluster {
 
 }
 
-Saver.addSavesScope("AvaritiaMatterClusters", 
+Saver.addSavesScope(
+"AvaritiaMatterClusters", 
 (scope: any) => {
-    MatterCluster.nextId = scope.nextId || 0;
-    MatterCluster.data = scope.data || {};
-}, () => {
+    MatterCluster.nextId = scope?.nextId ?? 0;
+    MatterCluster.data = scope?.data ?? 0;
+},
+() => {
     return {
         nextId: MatterCluster.nextId,
         data: MatterCluster.data
     }
-});
+}
+);
 
 IDRegistry.genItemID("matter_cluster");
 Item.createItem("matter_cluster", "item.avaritia:matter_cluster.name", {name: "matter_cluster_empty", meta: 0}, {stack: 1, isTech: true});

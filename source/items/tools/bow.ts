@@ -6,7 +6,6 @@ Item.setUseAnimation(ItemID.infinity_bow, EItemAnimation.BOW);
 Item.setEnchantType(ItemID.infinity_bow, EEnchantType.BOW, 1);
 
 type BowData = { timer: number };
-const BOW_DATA: {[key: number]: BowData} = {};
 var CURRENT_BOW_ICON_CLIENT_SIDE: number = 0;
 
 const check_arrow = (player: number) => {
@@ -81,7 +80,7 @@ Item.registerNoTargetUseFunction(ItemID.infinity_bow, (item, player) => {
     Updatable.addUpdatable({
         timer: 0,
         update(){
-            if(this.timer == 72000 || !BOW_DATA[player]) this.remove = true;
+            if(this.timer == 72000) this.remove = true;
             this.timer++;
         }
     } as any);
@@ -123,5 +122,5 @@ Item.registerIconOverrideFunction(ItemID.infinity_bow, (item) => {
 });
 
 AVA_STUFF.push(ItemID.infinity_bow);
-cosmic_rarity(ItemID.infinity_bow);
+Rarity.cosmic(ItemID.infinity_bow);
 undestroyable_item("infinity_bow");

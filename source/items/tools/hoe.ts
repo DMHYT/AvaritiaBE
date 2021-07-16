@@ -4,6 +4,17 @@ ToolAPI.addToolMaterial("INFINITY_HOE", {level: 32, durability: 9999, efficiency
 ToolLib.setTool(ItemID.infinity_hoe, "INFINITY_HOE", {});
 Item.setEnchantType(ItemID.infinity_hoe, EEnchantType.HOE, 200);
 
+Callback.addCallback("PlayerAttack", (attacker) => {
+    let item = Entity.getCarriedItem(attacker);
+    if(item.id == ItemID.infinity_hoe && item.data > 0)
+        Entity.setCarriedItem(attacker, item.id, item.count, 0, item.extra);
+});
+Callback.addCallback("DestroyBlock", (coords, block, player) => {
+    let item = Entity.getCarriedItem(player);
+    if(item.id == ItemID.infinity_hoe && item.data > 0)
+        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
+});
+
 Item.registerUseFunction(ItemID.infinity_hoe, (coords, item, block, player) => {
     const region = BlockSource.getDefaultForActor(player);
     if((block.id == 2 || block.id == 3) && coords.side == 1){
@@ -24,11 +35,12 @@ Item.registerUseFunction(ItemID.infinity_hoe, (coords, item, block, player) => {
                     }
                 }
     }
+    if(item.data > 0)
+        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
 });
 
 IAHelper.makeAdvancedAnim(ItemID.infinity_hoe, "infinity_hoe", 1, INFINITY_ITEM_FRAMES);
 
 AVA_STUFF.push(ItemID.infinity_hoe);
-INFINITY_TOOLS.push(ItemID.infinity_hoe);
-cosmic_rarity(ItemID.infinity_hoe);
+Rarity.cosmic(ItemID.infinity_hoe);
 undestroyable_item("infinity_hoe");

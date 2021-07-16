@@ -10,8 +10,12 @@ Callback.addCallback("PlayerAttack", (player, victim) => {
         Entity.damageEntity(victim, Entity.getHealth(victim) + 1, 0, {attacker: player, bool1: false});
     }
 });
+Callback.addCallback("DestroyBlock", (coords, block, player) => {
+    let item = Entity.getCarriedItem(player);
+    if(item.id == ItemID.infinity_sword && item.data > 0)
+        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
+});
 IAHelper.makeAdvancedAnim(ItemID.infinity_sword, "infinity_sword", 1, INFINITY_ITEM_FRAMES);
 AVA_STUFF.push(ItemID.infinity_sword);
-INFINITY_TOOLS.push(ItemID.infinity_sword);
-cosmic_rarity(ItemID.infinity_sword);
+Rarity.cosmic(ItemID.infinity_sword);
 undestroyable_item("infinity_sword");

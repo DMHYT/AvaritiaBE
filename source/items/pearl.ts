@@ -1,6 +1,6 @@
 IDRegistry.genItemID("endest_pearl");
 Item.createThrowableItem("endest_pearl", "item.avaritia:endest_pearl.name", {name: "endest_pearl", meta: 0}, {stack: 64});
-Item.registerNameOverrideFunction(ItemID.endest_pearl, (item, name) => `${EColor.AQUA}${name}`);
+Rarity.rare(ItemID.endest_pearl);
 
 type GapingVoidParticlesPacket = { size: number, x: number, y: number, z: number };
 Network.addClientPacket("avaritia.gapingvoidparticles", (data: GapingVoidParticlesPacket) => {

@@ -52,14 +52,20 @@ Callback.addCallback("EntityHurt", (attacker, victim, damageValue, damageType, b
             Entity.addVelocity(victim, -Math.sin(angle.yaw) * 5, 2, Math.cos(angle.yaw) * 5);
         }
     }
+    if((stack.id == ItemID.infinity_hammer || stack.id == ItemID.infinity_pickaxe) && stack.data > 0)
+        Entity.setCarriedItem(attacker, stack.id, stack.count, 0, stack.extra);
+});
+Callback.addCallback("DestroyBlock", (coords, block, player) => {
+    let item = Entity.getCarriedItem(player);
+    if((item.id == ItemID.infinity_pickaxe || item.id == ItemID.infinity_hammer) && item.data > 0)
+        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
 });
 
 IAHelper.makeAdvancedAnim(ItemID.infinity_pickaxe, "infinity_pickaxe", 1, INFINITY_ITEM_FRAMES);
 IAHelper.makeAdvancedAnim(ItemID.infinity_hammer, "infinity_hammer", 1, INFINITY_ITEM_FRAMES);
 
 AVA_STUFF.push(ItemID.infinity_pickaxe);
-INFINITY_TOOLS.push(ItemID.infinity_pickaxe);
-cosmic_rarity(ItemID.infinity_pickaxe);
-cosmic_rarity(ItemID.infinity_hammer);
+Rarity.cosmic(ItemID.infinity_pickaxe);
+Rarity.cosmic(ItemID.infinity_hammer);
 undestroyable_item("infinity_pickaxe");
 undestroyable_item("infinity_hammer");

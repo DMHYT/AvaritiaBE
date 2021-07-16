@@ -10,8 +10,16 @@ const shovel_use_func = (item: ItemInstance, player: number, destroyer: boolean)
         Entity.setCarriedItem(player, ItemID[`infinity_${destroyer ? "destroyer" : "shovel"}`], item.count, item.data, item.extra);
 }
 
-Item.registerUseFunction(ItemID.infinity_shovel, (coords, item, block, player) => shovel_use_func(item, player, true));
-Item.registerNoTargetUseFunction(ItemID.infinity_shovel, (item, player) => shovel_use_func(item, player, true));
+Item.registerUseFunction(ItemID.infinity_shovel, (coords, item, block, player) => {
+    if(!Entity.getSneaking(player) && block.id == 2 && coords.side == 1){
+        BlockSource.getDefaultForActor(player).setBlock(coords.x, coords.y, coords.z, VanillaBlockID.grass_path, 0);
+        playSound(coords.x, coords.y, coords.z, Entity.getDimension(player), "step.grass", 0.5, 0.8);
+    }
+    shovel_use_func(item, player, true);
+});
+Item.registerNoTargetUseFunction(ItemID.infinity_shovel, (item, player) => {
+    shovel_use_func(item, player, true);
+});
 
 IDRegistry.genItemID("infinity_destroyer");
 Item.createItem("infinity_destroyer", "item.avaritia:infinity_shovel.name", {name: "destroyer", meta: 0}, {stack: 1, isTech: true});
@@ -42,11 +50,21 @@ Item.registerUseFunction(ItemID.infinity_destroyer, (coords, item, block, player
 });
 Item.registerNoTargetUseFunction(ItemID.infinity_destroyer, (item, player) => shovel_use_func(item, player, false));
 
+Callback.addCallback("PlayerAttack", (attacker) => {
+    let item = Entity.getCarriedItem(attacker);
+    if((item.id == ItemID.infinity_shovel || item.id == ItemID.infinity_destroyer) && item.data > 0)
+        Entity.setCarriedItem(attacker, item.id, item.count, 0, item.extra);
+});
+Callback.addCallback("DestroyBlock", (coords, block, player) => {
+    let item = Entity.getCarriedItem(player);
+    if((item.id == ItemID.infinity_shovel || item.id == ItemID.infinity_destroyer) && item.data > 0)
+        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
+});
+
 IAHelper.makeAdvancedAnim(ItemID.infinity_shovel, "infinity_shovel", 1, INFINITY_ITEM_FRAMES);
 
 AVA_STUFF.push(ItemID.infinity_shovel);
-INFINITY_TOOLS.push(ItemID.infinity_shovel);
-cosmic_rarity(ItemID.infinity_shovel);
-cosmic_rarity(ItemID.infinity_destroyer);
+Rarity.cosmic(ItemID.infinity_shovel);
+Rarity.cosmic(ItemID.infinity_destroyer);
 undestroyable_item("infinity_shovel");
 undestroyable_item("infinity_destroyer");

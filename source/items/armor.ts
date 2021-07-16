@@ -40,10 +40,10 @@ Armor.registerOnTickListener(ItemID.infinity_leggings, (item, slot, player) => {
 })((item: ItemInstance, slot: number, player: number) => { if(check_armor(player)) Game.prevent(); });
 
 AVA_STUFF.push(ItemID.infinity_helmet, ItemID.infinity_chestplate, ItemID.infinity_leggings, ItemID.infinity_boots);
-cosmic_rarity(ItemID.infinity_helmet);
-cosmic_rarity(ItemID.infinity_chestplate);
-cosmic_rarity(ItemID.infinity_leggings);
-cosmic_rarity(ItemID.infinity_boots);
+Rarity.cosmic(ItemID.infinity_helmet);
+Rarity.cosmic(ItemID.infinity_chestplate);
+Rarity.cosmic(ItemID.infinity_leggings);
+Rarity.cosmic(ItemID.infinity_boots);
 undestroyable_item("infinity_helmet");
 undestroyable_item("infinity_chestplate");
 undestroyable_item("infinity_leggings");
