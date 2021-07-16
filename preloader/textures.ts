@@ -14,7 +14,7 @@
         });
         IAHelper.convertTexture("assets/animated_items/", id, "assets/items-opaque", id);
     }
-    const obj = FileTools.ReadJSON(`${__dir__}/assets/singularities.json`);
+    const obj = FileUtil.readJSON(`${__dir__}/assets/singularities.json`);
     const keys = Object.keys(obj);
     for(let i in keys){
         const key = keys[i], arr = obj[key];
@@ -23,7 +23,7 @@
 })();
 
 (() => {
-    let files = FileTools.GetListOfFiles(`${__dir__}/assets/animated_items/`, "");
+    let files = FileUtil.getListOfFiles(`${__dir__}/assets/animated_items/`, "png");
     for(let i in files){
         let fileName = new java.lang.String(files[i].getName()).replaceFirst("[.][^.]+$", "");
         IAHelper.convertTexture("assets/animated_items/", fileName, "assets/items-opaque/", fileName);

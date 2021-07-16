@@ -11,6 +11,7 @@
     "compileOnSave": false,
     "include": [
         "../tools/declarations/preloader.d.ts",
+        "util.ts",
         "forked_libraries.ts",
         "textures.ts"
     ]

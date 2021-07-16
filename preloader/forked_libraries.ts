@@ -30,15 +30,15 @@ namespace TextureWorker {
     }
 
     function createTextureWithOverlays(args: {bitmap: IBitmap, overlays: IOverlay[], result: ITextureSource}, fallback?: boolean): android.graphics.Bitmap | void {
-        if(FileTools.isExists(`${args.result.path}${args.result.name}.png`)) return;
+        if(FileUtil.isExist(`${args.result.path}${args.result.name}.png`)) return;
         const bmp = android.graphics.Bitmap.createBitmap(args.bitmap.width, args.bitmap.height, args.bitmap.config ?? android.graphics.Bitmap.Config.ARGB_8888);
         const cvs = new android.graphics.Canvas(bmp);
         for(let i in args.overlays){
             const over = args.overlays[i];
-            const tex = FileTools.ReadImage(`${over.path}${over.name}.png`);
+            const tex = FileUtil.readImage(`${over.path}${over.name}.png`);
             cvs.drawBitmap(over.color ? changeBitmapColor(tex, over.color) : tex, 0, 0, null);
         }
-        FileTools.WriteImage(`${args.result.path}${args.result.name}.png`, bmp);
+        FileUtil.writeImage(`${args.result.path}${args.result.name}.png`, bmp);
         if(fallback) return bmp;
     }
 
@@ -53,15 +53,15 @@ namespace TextureWorker {
 namespace IAHelper {
 
     export function convertTexture(srcPath: string, srcName: string, resultPath: string, resultName: string): void {
-        if(FileTools.isExists(`${__dir__}/${resultPath}${resultName}_0.png`)) return;
-        const anim = FileTools.ReadImage(`${__dir__}/${srcPath}${srcName}.png`);
+        if(FileUtil.isExist(`${__dir__}/${resultPath}${resultName}_0.png`)) return;
+        const anim = FileUtil.readImage(`${__dir__}/${srcPath}${srcName}.png`);
         if(anim.getHeight() % anim.getWidth() !== 0) throw new java.lang.IllegalStateException();
         for(let i=0; i < anim.getHeight() / anim.getWidth(); i++){
             const bmp = android.graphics.Bitmap.createBitmap(anim.getWidth(), anim.getWidth(), android.graphics.Bitmap.Config.ARGB_8888);
             for(let x=0; x<anim.getWidth(); x++)
                 for(let y=0; y<anim.getWidth(); y++)
                     bmp.setPixel(x, y, anim.getPixel(x, y + anim.getWidth() * i));
-            FileTools.WriteImage(`${__dir__}/${resultPath}${resultName}_${i}.png`, bmp);
+            FileUtil.writeImage(`${__dir__}/${resultPath}${resultName}_${i}.png`, bmp);
         }
     }
 
