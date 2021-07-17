@@ -1,4 +1,6 @@
 {
     "enabled": true,
-    "max_gaping_void_view_distance": 96
+    "debug": true,
+    "max_gaping_void_view_distance": 96,
+    "void_particles_per_tick": 50
 }

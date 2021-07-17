@@ -1,5 +1,5 @@
 IDRegistry.genItemID("endest_pearl");
-Item.createThrowableItem("endest_pearl", "item.avaritia:endest_pearl.name", {name: "endest_pearl", meta: 0}, {stack: 64});
+Item.createThrowableItem("endest_pearl", "item.avaritia:endest_pearl.name", {name: "endest_pearl", meta: 0}, {stack: 16});
 Rarity.rare(ItemID.endest_pearl);
 
 type GapingVoidParticlesPacket = { size: number, x: number, y: number, z: number };
@@ -103,7 +103,37 @@ namespace GapingVoid {
     }
 
     export function summonClientSide(coords: Vector, region: BlockSource): void {
-
+        const particlespeed = 4.5;
+        runOnClientThread(() => {
+            const mesh = new RenderMesh();
+            mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
+            mesh.setColor( ...getVoidColor(0, 1) );
+            const anim = new Animation.Base(coords.x, coords.y, coords.z);
+            anim.describe({ mesh: mesh });
+            let age = 0;
+            anim.loadCustom(() => {
+                if(age >= maxLifetime){
+                    anim.destroy();
+                    this.remove = true;
+                    return;
+                }
+                age++;
+                const scale = getVoidScale(age);
+                for(let i = 0; i < __config__.getNumber("void_particles_per_tick").intValue(); i++){
+                    const particlePos = new Vector3(0, 0, scale * 0.5 - 0.2)
+                        .rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0))
+                        .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0));
+                    const velocity = particlePos.copy().normalize().multiplyXYZ(particlespeed);
+                    Particles.addParticle(Native.ParticleType.portal, particlePos.x, particlePos.y, particlePos.z, -velocity.x, -velocity.y, -velocity.z);
+                }
+                // const fullfadedist = .6 * scale;
+                // const fadedist = fullfadedist + 1.5;
+                mesh.scale(scale, scale, scale);
+                mesh.setColor( ...getVoidColor(age, 1) );
+                anim.describe({ mesh: mesh });
+                anim.refresh();
+            });
+        });
     }
 
     export function getVoidScale(age: number): number {
@@ -117,6 +147,14 @@ namespace GapingVoid {
     function ease(d: number): number {
         const t = d - 1;
         return Math.sqrt(1 - t * t);
+    }
+
+    export function getVoidColor(age: number, alpha: number): [number, number, number, number] {
+        const life = age / maxLifetime;
+        let f = Math.max(0, (life - collapse) / (1 - collapse));
+        f = Math.max(f, 1 - (life * 30));
+        f = Math.round(f * 255);
+        return [f, f, f, Math.round(alpha * 255)];
     }
 
 }

@@ -16,6 +16,7 @@
 IMPORT("ItemAnimHelper");
 IMPORT("ToolLib");
 
+const debug_enabled = __config__.getBool("debug");
 const rand = new java.util.Random();
 
 const AVA_STUFF: number[] = [];
@@ -93,7 +94,13 @@ const getOffsets = (dir: number) => {
 const dropItemRandom = (drop: ItemInstance, world: BlockSource, x: number, y: number, z: number) =>
     world.spawnDroppedItem(x + (rand.nextFloat() * .7 + .15), y + (rand.nextFloat() * .7 + .15), z + (rand.nextFloat() * .7 + .15), drop.id, drop.count, drop.data, drop.extra);
 
-const undestroyable_item = (id: string) => Item.getItemById(id)?.setProperties(JSON.stringify({ "minecraft:explodable": false, /* TODO fire res */ }));
+const undestroyable_item = (id: string) => {
+    const item = Item.getItemById(id);
+    if(item != null){
+        item.setProperties(JSON.stringify({ "minecraft:explodable": false, /* TODO fire res */ }));
+        debug_enabled && Logger.Log(`Successfully applied undestroyability to item \'${id}\'`, "Avaritia DEBUG");
+    }
+}
 
 const INFINITY_ITEM_FRAMES = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1];
 

@@ -17,7 +17,8 @@ Armor.registerOnTickListener(ItemID.infinity_helmet, (item, slot, player) => {
 });
 
 Network.addClientPacket("avaritia.toggleflying", (data: any) => {
-    Player.setFlyingEnabled(data.bool);
+    if(new PlayerActor(Player.get()).getGameMode() != 1)
+        Player.setFlyingEnabled(data.bool);
 });
 Armor.registerOnTakeOnListener(ItemID.infinity_chestplate, (item, slot, player) => {
     Network.getClientForPlayer(player).send("avaritia.toggleflying", { bool: true });
@@ -37,7 +38,9 @@ Armor.registerOnTickListener(ItemID.infinity_leggings, (item, slot, player) => {
     Armor.registerOnHurtListener(ItemID.infinity_chestplate, func);
     Armor.registerOnHurtListener(ItemID.infinity_leggings, func);
     Armor.registerOnHurtListener(ItemID.infinity_boots, func)
-})((item: ItemInstance, slot: number, player: number) => { if(check_armor(player)) Game.prevent(); });
+})((item: ItemInstance, slot: number, player: number) => check_armor(player) && Game.prevent());
+
+Callback.addCallback("EntityHurt", (attacker, entity) => Entity.getType(entity) == EEntityType.PLAYER && check_armor(entity) && Game.prevent() );
 
 AVA_STUFF.push(ItemID.infinity_helmet, ItemID.infinity_chestplate, ItemID.infinity_leggings, ItemID.infinity_boots);
 Rarity.cosmic(ItemID.infinity_helmet);

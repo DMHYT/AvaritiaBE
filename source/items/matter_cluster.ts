@@ -15,7 +15,7 @@ namespace MatterCluster {
     export function makeCluster(list: ItemInstance[]): ItemInstance {
         let count: number = 0,
             following: ItemInstance[] = [];
-        while(count < capacity && following.length > 0){
+        while(count < capacity && list.length > 0){
             let stack = list.pop();
             if(count + stack.count > capacity){
                 let toPut = capacity - count;
