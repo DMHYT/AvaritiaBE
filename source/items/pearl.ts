@@ -52,7 +52,7 @@ namespace GapingVoid {
                     .setupDistancePolicy(coords.x, coords.y, coords.z, region.getDimension(), 64)
                     .send("avaritia.gapingvoidparticles", { ...coords, size: size } as GapingVoidParticlesPacket);
                 let aabb = new Cuboid6().add(pos).expandXYZ(suckRange).aabb();
-                const sucked = filterArray<number>(region.listEntitiesInAABB(aabb[0], aabb[1], aabb[2], aabb[3], aabb[4], aabb[5], -1, true), SUCK_PREDICATE);
+                const sucked = region.listEntitiesInAABB(aabb[0], aabb[1], aabb[2], aabb[3], aabb[4], aabb[5], -1, true).filter(SUCK_PREDICATE);
                 const radius = getVoidScale(this.age) * 0.5;
                 for(let i in sucked){
                     const suckee = sucked[i];
@@ -73,7 +73,7 @@ namespace GapingVoid {
                 }
                 const nomrange = radius * .95;
                 aabb = new Cuboid6().add(pos).expandXYZ(nomrange).aabb();
-                const nommed = filterArray<number>(region.listEntitiesInAABB(aabb[0], aabb[1], aabb[2], aabb[3], aabb[4], aabb[5], -1, true), OMNOM_PREDICATE);
+                const nommed = region.listEntitiesInAABB(aabb[0], aabb[1], aabb[2], aabb[3], aabb[4], aabb[5], -1, true).filter(OMNOM_PREDICATE);
                 for(let i in nommed){
                     const nommee = nommed[i];
                     const nomedPos = Vector3.fromEntity(nommee);

@@ -104,15 +104,15 @@ const undestroyable_item = (id: string) => {
 
 const INFINITY_ITEM_FRAMES = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1];
 
-function filterArray<T>(arr: T[], predicate: (item: T) => boolean): T[] {
-    const indexes: number[] = [];
-    for(let i in arr)
-        if(!predicate(arr[i]))
-            indexes.push(parseInt(i));
-    for(let i in indexes){
-        arr.splice(indexes[i], 1);
-        for(let i2 in indexes)
-            indexes[i2]--;
-    }
-    return arr;
-}
+if (!Array.prototype.filter) 
+    Array.prototype.filter = function(fun/*, thisArg*/) {
+        if (this === void 0 || this === null) throw new TypeError();
+        var t = Object(this);
+        var len = t.length >>> 0;
+        if (typeof fun !== 'function') throw new TypeError();
+        var res = [];
+        var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+        for (var i = 0; i < len; i++) 
+            i in t && fun.call(thisArg, t[i], i, t) && res.push(t[i]);
+        return res;
+    };
