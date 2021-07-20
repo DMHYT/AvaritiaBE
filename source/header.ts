@@ -15,6 +15,8 @@
 
 IMPORT("ItemAnimHelper");
 IMPORT("ToolLib");
+IMPORT("RecipeTileEntity");
+IMPORT("VanillaSlots");
 
 const debug_enabled = __config__.getBool("debug");
 const rand = new java.util.Random();
@@ -104,7 +106,7 @@ const undestroyable_item = (id: string) => {
 
 const INFINITY_ITEM_FRAMES = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1];
 
-if (!Array.prototype.filter) 
+if (!Array.prototype.filter){
     Array.prototype.filter = function(fun/*, thisArg*/) {
         if (this === void 0 || this === null) throw new TypeError();
         var t = Object(this);
@@ -115,4 +117,6 @@ if (!Array.prototype.filter)
         for (var i = 0; i < len; i++) 
             i in t && fun.call(thisArg, t[i], i, t) && res.push(t[i]);
         return res;
-    };
+    }
+    Logger.Log("Created polyfill for Array.prototype.filter", "Avaritia DEBUG");
+}
