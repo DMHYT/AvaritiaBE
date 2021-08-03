@@ -17,3 +17,9 @@
         Translation.addTranslation(key, all_translation_keys[key]);
     }
 })();
+// This should be embedded into InnerCore
+(() => {
+    const obj = {en: "Inventory", ar: "جَرْدٌ", pt: "Inventário", zh: "存货", hr: "Inventar", cs: "Inventář", da: "Opgørelse", nl: "Inventaris", es: "Inventario", fi: "Inventaario", fr: "Inventaire", de: "Inventar", el: "κατάλογος απογραφέντων αντικειμένων", it: "Inventario", ja: "目録", ko: "품목 일람", nb: "Liste", pl: "Inwentarz", ro: "Inventar", ru: "Инвентарь", sv: "inventarieförteckning", th: "รายการสิ่งของ", tr: "Envanter", uk: "Iнвентар", vi: "bản kiểm kê"};
+    obj[Translation.getLanguage()] ??= obj.en;
+    Translation.addTranslation("avaritia.inventory", obj);
+})();

@@ -106,11 +106,12 @@ namespace GapingVoid {
         const particlespeed = 4.5;
         runOnClientThread(() => {
             const mesh = new RenderMesh();
-            mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
+            mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", {scale: [.1, .1, .1], invertV: false, noRebuild: false});
             mesh.setColor( ...getVoidColor(0, 1) );
             const anim = new Animation.Base(coords.x, coords.y, coords.z);
             anim.describe({ mesh: mesh });
             let age = 0;
+            let currentScale = 0.1;
             anim.loadCustom(() => {
                 if(age >= maxLifetime){
                     anim.destroy();
@@ -119,7 +120,9 @@ namespace GapingVoid {
                 }
                 age++;
                 const scale = getVoidScale(age);
-                for(let i = 0; i < __config__.getNumber("void_particles_per_tick").intValue(); i++){
+                const toScale = scale / currentScale;
+                currentScale = scale;
+                for(let i = 0; i < VOID_PARTICLES_PER_TICK; i++){
                     const particlePos = new Vector3(0, 0, scale * 0.5 - 0.2)
                         .rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0))
                         .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0));
@@ -128,7 +131,7 @@ namespace GapingVoid {
                 }
                 // const fullfadedist = .6 * scale;
                 // const fadedist = fullfadedist + 1.5;
-                mesh.scale(scale, scale, scale);
+                mesh.scale(toScale, toScale, toScale);
                 mesh.setColor( ...getVoidColor(age, 1) );
                 anim.describe({ mesh: mesh });
                 anim.refresh();
@@ -167,7 +170,7 @@ Network.addClientPacket("avaritia.gapingvoidclient", (data: GapingVoidClientPack
 const summon_gaping_void = (coords: Vector, region: BlockSource) => {
     GapingVoid.summonServerSide(coords, region);
     const iter = new NetworkConnectedClientList()
-        .setupDistancePolicy(coords.x, coords.y, coords.z, region.getDimension(), __config__.getNumber("max_gaping_void_view_distance").intValue())
+        .setupDistancePolicy(coords.x, coords.y, coords.z, region.getDimension(), MAX_GAPING_VOID_VIEW_DISTANCE)
         .iterator();
     while(iter.hasNext())
         iter.next().send("avaritia.gapingvoidclient", { coords: coords, dimension: region.getDimension() } as GapingVoidClientPacket);

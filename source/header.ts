@@ -16,9 +16,14 @@
 IMPORT("ItemAnimHelper");
 IMPORT("ToolLib");
 IMPORT("RecipeTileEntity");
+IMPORT("StorageInterface");
 IMPORT("VanillaSlots");
 
 const debug_enabled = __config__.getBool("debug");
+const MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getNumber("max_gaping_void_view_distance").intValue();
+const VOID_PARTICLES_PER_TICK = __config__.getNumber("void_particles_per_tick").intValue();
+const COLLECTOR_PROCESS_TIME = __config__.getNumber("collector_process_time").intValue();
+
 const rand = new java.util.Random();
 
 const AVA_STUFF: number[] = [];

@@ -20,6 +20,10 @@ namespace Singularity {
         singularities.push(ItemID[id]);
         if(materialId != null && materialCount != null && materialData != null) registerRecipeFor(ItemID[id], materialId, materialCount, materialData);
     }
+    
+    export function isValidMaterial(id: number, data: number): boolean {
+        return typeof recipes[id] !== "undefined" && (recipes[id].countdata[1] == data || recipes[id].countdata[1] == -1);
+    }
 
 }
 

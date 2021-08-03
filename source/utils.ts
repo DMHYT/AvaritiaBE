@@ -89,3 +89,22 @@ class Cuboid6 {
         return [this.min.x, this.min.y, this.min.z, this.max.x, this.max.y, this.max.z];
     }
 }
+
+class TEImpl<T> implements TileEntity {
+    public readonly x: number;
+    public readonly y: number;
+    public readonly z: number;
+    public readonly dimension: number;
+    public readonly blockID: number;
+    public readonly data: T;
+    public readonly container: ItemContainer;
+    public readonly liquidStorage: LiquidRegistry.Storage;
+    public readonly isLoaded: boolean;
+    public readonly remove: boolean;
+    public selfDestroy() {}
+    public sendPacket() {}
+    public readonly blockSource: BlockSource;
+    public readonly networkData: SyncedNetworkData;
+    public readonly networkEntity: NetworkEntity;
+    public sendResponse() {}
+}
