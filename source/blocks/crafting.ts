@@ -2,9 +2,9 @@ IDRegistry.genBlockID("compressed_crafting_table");
 IDRegistry.genBlockID("double_compressed_crafting_table");
 IDRegistry.genBlockID("extreme_crafting_table");
 
-Block.createBlock("compressed_crafting_table", [{name: "tile.avaritia.compressed_crafting_table.name", texture: [["compressed_crafting_table", 0]], inCreative: true}], {destroytime: 4, sound: "wood"});
-Block.createBlock("double_compressed_crafting_table", [{name: "tile.avaritia.double_compressed_crafting_table.name", texture: [["double_compressed_crafting_table", 0]], inCreative: true}], {destroytime: 20, sound: "wood"});
-Block.createBlock("extreme_crafting_table", [{name: "tile.extreme_crafting_table.name", texture: [["extreme_crafting_table_side", 0], ["extreme_crafting_table_top", 0], ["extreme_crafting_table_side", 0]], inCreative: true}], {destroytime: 50, explosionres: 2000, sound: "glass"});
+Block.createBlock("compressed_crafting_table", [{name: "tile.avaritia:compressed_crafting_table.name", texture: [["compressed_crafting_table", 0]], inCreative: true}], {destroytime: 4, sound: "wood"});
+Block.createBlock("double_compressed_crafting_table", [{name: "tile.avaritia:double_compressed_crafting_table.name", texture: [["double_compressed_crafting_table", 0]], inCreative: true}], {destroytime: 20, sound: "wood"});
+Block.createBlock("extreme_crafting_table", [{name: "tile.avaritia:extreme_crafting_table.name", texture: [["extreme_crafting_table_side", 0], ["extreme_crafting_table_top", 0], ["extreme_crafting_table_side", 0]], inCreative: true}], {destroytime: 50, explosionres: 2000, sound: "glass"});
 
 ToolAPI.registerBlockMaterial(BlockID.compressed_crafting_table, "wood", 0, false);
 ToolAPI.registerBlockMaterial(BlockID.double_compressed_crafting_table, "wood", 1, false);

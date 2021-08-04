@@ -18,7 +18,7 @@ const GUI_COMPRESSOR = new UI.Window({
         const font = {alignment: UI.Font.ALIGN_CENTER};
         const elems = {
             textInventory: {type: "text", x: 365, y: offset + 193, font: font, text: Translation.translate("avaritia.inventory")},
-            textHeader: {type: "text", x: 500, y: offset + 20, font: font, text: Translation.translate("container.neutronium_compressor")},
+            textHeader: {type: "text", x: 500, y: offset + 15, font: font, text: Translation.translate("container.neutronium_compressor")},
             textAmount: {type: "text", x: 500, y: offset + 143, font: font, text: ""},
             textInput: {type: "text", x: 330, y: offset + 65, font: font, text: ""},
             textOutput: {type: "text", x: 670, y: offset + 65, font: font, text: ""},
@@ -30,8 +30,8 @@ const GUI_COMPRESSOR = new UI.Window({
             singularityScale: {type: "scale", x: 504.5, y: offset + 86, scale: 2.625, bitmap: "avaritia.compressor_singularity", direction: 1, value: 0},
             closeButton: {type: "closeButton", x: 666.5, y: offset + 9, bitmap: "classic_close_button", bitmap2: "classic_close_button_down", scale: 3}
         } as UI.ElementSet;
-        for(let i=9; i<36; i++) elems[`slotInv${i}`] = {type: "invSlot", x: 296.5 + (i % 9) * 45, y: offset + 207 + Math.floor(i / 9) * 45, index: i}
-        for(let i=0; i<9; i++) elems[`slotInv${i}`] = {type: "invSlot", x: 296.5 + i * 45, y: offset + 352, index: i}
+        for(let i=9; i<36; i++) elems[`slotInv${i}`] = {type: "invSlot", x: 296.5 + (i % 9) * 45, y: offset + 207 + Math.floor(i / 9) * 45, index: i, size: 47}
+        for(let i=0; i<9; i++) elems[`slotInv${i}`] = {type: "invSlot", x: 296.5 + i * 45, y: offset + 352, index: i, size: 47}
         return elems;
     })()
 });
@@ -75,7 +75,7 @@ class CompressorTileEntity extends TEImpl<CompressorTEDefaultValues> {
             this.data.isActive = true;
             this.data.toPut = Singularity.recipes[slot.id].countdata[0];
             this.updateHints();
-        } else {
+        } else if(slot.count > 0) {
             const out = this.container.getSlot("slotOutput");
             if(out.id == 0 || (out.id == Singularity.recipes[slot.id].id && out.count > 0)) {
                 this.container.setSlot("slotInput", slot.id, slot.count - 1, slot.data, slot.extra);
