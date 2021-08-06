@@ -230,6 +230,36 @@ ExtremeCraftingTable.addShaped({id: ItemID.endest_pearl, count: 1, data: 0}, [
     'N', ItemID.neutronium_ingot, -1
 ]);
 
+if(BORING_FOOD || true) { // TODO make InTeReStInG food some day 0_0
+    ExtremeCraftingTable.addShapeless({id: ItemID.ultimate_stew, count: 1, data: 0}, [
+        [ItemID.neutron_pile, -1],
+        [VanillaBlockID.wheat, -1],
+        [VanillaItemID.carrot, -1],
+        [VanillaItemID.potato, -1],
+        [VanillaBlockID.beetroot, -1],
+        [VanillaItemID.apple, -1],
+        [VanillaItemID.melon, -1],
+        [VanillaBlockID.pumpkin, -1],
+        [VanillaBlockID.cactus, -1],
+        [VanillaBlockID.red_mushroom, -1],
+        [VanillaBlockID.brown_mushroom, -1]
+    ]);
+    ExtremeCraftingTable.addShapeless({id: ItemID.cosmic_meatballs, count: 1, data: 0}, [
+        [ItemID.neutron_pile, -1],
+        [VanillaItemID.beef, -1],
+        [VanillaItemID.beef, -1],
+        [VanillaItemID.chicken, -1],
+        [VanillaItemID.chicken, -1],
+        [VanillaItemID.porkchop, -1],
+        [VanillaItemID.porkchop, -1],
+        [VanillaItemID.rabbit, -1],
+        [VanillaItemID.rabbit, -1],
+        [VanillaItemID.fish, -1],
+        [VanillaItemID.fish, -1]
+        // Maybe make all fish from 1.13 update?
+    ]);
+}
+
 Callback.addCallback("ModsLoaded", () => {
     const arr = [
         [ItemID.diamond_lattice, -1],
@@ -249,16 +279,16 @@ Callback.addCallback("ModsLoaded", () => {
         [ItemID.singularity_diamond, -1],
         [ItemID.singularity_emerald, -1]
     ] as [number, number][];
-    BlockID.blockCopper && arr.push([ItemID.singularity_copper, -1]); // Added by IC2 and Forestry
-    BlockID.blockTin && arr.push([ItemID.singularity_tin, -1]); // Added by IC2 and Forestry
-    BlockID.blockLead && arr.push([ItemID.singularity_lead, -1]); // Added by IC2
-    BlockID.blockSilver && arr.push([ItemID.singularity_silver, -1]); // Added by IC2
-    BlockID.blockNickel && arr.push([ItemID.singularity_nickel, -1]); // No EnderIO
-    BlockID.blockElectrumFlux && arr.push([ItemID.singularity_fluxed, -1]); // No EnderIO
+    BlockID.blockCopper && (arr.push([ItemID.singularity_copper, -1]), Singularity.registerRecipeFor(ItemID.singularity_copper, BlockID.blockCopper, 400, -1, false)); // Added by IC2 and Forestry
+    BlockID.blockTin && (arr.push([ItemID.singularity_tin, -1]), Singularity.registerRecipeFor(ItemID.singularity_tin, BlockID.blockTin, 400, -1, false)); // Added by IC2 and Forestry
+    BlockID.blockLead && (arr.push([ItemID.singularity_lead, -1]), Singularity.registerRecipeFor(ItemID.singularity_lead, BlockID.blockLead, 300, -1, false)); // Added by IC2
+    BlockID.blockSilver && (arr.push([ItemID.singularity_silver, -1]), Singularity.registerRecipeFor(ItemID.singularity_silver, BlockID.blockSilver, 300, -1, false)); // Added by IC2
+    BlockID.blockNickel && (arr.push([ItemID.singularity_nickel, -1]), Singularity.registerRecipeFor(ItemID.singularity_nickel, BlockID.blockNickel, 400, -1, false)); // No EnderIO
+    BlockID.blockElectrumFlux && (arr.push([ItemID.singularity_fluxed, -1]), Singularity.registerRecipeFor(ItemID.singularity_fluxed, BlockID.blockElectrumFlux, 100, -1, false)); // No EnderIO
     BlockID.blockEnderium && arr.push([BlockID.blockEnderium, -1]); // No EnderIO
     BlockID.blockSteel && arr.push([BlockID.blockSteel, -1]); // Added by IC2, no EnderIO
     BlockID.blockDarkSteel && arr.push([BlockID.blockDarkSteel, -1]); // No EnderIO
-    BlockID.blockPlatinum && arr.push([ItemID.singularity_platinum, -1]); // No ThermalFoundation
-    BlockID.blockIridium && arr.push([ItemID.singularity_iridium, -1]); // Not added by IC2
+    BlockID.blockPlatinum && (arr.push([ItemID.singularity_platinum, -1]), Singularity.registerRecipeFor(ItemID.singularity_platinum, BlockID.blockPlatinum, 80, -1, false)); // No ThermalFoundation
+    BlockID.blockIridium && (arr.push([ItemID.singularity_iridium, -1]), Singularity.registerRecipeFor(ItemID.singularity_iridium, BlockID.blockIridium, 80, -1, false)); // Not added by IC2
     ExtremeCraftingTable.addShapeless({id: ItemID.infinity_catalyst, count: 1, data: 0}, arr);
 });

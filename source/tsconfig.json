@@ -31,9 +31,12 @@
         "blocks/resource.ts",
         "blocks/collector.ts",
         "blocks/compressor.ts",
-        "footer.ts"
+        "footer.ts",
+        "api.ts",
+        "compat/RecipeViewer.ts"
     ],
     "exclude": [
-        "../tools/declarations/preloader.d.ts"
+        "../tools/declarations/preloader.d.ts",
+        "../tools/declarations/AvaritiaAPI.d.ts"
     ]
 }

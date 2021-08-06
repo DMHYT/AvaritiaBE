@@ -2,39 +2,14 @@ IDRegistry.genItemID("endest_pearl");
 Item.createThrowableItem("endest_pearl", "item.avaritia:endest_pearl.name", {name: "endest_pearl", meta: 0}, {stack: 16});
 Rarity.rare(ItemID.endest_pearl);
 
-type GapingVoidParticlesPacket = { size: number, x: number, y: number, z: number };
-Network.addClientPacket("avaritia.gapingvoidparticles", (data: GapingVoidParticlesPacket) => {
-    const particlespeed = 4.5;
-    for(let i=0; i<50; i++){
-        const particlePos = new Vector3(0, 0, data.size)
-            .rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0))
-            .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0));
-        const velocity = particlePos.copy().normalize().multiplyXYZ(particlespeed);
-        particlePos.add(data.x, data.y, data.z);
-        Particles.addParticle(EParticleType.PORTAL, particlePos.x, particlePos.y, particlePos.z, velocity.x, velocity.y, velocity.z);
-    }
-});
 namespace GapingVoid {
 
     export const maxLifetime = 186;
     export const collapse = .95;
     export const suckRange = 20.0;
-    
-    export const SUCK_PREDICATE = (input: number) => {
-        if(!Entity.isExist(input)) return false;
-        if(Entity.getType(input) == EEntityType.PLAYER){
-            if(new PlayerActor(input).getGameMode() == 1) return false;
-        }
-        return true;
-    }
 
-    export const OMNOM_PREDICATE = (input: number) => {
-        if(!Entity.isExist(input)) return false;
-        if(Entity.getType(input) == EEntityType.PLAYER){
-            if(new PlayerActor(input).getGameMode() == 1) return false;
-        } else if(Entity.getType(input) == EEntityType.ITEM && !!~INFINITY_TOOLS.indexOf(Entity.getDroppedItem(input).id)) return false;
-        return true;
-    }
+    export const SUCK_PREDICATE = (input: number) => !Entity.isExist(input) ? false : Entity.getType(input) == EEntityType.PLAYER ? new PlayerActor(input).getGameMode() != 1 : true;
+    export const OMNOM_PREDICATE = (input: number) => !Entity.isExist(input) ? false : Entity.getType(input) == EEntityType.PLAYER ? new PlayerActor(input).getGameMode() != 1 : !(Entity.getType(input) == EEntityType.ITEM && !!~INFINITY_TOOLS.indexOf(Entity.getDroppedItem(input).id));
 
     export function summonServerSide(coords: Vector, region: BlockSource): void {
         Updatable.addUpdatable({
@@ -47,10 +22,6 @@ namespace GapingVoid {
                     playSound(coords.x, coords.y, coords.z, region.getDimension(), "mob.endermen.stare", 8, 1);
                 this.age++;
                 const pos = new Vector3(coords.x, coords.y, coords.z);
-                const size = getVoidScale(this.age) * 0.5 - 0.2;
-                new NetworkConnectedClientList()
-                    .setupDistancePolicy(coords.x, coords.y, coords.z, region.getDimension(), 64)
-                    .send("avaritia.gapingvoidparticles", { ...coords, size: size } as GapingVoidParticlesPacket);
                 let aabb = new Cuboid6().add(pos).expandXYZ(suckRange).aabb();
                 const sucked = region.listEntitiesInAABB(aabb[0], aabb[1], aabb[2], aabb[3], aabb[4], aabb[5], -1, true).filter(SUCK_PREDICATE);
                 const radius = getVoidScale(this.age) * 0.5;
@@ -106,8 +77,10 @@ namespace GapingVoid {
         const particlespeed = 4.5;
         runOnClientThread(() => {
             const mesh = new RenderMesh();
-            mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", {scale: [.1, .1, .1], invertV: false, noRebuild: false});
-            mesh.setColor( ...getVoidColor(0, 1) );
+            mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
+            mesh.scale(.1, .1, .1);
+            const initial_color = getVoidColor(0, 1);
+            mesh.setColor(initial_color[0], initial_color[1], initial_color[2], initial_color[3]);
             const anim = new Animation.Base(coords.x, coords.y, coords.z);
             anim.describe({ mesh: mesh });
             let age = 0;
@@ -122,17 +95,18 @@ namespace GapingVoid {
                 const scale = getVoidScale(age);
                 const toScale = scale / currentScale;
                 currentScale = scale;
+                // Particles.getParticleTypeById(EParticleType.PORTAL).setColor(146/255, 8/255, 1, 1);
                 for(let i = 0; i < VOID_PARTICLES_PER_TICK; i++){
                     const particlePos = new Vector3(0, 0, scale * 0.5 - 0.2)
                         .rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0))
-                        .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0));
+                        .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0))
+                        .add(coords.x, coords.y, coords.z);
                     const velocity = particlePos.copy().normalize().multiplyXYZ(particlespeed);
-                    Particles.addParticle(Native.ParticleType.portal, particlePos.x, particlePos.y, particlePos.z, -velocity.x, -velocity.y, -velocity.z);
+                    Particles.addParticle(EParticleType.PORTAL, particlePos.x, particlePos.y, particlePos.z, -velocity.x, -velocity.y, -velocity.z);
                 }
-                // const fullfadedist = .6 * scale;
-                // const fadedist = fullfadedist + 1.5;
                 mesh.scale(toScale, toScale, toScale);
-                mesh.setColor( ...getVoidColor(age, 1) );
+                const color = getVoidColor(age, 1);
+                mesh.setColor(color[0], color[1], color[2], color[3]);
                 anim.describe({ mesh: mesh });
                 anim.refresh();
             });
@@ -144,7 +118,7 @@ namespace GapingVoid {
         let curve: number;
         if(life < collapse) curve = .005 + ease(1 - ((collapse - life) / collapse)) * .995;
         else curve = ease(1 - ((life - collapse) / (1 - collapse)));
-        return 10.0 * curve;
+        return /*10.0 **/ curve;
     }
 
     function ease(d: number): number {
@@ -155,9 +129,8 @@ namespace GapingVoid {
     export function getVoidColor(age: number, alpha: number): [number, number, number, number] {
         const life = age / maxLifetime;
         let f = Math.max(0, (life - collapse) / (1 - collapse));
-        f = Math.max(f, 1 - (life * 30));
-        f = Math.round(f * 255);
-        return [f, f, f, Math.round(alpha * 255)];
+        f = Math.round(Math.max(f, 1 - (life * 30)));
+        return [f, f, f, Math.round(alpha)];
     }
 
 }

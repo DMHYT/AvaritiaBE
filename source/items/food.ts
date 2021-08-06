@@ -5,6 +5,8 @@ Item.createItem("ultimate_stew", "item.avaritia:ultimate_stew.name", {name: "ult
 Item.createItem("cosmic_meatballs", "item.avaritia:cosmic_meatballs.name", {name: "cosmic_meatballs", meta: 0}, {stack: 64});
 
 // Made manual food definition to normally add effects
+Item.setUseAnimation(ItemID.ultimate_stew, 1);
+Item.setMaxUseDuration(ItemID.ultimate_stew, 32);
 Item.getItemById("ultimate_stew")?.setProperties(JSON.stringify({
     use_animation: "eat",
     use_duration: 32,
@@ -16,6 +18,8 @@ Item.getItemById("ultimate_stew")?.setProperties(JSON.stringify({
         }
     }
 }));
+Item.setUseAnimation(ItemID.cosmic_meatballs, 1);
+Item.setMaxUseDuration(ItemID.cosmic_meatballs, 32);
 Item.getItemById("cosmic_meatballs")?.setProperties(JSON.stringify({
     use_animation: "eat",
     use_duration: 32,

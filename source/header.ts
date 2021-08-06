@@ -13,6 +13,30 @@
 // My VK - https://www.vk.com/vstannumdum
 // Report bugs in VK Public - https://www.vk.com/dmhmods
 
+declare var __loaded_mods: {
+    Thaumcraft: boolean,
+    TConstruct: boolean,
+    HydCraft: boolean,
+    ThermalExpansion: boolean,
+    TSteelworks: boolean,
+    IC2: boolean,
+    ThaumicTinkerer: boolean,
+    technom: boolean,
+    magicalcrops: boolean,
+    AgriCraft: boolean,
+    MineFactoryReloaded: boolean,
+    BigReactors: boolean,
+    EE3: boolean,
+    ProjectE: boolean,
+    Botania: boolean,
+    ExtraUtilities: boolean,
+    appliedenergistics2: boolean,
+    ImmersiveEngineering: boolean,
+    Mekanism: boolean,
+    Torcherino: boolean,
+    DraconicEvolution: boolean
+}
+
 IMPORT("ItemAnimHelper");
 IMPORT("ToolLib");
 IMPORT("RecipeTileEntity");
@@ -23,6 +47,7 @@ const debug_enabled = __config__.getBool("debug");
 const MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getNumber("max_gaping_void_view_distance").intValue();
 const VOID_PARTICLES_PER_TICK = __config__.getNumber("void_particles_per_tick").intValue();
 const COLLECTOR_PROCESS_TIME = __config__.getNumber("collector_process_time").intValue();
+const BORING_FOOD = __config__.getBool("boring_food");
 
 const rand = new java.util.Random();
 

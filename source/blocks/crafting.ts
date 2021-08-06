@@ -22,7 +22,14 @@ Callback.addCallback("PostLoaded", () => {
 
 namespace ExtremeCraftingTable {
 
-    export const workbench_obj = new RecipeTE.Workbench({columns: 9, rows: 9});
+    class ExtremeRecipeTE extends RecipeTE.Workbench {
+        public _recipes: RecipeTE.Recipe<any>[];
+        constructor() {
+            super({columns: 9, rows: 9});
+        }
+    }
+
+    export const workbench_obj = new ExtremeRecipeTE();
 
     export function addShaped(result: ItemInstance, mask: string[], keys: (string | number)[], func?: RecipeTE.CraftFunction) {
         if(keys.length % 3 != 0) throw new java.lang.IllegalArgumentException("Key array in extreme crafting table shaped recipe must be like [char, number, number, ...]");
@@ -41,26 +48,65 @@ namespace ExtremeCraftingTable {
         workbench_obj.addRecipe(result, ingredients, null, func);
     }
 
+    export function getAllSeparately(): {shaped: RecipePattern[], shapeless: RecipePattern[]} {
+        const all = { shaped: [] as RecipePattern[], shapeless: [] as RecipePattern[] };
+        for(let i in workbench_obj._recipes) {
+            const recinst = workbench_obj._recipes[i];
+            const output = { id: recinst.result.id, count: recinst.result.count ?? 1, data: recinst.result.data ?? -1 } as ItemInstance;
+            isGivenRecipeShapeless(recinst) ? 
+            all.shaped.push({
+                output: [ output ],
+                input: getListForShapelessRecipe(recinst)
+            }) : all.shaped.push({
+                output: [ output ],
+                input: getListForShapedRecipe(recinst)
+            });
+        }
+        return all;
+    }
+
+    function isGivenRecipeShapeless(recipe: RecipeTE.Recipe): boolean {
+        for(let key in recipe.ingredients) {
+            if(key.length > 1) return true;
+        } return false;
+    }
+
+    function getListForShapelessRecipe(recipe: RecipeTE.Recipe): ItemInstance[] {
+        const items = [] as ItemInstance[];
+        for(let key in recipe.ingredients) 
+            for(let i=0; i<recipe.ingredients[key].count; i++) 
+                items.push({ id: recipe.ingredients[key].id, count: 1, data: recipe.ingredients[key].data ?? -1 });
+        return items;
+    }
+
+    function getListForShapedRecipe(recipe: RecipeTE.Recipe): ItemInstance[] {
+        const items = [] as ItemInstance[];
+        const mask = [ ...recipe.mask ].map((str) => str.length < 9 ? `${str}${"         ".substr(str.length)}` : str);
+        for(let i in mask)
+            for(let j=0; j<mask[i].length; j++) {
+                const ingredient = recipe.ingredients[mask[i][j]];
+                if(ingredient) items.push({ id: ingredient.id, count: 1, data: ingredient.data ?? -1 });
+                else items.push({ id: 0, count: 0, data: 0 });
+            }
+        return items;
+    }
+
 }
 
-/**
- * WIDTH - 404.6
- * HEIGHT - 435.2
- */
 const GUI_EXTREME_CRAFTING = new UI.Window({
-    location: { width: 1000, height: UI.getScreenHeight(), x: 0, y: 0 },
+    location: { width: 1000, height: 550, x: 0, y: 0, scrollY: UI.getScreenHeight() },
     drawing: [
         {type: "background", color: android.graphics.Color.argb(90, 0, 0, 0)},
-        {type: "bitmap", x: 297.7 /* + 0.5 + 0.2 */, y: 12.4 /* + 0.5 - 0.1 */, scale: 1.7, bitmap: "avaritia.extreme_crafting"}
+        {type: "bitmap", x: 262, y: 40, scale: 2, bitmap: "avaritia.extreme_crafting"}
     ],
     elements: (() => {
         const elements = {
-            slotResult: {type: "slot", x: 646.7, y: 139.4, size: 45, visual: !false},
-            close: {type: "closeButton", x: 650, y: 12, bitmap: "classic_close_button", bitmap2: "classic_close_button_down", scale: 2.8}
+            slotResult: {type: "slot", x: 680, y: 198, size: 36, isValid: () => false, visual: false, bitmap: "_default_slot_empty", isTransparentBackground: true},
+            close: {type: "closeButton", x: 697, y: 51, bitmap: "classic_close_button", bitmap2: "classic_close_button_down", scale: 2}
         } as UI.ElementSet;
-        for(let i=0; i<81; i++) elements[`slotInput${i}`] = {type: "slot", x: 315.7 + (i % 9) * 30.5, y: 11 + Math.floor(i / 9) * 30.5, size: 30.5, visual: !false};
-        for(let i=9; i<36; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 361.7 + (i % 9) * 30.5, y: 261 + Math.floor(i / 9) * 30.5, size: 30.5, index: i};
-        for(let i=0; i<9; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 361.7 + i * 30.5, y: 392, size: 30.5, index: i}
+        for(let i=0; i<81; i++) elements[`slotInput${i}`] = {type: "slot", x: 284 + (i % 9) * 36, y: 54 + Math.floor(i / 9) * 36, size: 36, visual: false};
+        for(let i=9; i<36; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 338 + (i % 9) * 36, y: 386 + Math.floor((i - 9) / 9) * 36, size: 36, index: i};
+        for(let i=0; i<9; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 338 + i * 36, y: 502, size: 36, index: i};
         return elements;
     })()
 });
