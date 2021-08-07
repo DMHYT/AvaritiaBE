@@ -12,7 +12,7 @@ ModAPI.addAPICallback("RecipeViewer", (api) => {
     }
     const window_contents: RecipeContents = {
         drawing: [
-            {type: "bitmap", x: 0, y: 0, bitmap: "avaritia.extreme_rv"}
+            {type: "bitmap", x: 111, y: 7, bitmap: "avaritia.extreme_rv", scale: 2}
         ],
         elements: {}
     }

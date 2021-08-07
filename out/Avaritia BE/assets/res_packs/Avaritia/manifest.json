@@ -1,0 +1,18 @@
+{
+    "format_version": 1,
+    "header": {
+        "base_game_version": [ 1, 16, 0 ],
+        "description": "Resource pack for Avaritia infinity armor 3d models",
+        "name": "Avaritia",
+        "uuid": "1a56ecc0-ca65-411e-97ac-9a394b9a0cfe",
+        "version": [ 1, 0, 0 ]
+    },
+    "modules": [
+        {
+            "description": "Resource pack for Avaritia infinity armor 3d models",
+            "type": "resources",
+            "version": [ 1, 0, 0 ],
+            "uuid": "454022c0-87d0-4603-add6-04685ffbac37"
+        }
+    ]
+}

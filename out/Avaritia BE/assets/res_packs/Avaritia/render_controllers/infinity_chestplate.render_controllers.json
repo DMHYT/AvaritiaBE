@@ -1,0 +1,20 @@
+{
+    "format_version": "1.8.0",
+    "render_controllers": {
+        "controller.render.avaritia.infinity_chestplate": {
+            "geometry": "Geometry.default",
+            "textures": [ "Texture.default", "Texture.enchanted" ],
+            "materials": [ { "*": "variable.is_enchanted ? Material.enchanted : Material.default" } ],
+            "part_visibility": [
+                {
+                    "body": true,
+                    "rightArm": true,
+                    "rightItem": true,
+                    "leftArm": true,
+                    "wing1": "query.is_gliding",
+                    "wing2": "query.is_gliding"
+                }
+            ]
+        }
+    }
+}

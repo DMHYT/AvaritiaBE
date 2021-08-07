@@ -80,6 +80,7 @@ namespace GapingVoid {
             mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
             mesh.scale(.1, .1, .1);
             const initial_color = getVoidColor(0, 1);
+            mesh.setBlockTexture("gaping_void", 0);
             mesh.setColor(initial_color[0], initial_color[1], initial_color[2], initial_color[3]);
             const anim = new Animation.Base(coords.x, coords.y, coords.z);
             anim.describe({ mesh: mesh });
@@ -92,12 +93,11 @@ namespace GapingVoid {
                     return;
                 }
                 age++;
-                const scale = getVoidScale(age);
+                const scale = getVoidScale(age) * 0.5 - 0.2;
                 const toScale = scale / currentScale;
                 currentScale = scale;
-                // Particles.getParticleTypeById(EParticleType.PORTAL).setColor(146/255, 8/255, 1, 1);
                 for(let i = 0; i < VOID_PARTICLES_PER_TICK; i++){
-                    const particlePos = new Vector3(0, 0, scale * 0.5 - 0.2)
+                    const particlePos = new Vector3(0, 0, scale)
                         .rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0))
                         .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0))
                         .add(coords.x, coords.y, coords.z);
@@ -118,7 +118,7 @@ namespace GapingVoid {
         let curve: number;
         if(life < collapse) curve = .005 + ease(1 - ((collapse - life) / collapse)) * .995;
         else curve = ease(1 - ((life - collapse) / (1 - collapse)));
-        return /*10.0 **/ curve;
+        return 10.0 * curve;
     }
 
     function ease(d: number): number {

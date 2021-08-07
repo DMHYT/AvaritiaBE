@@ -1,0 +1,55 @@
+{
+	"format_version": "1.10.0",
+	"geometry.avaritia.infinity_chestplate": {
+		"texturewidth": 40,
+		"textureheight": 46,
+		"visible_bounds_width": 5,
+		"visible_bounds_height": 2,
+		"visible_bounds_offset": [0, 0, 0],
+		"bones": [
+			{
+				"name": "body",
+				"pivot": [0, 24, 0],
+				"cubes": [
+					{"origin": [-4, 12, -2], "size": [8, 12, 4], "uv": [0, 0]}
+				]
+			},
+			{
+				"name": "wing1",
+				"parent": "body",
+				"pivot": [0, 0, 0],
+				"cubes": [
+					{"origin": [-28, 4, 2.1], "size": [28, 30, 0], "uv": [0, 16]}
+				]
+			},
+			{
+				"name": "wing2",
+				"parent": "body",
+				"pivot": [0, 0, 0],
+				"cubes": [
+					{"origin": [0, 4, 2.1], "size": [28, 30, 0], "uv": [0, 16], "mirror": true}
+				]
+			},
+			{
+				"name": "rightArm",
+				"pivot": [-5, 22, 0],
+				"cubes": [
+					{"origin": [-8, 12, -2], "size": [4, 12, 4], "uv": [24, 0]}
+				]
+			},
+			{
+				"name": "rightItem",
+				"parent": "rightArm",
+				"pivot": [-6, 15, 1]
+			},
+			{
+				"name": "leftArm",
+				"pivot": [5, 22, 0],
+				"mirror": true,
+				"cubes": [
+					{"origin": [4, 12, -2], "size": [4, 12, 4], "uv": [24, 0]}
+				]
+			}
+		]
+	}
+}
