@@ -18,10 +18,10 @@ const GUI_COMPRESSOR = new UI.Window({
         const font = {alignment: UI.Font.ALIGN_CENTER};
         const elems = {
             textInventory: {type: "text", x: 365, y: offset + 193, font: font, text: Translation.translate("avaritia.inventory")},
-            textHeader: {type: "text", x: 500, y: offset + 15, font: font, text: Translation.translate("container.neutronium_compressor")},
+            textHeader: {type: "text", x: 500, y: offset + 10, font: font, text: Translation.translate("container.neutronium_compressor")},
             textAmount: {type: "text", x: 500, y: offset + 143, font: font, text: ""},
-            textInput: {type: "text", x: 330, y: offset + 60, font: font, text: ""},
-            textOutput: {type: "text", x: 670, y: offset + 60, font: font, text: ""},
+            textInput: {type: "text", x: 330, y: offset + 55, font: font, text: ""},
+            textOutput: {type: "text", x: 670, y: offset + 55, font: font, text: ""},
             slotInput: {type: "slot", x: 373.5, y: offset + 84, size: 47, isValid: (id, count, data, container) => Singularity.isValidMaterial(id, data) && Singularity.getRecipeResult(id) == (container.getParent() as CompressorTileEntity).data.resultId, visual: false},
             slotOutput: {type: "slot", x: 569.5, y: offset + 84, size: 47, isValid: () => false, visual: false, bitmap: "_default_slot_empty", isTransparentBackground: true},
             slotInputVisual: {type: "slot", x: 306.5, y: offset + 84, size: 47, bitmap: "_default_slot_empty", isTransparentBackground: true, visual: true, maxStackSize: 1},

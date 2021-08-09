@@ -18,8 +18,8 @@ const GUI_COLLECTOR = new UI.Window({
         const font = {alignment: UI.Font.ALIGN_CENTER};
         const elems = {
             textInventory: {type: "text", x: 365, y: offset + 193, font: font, text: Translation.translate("avaritia.inventory")},
-            textHeader: {type: "text", x: 500, y: offset + 20, font: font, text: Translation.translate("container.neutronium_compressor")},
-            slotOutput: {type: "slot", x: 476.5, y: offset + 74, size: 47, isValid: () => false, visual: false, bitmap: "_default_slot_empty", isTransparentBackground: true},
+            textHeader: {type: "text", x: 500, y: offset + 20, font: font, text: Translation.translate("container.neutron_collector")},
+            slotOutput: {type: "slot", x: 476.5, y: offset + 84, size: 47, isValid: () => false, visual: false, bitmap: "_default_slot_empty", isTransparentBackground: true},
             textProgress: {type: "text", x: 500, y: offset + 150, font: font, text: "Progress: 0.0%"},
             closeButton: {type: "closeButton", x: 666.5, y: offset + 9, bitmap: "classic_close_button", bitmap2: "classic_close_button_down", scale: 3}
         } as UI.ElementSet;

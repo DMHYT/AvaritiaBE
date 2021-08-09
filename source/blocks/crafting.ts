@@ -94,13 +94,14 @@ namespace ExtremeCraftingTable {
 }
 
 const GUI_EXTREME_CRAFTING = new UI.Window({
-    location: { width: 1000, height: 550, x: 0, y: 0, scrollY: UI.getScreenHeight() },
+    location: { width: 1000, height: 600, x: 0, y: 0, scrollX: 1000, scrollY: UI.getScreenHeight() },
     drawing: [
         {type: "background", color: android.graphics.Color.argb(90, 0, 0, 0)},
         {type: "bitmap", x: 262, y: 40, scale: 2, bitmap: "avaritia.extreme_crafting"}
     ],
     elements: (() => {
         const elements = {
+            textHeader: {type: "text", x: 500, y: 20, font: { alignment: UI.Font.ALIGN_CENTER }, text: Translation.translate("tile.avaritia:extreme_crafting_table.name")},
             slotResult: {type: "slot", x: 680, y: 198, size: 36, isValid: () => false, visual: false, bitmap: "_default_slot_empty", isTransparentBackground: true},
             close: {type: "closeButton", x: 697, y: 51, bitmap: "classic_close_button", bitmap2: "classic_close_button_down", scale: 2}
         } as UI.ElementSet;
