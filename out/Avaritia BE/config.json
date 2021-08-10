@@ -4,5 +4,6 @@
     "max_gaping_void_view_distance": 96,
     "void_particles_per_tick": 50,
     "collector_process_time": 7111,
-    "boring_food": true
+    "boring_food": true,
+    "eye_color_update_frequency": 4
 }

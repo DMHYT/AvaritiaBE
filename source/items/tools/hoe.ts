@@ -25,7 +25,7 @@ Item.registerUseFunction(ItemID.infinity_hoe, (coords, item, block, player) => {
                 for(let zz=coords.z-13; zz<coords.z+13; zz++){
                     const id = region.getBlockId(xx, coords.y, zz);
                     if(id == 2 || id == 3){
-                        region.setBlock(coords.x, coords.y, coords.z, VanillaBlockID.farmland, 0);
+                        region.setBlock(xx, coords.y, zz, VanillaBlockID.farmland, 0);
                         continue;
                     } else if(id == 0 || World.canTileBeReplaced(id, region.getBlockData(xx, coords.y, zz))){
                         const up = region.getBlock(xx, coords.y + 1, zz);

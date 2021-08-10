@@ -48,6 +48,7 @@ const MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getNumber("max_gaping_void_view
 const VOID_PARTICLES_PER_TICK = __config__.getNumber("void_particles_per_tick").intValue();
 const COLLECTOR_PROCESS_TIME = __config__.getNumber("collector_process_time").intValue();
 const BORING_FOOD = __config__.getBool("boring_food");
+const EYE_COLOR_UPDATE_FREQUENCY = __config__.getNumber("eye_color_update_frequency").intValue();
 
 const rand = new java.util.Random();
 
@@ -149,4 +150,28 @@ if (!Array.prototype.filter){
         return res;
     }
     Logger.Log("Created polyfill for Array.prototype.filter", "Avaritia DEBUG");
+}
+
+const hsv2rgb = (h: number, s: number, v: number) => {
+    let m: number, n: number, f: number, i: number,
+        hsv: [number, number, number] = [h, s, v], 
+        rgb: [number, number, number] = [null, null, null];
+    if(hsv[0] == -1) {
+        rgb[0] = rgb[1] = rgb[2] = hsv[2];
+        return rgb;
+    }
+    i = Math.floor(hsv[0]);
+    f = hsv[0] - i;
+    if(i % 2 == 0) f = 1 - f;
+    m = hsv[2] * (1 - hsv[1]);
+    n = hsv[2] * (1 - hsv[1] * f);
+    switch(i) {
+        case 6: case 0: rgb[0] = hsv[2], rgb[1] = n, rgb[2] = m; break;
+        case 1: rgb[0] = n, rgb[1] = hsv[2], rgb[2] = m; break;
+        case 2: rgb[0] = m, rgb[1] = hsv[2], rgb[2] = n; break;
+        case 3: rgb[0] = m, rgb[1] = n, rgb[2] = hsv[2]; break;
+        case 4: rgb[0] = n, rgb[1] = m, rgb[2] = hsv[2]; break;
+        case 5: rgb[0] = hsv[2], rgb[1] = m, rgb[2] = n; break;
+    }
+    return rgb;
 }

@@ -10,9 +10,9 @@ var CURRENT_BOW_ICON_CLIENT_SIDE: number = 0;
 
 const check_arrow = (player: number) => {
     const actor = new PlayerActor(player);
-    for(let i=0; i<36; ++i){
-        if(actor.getInventorySlot(i).id == VanillaItemID.arrow) return i;
-    }
+    for(let i=0; i<36; ++i)
+        if(actor.getInventorySlot(i).id == VanillaItemID.arrow)
+            return i;
     return -1;
 }
 
@@ -31,17 +31,16 @@ const infinity_bow_shoot = (item: ItemInstance, ticks: number, player: number) =
             velocity = { x: -Math.sin(lookAngle.yaw) * Math.cos(lookAngle.pitch), y: Math.sin(lookAngle.pitch), z: Math.cos(lookAngle.yaw) * Math.cos(lookAngle.pitch) },
             region = BlockSource.getDefaultForActor(player),
             arrow = region.spawnEntity(pos.x + (velocity.x * .5), pos.y + (velocity.y * .5), pos.z + (velocity.z * .5), EEntityType.ARROW);
-        Entity.setSkin(arrow, "entity/heavenarrow");
         let tag = Entity.getCompoundTag(arrow);
         tag.putByte("AVARITIA_HEAVEN_ARROW", 1);
-        // TODO put player uuid as shooting entity
-        tag.putDouble("damage", 60);
+        tag.putInt64("AVARITIA_BOW_SHOOTER", player);
+        tag.putDouble("AVARITIA_ARROW_DAMAGE", 60);
         if(f == 1) tag.putByte("crit", 1);
         if(item.extra != null && item.extra.isEnchanted()){
             let power = item.extra.getEnchantLevel(EEnchantment.POWER);
-            if(power > 0) tag.putDouble("damage", 61 + power);
+            if(power > 0) tag.putDouble("AVARITIA_ARROW_DAMAGE", 61 + power);
             // TODO make punch
-            if(item.extra.getEnchantLevel(EEnchantment.FLAME) > 0) tag.putShort("Fire", 100);
+            if(item.extra.getEnchantLevel(EEnchantment.FLAME) > 0) Entity.setFire(arrow, 100, true);
         }
         if(flag) tag.putByte("pickup", 2);
         else {
@@ -50,6 +49,8 @@ const infinity_bow_shoot = (item: ItemInstance, ticks: number, player: number) =
         }
         Entity.setCompoundTag(arrow, tag);
         Entity.setVelocity(arrow, velocity.x * 1, velocity.y * 1 + 0.2, velocity.z * 1);
+        Entity.setSkin(arrow, "entity/heavenarrow.png");
+        Entity.setLookAngle(arrow, lookAngle.yaw, lookAngle.pitch);
         playSound(pos.x, pos.y, pos.z, Entity.getDimension(player), "random.bow", 1, 1 / (rand.nextFloat() * 0.4 + 1.2) + f * 0.5);
     }
 }
@@ -66,7 +67,7 @@ const summon_arrow_rain = (coords: Vector, region: BlockSource) => {
             dx = Math.sin(dangle) * ddist,
             dz = Math.cos(dangle) * ddist,
             arrow = region.spawnEntity(x, y, z, EEntityType.ARROW);
-        Entity.setSkin(arrow, "entity/heavenarrow");
+        Entity.setSkin(arrow, "entity/heavenarrow.png");
         Entity.addVelocity(arrow, dx, -(rand.nextDouble() * 1.85 + 0.15), dz);
         Entity.setLookAngle(arrow, 0, 0);
         let tag = Entity.getCompoundTag(arrow);
@@ -95,9 +96,13 @@ Item.registerUsingReleasedFunction(ItemID.infinity_bow, (item, ticks, player) =>
 Callback.addCallback("ProjectileHit", (projectile, item, target) => {
     if(Entity.getType(projectile) == EEntityType.ARROW){
         let tag = Entity.getCompoundTag(projectile);
-        if(tag.contains("AVARITIA_HEAVEN_ARROW") && target.entity == -1 && target.coords != null){
-            summon_arrow_rain(target.coords, BlockSource.getDefaultForActor(projectile));
-        }
+        if(tag.contains("AVARITIA_HEAVEN_ARROW")) 
+            if(target.entity != -1 && target.coords == null) 
+                if(tag.contains("AVARITIA_ARROW_DAMAGE") && tag.contains("AVARITIA_BOW_SHOOTER"))
+                    Entity.damageEntity(target.entity, tag.getDouble("AVARITIA_ARROW_DAMAGE"), 12, {attacker: tag.getInt64("AVARITIA_BOW_SHOOTER"), bool1: true});
+                else debug_enabled && Debug.m("No damage and player tags found in heaven arrow entity!");
+            else summon_arrow_rain(target.coords, BlockSource.getDefaultForActor(projectile));
+        else debug_enabled && Debug.m("No heaven arrow tag found in arrow entity!");
     }
 });
 
@@ -117,7 +122,8 @@ IAHelper.itemAnims.infinity_bow = { meta: 0, timer: 0, frameIndex: 0 };
 
 Item.registerIconOverrideFunction(ItemID.infinity_bow, (item) => {
     let name = "infinity_bow_idle";
-    // TODO
+    const progress = new PlayerActor(Player.get()).getItemUseIntervalProgress();
+    if(progress > 0) name = `infinity_bow_pull_${Math.floor(progress * 3) - 1}`;
     return { name: name, data: IAHelper.itemAnims.infinity_bow.meta }
 });
 

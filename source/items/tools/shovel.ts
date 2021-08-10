@@ -30,6 +30,8 @@ Item.registerUseFunction(ItemID.infinity_destroyer, (coords, item, block, player
     if(Entity.getSneaking(player)){
         const region = BlockSource.getDefaultForActor(player);
         const drops: ItemInstance[] = [];
+        const toollevel = ToolAPI.getToolLevel(item.id);
+        const enchantextra = ToolAPI.getEnchantExtraData(item.extra);
         for(let xx=coords.x-8; xx<coords.x+8; xx++)
             for(let yy=coords.y-8; yy<coords.y+8; yy++)
                 for(let zz=coords.z-8; zz<coords.z+8; zz++){
@@ -39,7 +41,7 @@ Item.registerUseFunction(ItemID.infinity_destroyer, (coords, item, block, player
                     const func = Block.getDropFunction(state.id);
                     if(!func) continue;
                     const useCoords: Callback.ItemUseCoordinates = { x: xx, y: yy, z: zz, side: 0, relative: { x: xx, y: yy, z: zz } };
-                    const thisDrops = func(useCoords, state.id, state.data, ToolAPI.getToolLevel(item.id), ToolAPI.getEnchantExtraData(item.extra), item, region);
+                    const thisDrops = func(useCoords, state.id, state.data, toollevel, enchantextra, item, region);
                     for(let i in thisDrops)
                         drops.push({ id: thisDrops[i][0], count: thisDrops[i][1], data: thisDrops[i][2], extra: thisDrops[i][3] ?? null });
                     region.setBlock(xx, yy, zz, 0, 0);

@@ -80,7 +80,7 @@ namespace GapingVoid {
             mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
             mesh.scale(.1, .1, .1);
             const initial_color = getVoidColor(0, 1);
-            mesh.setBlockTexture("gaping_void", 0);
+            mesh.setBlockTexture("pixel", 0);
             mesh.setColor(initial_color[0], initial_color[1], initial_color[2], initial_color[3]);
             const anim = new Animation.Base(coords.x, coords.y, coords.z);
             anim.describe({ mesh: mesh });

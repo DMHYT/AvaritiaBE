@@ -289,6 +289,6 @@ Callback.addCallback("ModsLoaded", () => {
     BlockID.blockSteel && arr.push([BlockID.blockSteel, -1]); // Added by IC2, no EnderIO
     BlockID.blockDarkSteel && arr.push([BlockID.blockDarkSteel, -1]); // No EnderIO
     BlockID.blockPlatinum && (arr.push([ItemID.singularity_platinum, -1]), Singularity.registerRecipeFor(ItemID.singularity_platinum, BlockID.blockPlatinum, 80, -1, false)); // No ThermalFoundation
-    BlockID.blockIridium && (arr.push([ItemID.singularity_iridium, -1]), Singularity.registerRecipeFor(ItemID.singularity_iridium, BlockID.blockIridium, 80, -1, false)); // Not added by IC2
+    BlockID.blockIridium && (arr.push([ItemID.singularity_iridium, -1]), Singularity.registerRecipeFor(ItemID.singularity_iridium, BlockID.blockIridium, 80, -1, false)); // No MorePlanets (no Galacticraft LOL)
     ExtremeCraftingTable.addShapeless({id: ItemID.infinity_catalyst, count: 1, data: 0}, arr);
 });

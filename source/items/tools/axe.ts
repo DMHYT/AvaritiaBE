@@ -19,12 +19,14 @@ const destroy_trees = (coords: Vector, region: BlockSource, item: ItemInstance) 
         }
     }
     check(coords, region);
+    const toollevel = ToolAPI.getToolLevel(item.id);
+    const enchantextra = ToolAPI.getEnchantExtraData(item.extra);
     for(let i in blocks_map){
         let carr = blocks_map[i].split(":"),
             cs: Vector = { x: parseInt(carr[0]), y: parseInt(carr[1]), z: parseInt(carr[2]) };
         let func = Block.getDropFunction(region.getBlockId(cs.x, cs.y, cs.z));
         if(!func) continue;
-        let drops = func({ ...cs, side: 0, relative: { ...cs } }, region.getBlockId(cs.x, cs.y, cs.z), region.getBlockData(cs.x, cs.y, cs.z), ToolAPI.getToolLevel(item.id), ToolAPI.getEnchantExtraData(item.extra), item, region);
+        let drops = func({ ...cs, side: 0, relative: { ...cs } }, region.getBlockId(cs.x, cs.y, cs.z), region.getBlockData(cs.x, cs.y, cs.z), toollevel, enchantextra, item, region);
         for(let d in drops){
             region.setBlock(cs.x, cs.y, cs.z, 0, 0);
             dropItemRandom({ id: drops[d][0], count: drops[d][1], data: drops[d][2], extra: drops[d][3] ?? null }, region, cs.x, cs.y, cs.z);
@@ -34,6 +36,8 @@ const destroy_trees = (coords: Vector, region: BlockSource, item: ItemInstance) 
 
 const destroy_nature = (coords: Vector, item: ItemInstance, region: BlockSource) => {
     const drops: ItemInstance[] = [];
+    const toollevel = ToolAPI.getToolLevel(item.id);
+    const enchantextra = ToolAPI.getEnchantExtraData(item.extra);
     for(let xx=coords.x-13; xx<coords.x+13; xx++)
         for(let yy=coords.y-3; yy<coords.y+23; yy++)
             for(let zz=coords.z-13; zz<coords.z+13; zz++){
@@ -43,13 +47,15 @@ const destroy_nature = (coords: Vector, item: ItemInstance, region: BlockSource)
                     region.setBlock(xx, yy, zz, VanillaBlockID.dirt, 0);
                     continue;
                 }
-                const func = Block.getDropFunction(state.id);
-                if(!func) continue;
-                const useCoords: Callback.ItemUseCoordinates = { x: xx, y: yy, z: zz, side: 0, relative: { x: xx, y: yy, z: zz } };
-                const thisDrops = func(useCoords, state.id, state.data, ToolAPI.getToolLevel(item.id), ToolAPI.getEnchantExtraData(item.extra ?? null), item, region);
-                for(let i in thisDrops)
-                    drops.push({ id: thisDrops[i][0], count: thisDrops[i][1], data: thisDrops[i][2], extra: thisDrops[i][3] ?? null });
-                region.setBlock(xx, yy, zz, 0, 0);
+                if(!!~["wood", "plant", "fibre"].indexOf(ToolAPI.getBlockMaterialName(state.id))) {
+                    const func = Block.getDropFunction(state.id);
+                    if(!func) continue;
+                    const useCoords: Callback.ItemUseCoordinates = { x: xx, y: yy, z: zz, side: 0, relative: { x: xx, y: yy, z: zz } };
+                    const thisDrops = func(useCoords, state.id, state.data, toollevel, enchantextra, item, region);
+                    for(let i in thisDrops)
+                        drops.push({ id: thisDrops[i][0], count: thisDrops[i][1], data: thisDrops[i][2], extra: thisDrops[i][3] ?? null });
+                    region.setBlock(xx, yy, zz, 0, 0);
+                }
             }
     const clusters = MatterCluster.makeClusters(drops);
     for(let i in clusters) dropItemRandom(clusters[i], region, coords.x, coords.y, coords.z);

@@ -10,33 +10,53 @@ Item.createArmorItem("infinity_boots", "item.avaritia:infinity_boots.name", {nam
 
 namespace InfinityArmor {
 
-    interface WingsData { isWearingChestplate: boolean, renderer?: ActorRenderer, attachable?: AttachableRender }
+    interface WingsData { isWearingChestplate: boolean, renderer: ActorRenderer, attachable: AttachableRender }
+    interface EyeData { isWearingHelmet: boolean, renderer: ActorRenderer, attachable: AttachableRender, mesh: RenderMesh }
     export const WINGS_DATA: {[player: number]: WingsData} = {};
+    export const EYE_DATA: {[player: number]: EyeData} = {};
     export var isWearingChestplateClient: boolean = false;
-    const wing_mesh = new RenderMesh();
-    wing_mesh.addVertex(0, 1.875, 0, 0, 0);
-    wing_mesh.addVertex(3.5, 1.875, 0, 56, 0);
-    wing_mesh.addVertex(0, 0, 0, 0, 30);
-    wing_mesh.addVertex(3.5, 0, 0, 56, 30);
-    wing_mesh.setBlockTexture("infinity_wings", 0);
+    export const EYE_COLOR_RANDOM = new java.util.Random();
 
     export function showWings(_player: number): void {
         const __obj = WINGS_DATA[_player];
         if(!__obj || !__obj.isWearingChestplate) return;
         __obj.renderer = new ActorRenderer();
         __obj.attachable = new AttachableRender(_player);
-        __obj.renderer.addPart("body").endPart().addPart("wings", "body", wing_mesh).endPart();
+        const mesh = new RenderMesh();
+        mesh.importFromFile(`${__dir__}/assets/models/wings.obj`, "obj", null);
+        mesh.setBlockTexture("infinity_wings", 0);
+        __obj.renderer.addPart("body").endPart().addPart("wings", "body", mesh).endPart();
         __obj.attachable.setRenderer(__obj.renderer);
     }
 
     export function hideWings(_player: number): void {
         const __obj = WINGS_DATA[_player];
-        if(!__obj && !__obj.isWearingChestplate) return;
-        __obj.attachable.destroy();
-        delete WINGS_DATA[_player];   
+        if(!__obj || !__obj.isWearingChestplate) return;
+        __obj.renderer.getPart("wings").clear();
+        __obj.renderer.getPart("body").clear();
+        __obj.attachable.setRenderer(__obj.renderer);
     }
 
 }
+
+Callback.addCallback("ServerPlayerLoaded", (player_: number) => {
+    InfinityArmor.WINGS_DATA[player_] = {
+        isWearingChestplate: false,
+        renderer: new ActorRenderer(),
+        attachable: new AttachableRender(player_)
+    }
+    const mesh = new RenderMesh();
+    mesh.importFromFile(`${__dir__}/assets/models/eyes.obj`, "obj", null);
+    mesh.setBlockTexture("pixel", 0);
+    InfinityArmor.EYE_DATA[player_] = {
+        isWearingHelmet: false,
+        renderer: new ActorRenderer(),
+        attachable: new AttachableRender(player_),
+        mesh: mesh
+    }
+});
+
+// --- CHESTPLATE --- //
 
 Network.addClientPacket("avaritia.toggleflying", (data: { bool: boolean }) => {
     if(new PlayerActor(Player.get()).getGameMode() != 1)
@@ -60,42 +80,66 @@ Armor.registerOnTakeOnListener(ItemID.infinity_chestplate, (item, slot, player) 
     const client = Network.getClientForPlayer(player);
     client.send("avaritia.toggleflying", { bool: true });
     client.send("avaritia.chestplate", { bool: true });
-    const __obj = InfinityArmor.WINGS_DATA[player];
-    if(!__obj) return InfinityArmor.WINGS_DATA[player] = { isWearingChestplate: true };
-    __obj.isWearingChestplate = true;
+    InfinityArmor.WINGS_DATA[player].isWearingChestplate = true;
 });
 Armor.registerOnTakeOffListener(ItemID.infinity_chestplate, (item, slot, player) => {
     const client = Network.getClientForPlayer(player);
     client.send("avaritia.toggleflying", { bool: false });
     client.send("avaritia.chestplate", { bool: false });
-    const __obj = InfinityArmor.WINGS_DATA[player];
-    if(!__obj) return InfinityArmor.WINGS_DATA[player] = { isWearingChestplate: false };
-    __obj.isWearingChestplate = false;
+    InfinityArmor.WINGS_DATA[player].isWearingChestplate = false;
 });
 Armor.registerOnTickListener(ItemID.infinity_chestplate, (item, slot, player) => {
     // TODO remove harmful effects (native) 
 });
 
+// --- --- --- --- //
 
+// --- HELMET --- //
+
+Callback.addCallback("ServerPlayerTick", (playerUid, isDead) => {
+    if(isDead) return;
+    if(World.getThreadTime() % EYE_COLOR_UPDATE_FREQUENCY == 0) {
+        const __obj = InfinityArmor.EYE_DATA[playerUid];
+        if(!__obj || !__obj.isWearingHelmet) return;
+        const frame = Math.round(World.getThreadTime() / 3);
+        InfinityArmor.EYE_COLOR_RANDOM.setSeed(frame * 1723609);
+        const o = InfinityArmor.EYE_COLOR_RANDOM.nextFloat() * 6.0;
+        const col = hsv2rgb(o, 1.0, 1.0);
+        __obj.mesh.setColor(col[0], col[1], col[2], 1);
+        __obj.renderer.addPart("head").endPart().addPart("eyes", "head", __obj.mesh).endPart();
+        __obj.attachable.setRenderer(__obj.renderer);
+    }
+});
+Armor.registerOnTakeOnListener(ItemID.infinity_helmet, (item, slot, player) => {
+    InfinityArmor.EYE_DATA[player].isWearingHelmet = true;
+});
+Armor.registerOnTakeOffListener(ItemID.infinity_helmet, (item, slot, player) => {
+    const __obj = InfinityArmor.EYE_DATA[player];
+    __obj.isWearingHelmet = false;
+    __obj.renderer.getPart("eyes").clear();
+    __obj.renderer.getPart("head").clear();
+});
 Armor.registerOnTickListener(ItemID.infinity_helmet, (item, slot, player) => {
-    Entity.addEffect(player, EPotionEffect.WATER_BREATHING, 1, 300, false, false);
-    Entity.addEffect(player, EPotionEffect.NIGHT_VISION, 1, 300, false, false);
-    const actor = new PlayerActor(player);
-    if(actor.getHunger() < 20) actor.setHunger(20);
-    if(actor.getSaturation() < 20) actor.setSaturation(20);
+    if(World.getThreadTime() % 20 == 0) {
+        Entity.addEffect(player, EPotionEffect.WATER_BREATHING, 1, 400, false, false);
+        Entity.addEffect(player, EPotionEffect.NIGHT_VISION, 1, 400, false, false);
+        const actor = new PlayerActor(player);
+        if(actor.getHunger() < 20) actor.setHunger(20);
+        if(actor.getSaturation() < 20) actor.setSaturation(20);
+    }
 });
+
+// --- --- --- --- //
+
 Armor.registerOnTickListener(ItemID.infinity_leggings, (item, slot, player) => {
-    Entity.addEffect(player, EPotionEffect.FIRE_RESISTANCE, 1, 300, false, false);
+    World.getThreadTime() % 20 == 0 &&
+    Entity.addEffect(player, EPotionEffect.FIRE_RESISTANCE, 1, 400, false, false);
 });
 
-((func) => {
-    Armor.registerOnHurtListener(ItemID.infinity_helmet, func);
-    Armor.registerOnHurtListener(ItemID.infinity_chestplate, func);
-    Armor.registerOnHurtListener(ItemID.infinity_leggings, func);
-    Armor.registerOnHurtListener(ItemID.infinity_boots, func)
-})((item: ItemInstance, slot: number, player: number) => check_armor(player) && Game.prevent());
+Armor.registerOnHurtListener(ItemID.infinity_chestplate, () => Game.prevent());
 
-Callback.addCallback("EntityHurt", (attacker, entity) => Entity.getType(entity) == EEntityType.PLAYER && check_armor(entity) && Game.prevent() );
+Callback.addCallback("EntityHurt", (attacker, entity) => Entity.getType(entity) == EEntityType.PLAYER && check_armor(entity) && Game.prevent());
+Callback.addCallback("EntityDeath", (entity) => Entity.getType(entity) == EEntityType.PLAYER && check_armor(entity) && Game.prevent());
 
 AVA_STUFF.push(ItemID.infinity_helmet, ItemID.infinity_chestplate, ItemID.infinity_leggings, ItemID.infinity_boots);
 Rarity.cosmic(ItemID.infinity_helmet);
