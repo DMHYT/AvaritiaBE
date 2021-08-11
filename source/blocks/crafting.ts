@@ -96,7 +96,7 @@ namespace ExtremeCraftingTable {
 const GUI_EXTREME_CRAFTING = new UI.Window({
     location: { width: 1000, height: 600, x: 0, y: 0, scrollX: 1000, scrollY: UI.getScreenHeight() },
     drawing: [
-        {type: "background", color: android.graphics.Color.argb(90, 0, 0, 0)},
+        {type: "background", color: Color.argb(90, 0, 0, 0)},
         {type: "bitmap", x: 262, y: 40, scale: 2, bitmap: "avaritia.extreme_crafting"}
     ],
     elements: (() => {

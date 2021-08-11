@@ -43,6 +43,9 @@ IMPORT("RecipeTileEntity");
 IMPORT("StorageInterface");
 IMPORT("VanillaSlots");
 
+const Color = android.graphics.Color;
+const JavaString = java.lang.String;
+
 const debug_enabled = __config__.getBool("debug");
 const MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getNumber("max_gaping_void_view_distance").intValue();
 const VOID_PARTICLES_PER_TICK = __config__.getNumber("void_particles_per_tick").intValue();

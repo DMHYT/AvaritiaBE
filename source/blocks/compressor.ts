@@ -10,7 +10,7 @@ AVA_STUFF.push(BlockID.neutronium_compressor);
 const GUI_COMPRESSOR = new UI.Window({
     location: { x: 0, y: 0, width: 1000, height: UI.getScreenHeight() },
     drawing: [
-        {type: "background", color: android.graphics.Color.argb(90, 0, 0, 0)},
+        {type: "background", color: Color.argb(90, 0, 0, 0)},
         {type: "bitmap", x: 279.5, y: (UI.getScreenHeight() - 415) / 2, scale: 2.5, bitmap: "avaritia.compressor"}
     ],
     elements: (() => {

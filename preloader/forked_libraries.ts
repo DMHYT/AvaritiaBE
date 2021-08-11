@@ -12,14 +12,14 @@ namespace TextureWorker {
     export interface IBitmap {
         width: number;
         height: number;
-        config?: android.graphics.Bitmap.Config;
+        config?: BitmapConfig;
     }
 
-    function changeBitmapColor(bitmap: android.graphics.Bitmap, color: [number, number, number]): android.graphics.Bitmap {
-        const newbmp = android.graphics.Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), android.graphics.Bitmap.Config.ARGB_8888);
-        const canvas = new android.graphics.Canvas(newbmp);
-        const paint = new android.graphics.Paint();
-        paint.setColorFilter(new android.graphics.PorterDuffColorFilter(android.graphics.Color.rgb(color[0], color[1], color[2]), android.graphics.PorterDuff.Mode.MULTIPLY));
+    function changeBitmapColor(bitmap: Bitmap, color: [number, number, number]): Bitmap {
+        const newbmp = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        const canvas = new Canvas(newbmp);
+        const paint = new Paint();
+        paint.setColorFilter(new PorterDuffColorFilter(Color.rgb(color[0], color[1], color[2]), PorterDuff.Mode.MULTIPLY));
         canvas.drawBitmap(bitmap, 0, 0, paint);
         return newbmp;
     }
@@ -29,10 +29,10 @@ namespace TextureWorker {
         return { name: textureSource.name, path: `${__dir__}/${textureSource.path}`, color: (textureSource as IOverlay).color };
     }
 
-    function createTextureWithOverlays(args: {bitmap: IBitmap, overlays: IOverlay[], result: ITextureSource}, fallback?: boolean): android.graphics.Bitmap | void {
+    function createTextureWithOverlays(args: {bitmap: IBitmap, overlays: IOverlay[], result: ITextureSource}, fallback?: boolean): Bitmap | void {
         if(FileUtil.isExist(`${args.result.path}${args.result.name}.png`)) return;
-        const bmp = android.graphics.Bitmap.createBitmap(args.bitmap.width, args.bitmap.height, args.bitmap.config ?? android.graphics.Bitmap.Config.ARGB_8888);
-        const cvs = new android.graphics.Canvas(bmp);
+        const bmp = Bitmap.createBitmap(args.bitmap.width, args.bitmap.height, args.bitmap.config ?? Bitmap.Config.ARGB_8888);
+        const cvs = new Canvas(bmp);
         for(let i in args.overlays){
             const over = args.overlays[i];
             const tex = FileUtil.readImage(`${over.path}${over.name}.png`);
@@ -42,7 +42,7 @@ namespace TextureWorker {
         if(fallback) return bmp;
     }
 
-    export function createTextureWithOverlaysModDir(args: {bitmap: IBitmap, overlays: IOverlay[], result: ITextureSource}, fallback?: boolean): android.graphics.Bitmap | void {
+    export function createTextureWithOverlaysModDir(args: {bitmap: IBitmap, overlays: IOverlay[], result: ITextureSource}, fallback?: boolean): Bitmap | void {
         args.result = fromModDir(args.result);
         for(let i in args.overlays) args.overlays[i] = fromModDir(args.overlays[i]);
         return createTextureWithOverlays(args, fallback);
@@ -55,9 +55,9 @@ namespace IAHelper {
     export function convertTexture(srcPath: string, srcName: string, resultPath: string, resultName: string): void {
         if(FileUtil.isExist(`${__dir__}/${resultPath}${resultName}_0.png`)) return;
         const anim = FileUtil.readImage(`${__dir__}/${srcPath}${srcName}.png`);
-        if(anim.getHeight() % anim.getWidth() !== 0) throw new java.lang.IllegalStateException();
+        if(anim.getHeight() % anim.getWidth() !== 0) throw new IllegalStateException("The bitmap height must be a multiple of its width!");
         for(let i=0; i < anim.getHeight() / anim.getWidth(); i++){
-            const bmp = android.graphics.Bitmap.createBitmap(anim.getWidth(), anim.getWidth(), android.graphics.Bitmap.Config.ARGB_8888);
+            const bmp = Bitmap.createBitmap(anim.getWidth(), anim.getWidth(), Bitmap.Config.ARGB_8888);
             for(let x=0; x<anim.getWidth(); x++)
                 for(let y=0; y<anim.getWidth(); y++)
                     bmp.setPixel(x, y, anim.getPixel(x, y + anim.getWidth() * i));

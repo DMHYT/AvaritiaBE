@@ -24,7 +24,7 @@
 (() => {
     let files = FileUtil.getListOfFiles(`${__dir__}/assets/animated_items/`, "png");
     for(let i in files){
-        let fileName = new java.lang.String(files[i].getName()).replaceFirst("[.][^.]+$", "");
+        let fileName = new JavaString(files[i].getName()).replaceFirst("[.][^.]+$", "");
         IAHelper.convertTexture("assets/animated_items/", fileName, "assets/items-opaque/", fileName);
     }
 })();

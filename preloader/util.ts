@@ -1,21 +1,21 @@
 namespace FileUtil {
 
     export function isExist(path: string): boolean {
-        return new java.io.File(path).exists();
+        return new File(path).exists();
     }
 
-    export function readImage(path: string): android.graphics.Bitmap {
-        const options = new android.graphics.BitmapFactory.Options();
+    export function readImage(path: string): Bitmap {
+        const options = new BitmapFactory.Options();
         options.inScaled = false;
-        return android.graphics.BitmapFactory.decodeFile(path, options);
+        return BitmapFactory.decodeFile(path, options);
     }
 
-    export function writeImage(path: string, bitmap: android.graphics.Bitmap): void {
-        bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, new java.io.FileOutputStream(path));
+    export function writeImage(path: string, bitmap: Bitmap): void {
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(path));
     }
 
     function readFileText(path: string): string {
-        const reader = new java.io.BufferedReader(new java.io.FileReader(new java.io.File(path)));
+        const reader = new BufferedReader(new FileReader(new File(path)));
         let text = "";
         while(true){
             const readLine = reader.readLine();
@@ -35,8 +35,8 @@ namespace FileUtil {
         } catch(e){ return {} }
     }
 
-    export function getListOfFiles(path: string, extension?: string): java.io.File[] {
-        const dir = new java.io.File(path);
+    export function getListOfFiles(path: string, extension?: string): File[] {
+        const dir = new File(path);
         const list = [];
         const files = dir.listFiles();
         if(!files) return list;
