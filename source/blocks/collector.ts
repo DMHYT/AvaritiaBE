@@ -32,10 +32,7 @@ GUI_COLLECTOR.setInventoryNeeded(true);
 GUI_COLLECTOR.setCloseOnBackPressed(true);
 
 type CollectorTEDefaultValues = { progress: number }
-class CollectorTileEntity extends TEImpl<CollectorTEDefaultValues> {
-
-    public readonly useNetworkItemContainer = true;
-    public defaultValues = { progress: 0 };
+class CollectorTileEntity extends TileEntityImplementation<CollectorTEDefaultValues> {
 
     public getScreenByName() { return GUI_COLLECTOR };
 
@@ -61,6 +58,8 @@ class CollectorTileEntity extends TEImpl<CollectorTEDefaultValues> {
             this.container.openFor(Network.getClientForPlayer(player), "main");
         }
     }
+
+    constructor() { super({ progress: 0 }) }
 
 }
 

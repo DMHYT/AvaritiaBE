@@ -48,13 +48,13 @@ namespace ExtremeCraftingTable {
         workbench_obj.addRecipe(result, ingredients, null, func);
     }
 
-    export function getAllSeparately(): {shaped: RecipePattern[], shapeless: RecipePattern[]} {
+    export function getAllSeparately(): { shaped: RecipePattern[], shapeless: RecipePattern[] } {
         const all = { shaped: [] as RecipePattern[], shapeless: [] as RecipePattern[] };
         for(let i in workbench_obj._recipes) {
             const recinst = workbench_obj._recipes[i];
-            const output = { id: recinst.result.id, count: recinst.result.count ?? 1, data: recinst.result.data ?? -1 } as ItemInstance;
+            const output = { id: recinst.result.id, count: recinst.result.count, data: recinst.result.data } as ItemInstance;
             isGivenRecipeShapeless(recinst) ? 
-            all.shaped.push({
+            all.shapeless.push({
                 output: [ output ],
                 input: getListForShapelessRecipe(recinst)
             }) : all.shaped.push({
@@ -81,7 +81,7 @@ namespace ExtremeCraftingTable {
 
     function getListForShapedRecipe(recipe: RecipeTE.Recipe): ItemInstance[] {
         const items = [] as ItemInstance[];
-        const mask = [ ...recipe.mask ].map((str) => str.length < 9 ? `${str}${"         ".substr(str.length)}` : str);
+        const mask = [ ...recipe.mask ].map(str => str.length < 9 ? `${str}${" ".repeat(9).substr(str.length)}` : str);
         for(let i in mask)
             for(let j=0; j<mask[i].length; j++) {
                 const ingredient = recipe.ingredients[mask[i][j]];
@@ -97,17 +97,17 @@ const GUI_EXTREME_CRAFTING = new UI.Window({
     location: { width: 1000, height: 600, x: 0, y: 0, scrollX: 1000, scrollY: UI.getScreenHeight() },
     drawing: [
         {type: "background", color: Color.argb(90, 0, 0, 0)},
-        {type: "bitmap", x: 262, y: 40, scale: 2, bitmap: "avaritia.extreme_crafting"}
+        {type: "bitmap", x: 262, y: 20, scale: 2, bitmap: "avaritia.extreme_crafting"}
     ],
     elements: (() => {
         const elements = {
-            textHeader: {type: "text", x: 500, y: 20, font: { alignment: UI.Font.ALIGN_CENTER }, text: Translation.translate("tile.avaritia:extreme_crafting_table.name")},
-            slotResult: {type: "slot", x: 680, y: 198, size: 36, isValid: () => false, visual: false, bitmap: "_default_slot_empty", isTransparentBackground: true},
-            close: {type: "closeButton", x: 697, y: 51, bitmap: "classic_close_button", bitmap2: "classic_close_button_down", scale: 2}
+            textHeader: {type: "text", x: 500, y: 0, font: { alignment: UI.Font.ALIGN_CENTER }, text: Translation.translate("tile.avaritia:extreme_crafting_table.name")},
+            slotResult: {type: "slot", x: 680, y: 178, size: 36, isValid: () => false, visual: false, bitmap: "_default_slot_empty", isTransparentBackground: true},
+            close: {type: "closeButton", x: 697, y: 31, bitmap: "classic_close_button", bitmap2: "classic_close_button_down", scale: 2}
         } as UI.ElementSet;
-        for(let i=0; i<81; i++) elements[`slotInput${i}`] = {type: "slot", x: 284 + (i % 9) * 36, y: 54 + Math.floor(i / 9) * 36, size: 36, visual: false};
-        for(let i=9; i<36; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 338 + (i % 9) * 36, y: 386 + Math.floor((i - 9) / 9) * 36, size: 36, index: i};
-        for(let i=0; i<9; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 338 + i * 36, y: 502, size: 36, index: i};
+        for(let i=0; i<81; i++) elements[`slotInput${i}`] = {type: "slot", x: 284 + (i % 9) * 36, y: 34 + Math.floor(i / 9) * 36, size: 36, visual: false};
+        for(let i=9; i<36; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 338 + (i % 9) * 36, y: 366 + Math.floor((i - 9) / 9) * 36, size: 36, index: i};
+        for(let i=0; i<9; i++) elements[`slotInv${i}`] = {type: "invSlot", x: 338 + i * 36, y: 482, size: 36, index: i};
         return elements;
     })()
 });
