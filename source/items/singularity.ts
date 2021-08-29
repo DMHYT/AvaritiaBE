@@ -68,6 +68,15 @@ namespace Singularity {
         return recipes[id]?.countdata[1];
     }
 
+    export function getMaterialForSingularity(id: number): number {
+        for(let key in recipes) {
+            if(recipes[key].id == id) {
+                return parseInt(key);
+            }
+        }
+        return -1;
+    }
+
 }
 
 ((args: [string, Nullable<number>, Nullable<number>, Nullable<number>][]) => {
