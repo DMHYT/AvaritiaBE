@@ -27,6 +27,37 @@ ModAPI.addAPICallback("RecipeViewer", (api) => {
             return all_workbench.shapeless;
         }
     }
+    interface CompressorRecipePattern extends RecipePattern { requiredAmount: number }
+    class CompressorRecipe extends api.RecipeType {
+        constructor() {
+            super(Translation.translate("tile.avaritia:neutronium_compressor.name"), BlockID.neutronium_compressor, {
+                drawing: [ { type: "bitmap", x: 200, y: 155.5, scale: 6, bitmap: "avaritia.compressor_rv" } ],
+                elements: {
+                    input0: { type: "slot", x: 200, y: 179.5, bitmap: "_default_slot_empty", isTransparentBackground: true, size: 108 },
+                    output0: { type: "slot", x: 665, y: 179.5, bitmap: "_default_slot_empty", isTransparentBackground: true, size: 108 },
+                    arrow: { type: "scale",  x: 344, y: 183.5, bitmap: "avaritia.compressor_arrow", direction: 0, value: 1, scale: 6},
+                    singularity: { type: "scale", x: 512, y: 183.5, bitmap: "avaritia.compressor_singularity", direction: 1, value: 1, scale: 6 },
+                    textAmount: { type: "text", x: 500, y: 320.5, width: 600, height: 120, font: { alignment: UI.Font.ALIGN_CENTER, color: Color.BLACK, size: 40 } }
+                } as {[key: string]: Partial<UI.UISlotElement | UI.UIScaleElement | UI.UITextElement>}
+            });
+        }
+        public getAllList(): CompressorRecipePattern[] {
+            const result = [] as CompressorRecipePattern[];
+            for(let i in Singularity.recipes) {
+                const r = Singularity.recipes[i];
+                result.push({
+                    input: [ { id: parseInt(i), count: 1, data: r.countdata[1]} ],
+                    output: [ { id: r.id, count: 1, data: 0 } ],
+                    requiredAmount: r.countdata[0]
+                });
+            }
+            return result;
+        }
+        public onOpen(elements: HashMap<string, UI.Element>, recipe: CompressorRecipePattern): void {
+            (elements.get("textAmount") as UI.Element).setBinding("text", JavaString.format(Translation.translate("avaritia.rv.compressor.amount"), [JavaInt.valueOf(recipe.requiredAmount)]));
+        }
+    }
     api.RecipeTypeRegistry.register("avaritia_extreme_shaped", new ExtremeCraftingShapedRecipe());
     api.RecipeTypeRegistry.register("avaritia_extreme_shapeless", new ExtremeCraftingShapelessRecipe());
+    api.RecipeTypeRegistry.register("avaritia_compressor", new CompressorRecipe());
 });
