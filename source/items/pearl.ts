@@ -93,11 +93,12 @@ namespace GapingVoid {
                     return;
                 }
                 age++;
-                const scale = getVoidScale(age) * 0.5 - 0.2;
+                const scale = getVoidScale(age) * 0.05 - 0.2;
                 const toScale = scale / currentScale;
                 currentScale = scale;
+                const particleScale = getVoidScale(age) * 0.5 - 0.2;
                 for(let i = 0; i < VOID_PARTICLES_PER_TICK; i++){
-                    const particlePos = new Vector3(0, 0, scale)
+                    const particlePos = new Vector3(0, 0, particleScale)
                         .rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0))
                         .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0))
                         .add(coords.x, coords.y, coords.z);
