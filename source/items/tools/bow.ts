@@ -122,7 +122,7 @@ IAHelper.itemAnims.infinity_bow = { meta: 0, timer: 0, frameIndex: 0 };
 
 Item.registerIconOverrideFunction(ItemID.infinity_bow, (item) => {
     let name = "infinity_bow_idle";
-    const progress = new PlayerActor(Player.get()).getItemUseIntervalProgress();
+    const progress = new PlayerActor(Player.get()).getItemUseStartupProgress();
     if(progress > 0) name = `infinity_bow_pull_${Math.floor(progress * 3) - 1}`;
     return { name: name, data: IAHelper.itemAnims.infinity_bow.meta }
 });

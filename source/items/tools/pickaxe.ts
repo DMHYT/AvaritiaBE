@@ -24,24 +24,20 @@ Item.setEnchantType(ItemID.infinity_hammer, EEnchantType.PICKAXE, 200);
 Item.registerUseFunction(ItemID.infinity_hammer, (coords, item, block, player) => {
     if(Entity.getSneaking(player)){
         const region = BlockSource.getDefaultForActor(player);
-        const drops: ItemInstance[] = [];
-        const toollevel = ToolAPI.getToolLevel(item.id);
-        const enchantextra = ToolAPI.getEnchantExtraData(item.extra);
+        let drops: ItemInstance[] = [];
+        let experience: number = 0;
         for(let xx=coords.x-8; xx<coords.x+8; xx++)
             for(let yy=coords.y-8; yy<coords.y+8; yy++)
                 for(let zz=coords.z-8; zz<coords.z+8; zz++){
                     const state = region.getBlock(xx, yy, zz);
                     if(state.id == 0) continue;
-                    const func = Block.getDropFunction(state.id);
-                    if(!func) continue;
-                    const useCoords: Callback.ItemUseCoordinates = { x: xx, y: yy, z: zz, side: 0, relative: { x: xx, y: yy, z: zz } };
-                    const thisDrops = func(useCoords, state.id, state.data, toollevel, enchantextra, item, region);
-                    for(let i in thisDrops)
-                        drops.push({ id: thisDrops[i][0], count: thisDrops[i][1], data: thisDrops[i][2], extra: thisDrops[i][3] ?? null });
-                    region.setBlock(xx, yy, zz, 0, 0);
+                    const drop = region.breakBlockForJsResult(xx, yy, zz, player, item);
+                    drops = drops.concat(drop.items);
+                    experience += drop.experience;
                 }
         const clusters = MatterCluster.makeClusters(drops);
         for(let i in clusters) dropItemRandom(clusters[i], region, coords.x, coords.y, coords.z);
+        new PlayerActor(player).addExperience(experience);
     }
 });
 Item.registerNoTargetUseFunction(ItemID.infinity_hammer, (item, player) => switch_between_pickaxe_and_hammer(item, player, false));
