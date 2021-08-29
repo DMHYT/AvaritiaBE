@@ -24,8 +24,8 @@ namespace InfinityArmor {
         __obj.attachable = new AttachableRender(_player);
         const mesh = new RenderMesh();
         mesh.importFromFile(`${__dir__}/assets/models/wings.obj`, "obj", null);
-        mesh.setBlockTexture("infinity_wings", 0);
-        __obj.renderer.addPart("body").endPart().addPart("wings", "body", mesh).endPart();
+        __obj.renderer.addPart("wings", "body", mesh).endPart();
+        __obj.renderer.setTexture("infinity_wings");
         __obj.attachable.setRenderer(__obj.renderer);
     }
 
@@ -34,12 +34,13 @@ namespace InfinityArmor {
         if(!__obj || !__obj.isWearingChestplate) return;
         __obj.renderer.getPart("wings").clear();
         __obj.renderer.getPart("body").clear();
-        __obj.attachable.setRenderer(__obj.renderer);
+        __obj.attachable.destroy();
+        // __obj.attachable.setRenderer(__obj.renderer);
     }
 
 }
 
-Callback.addCallback("ServerPlayerLoaded", (player_: number) => {
+Callback.addCallback("ServerPlayerLoaded", (player_) => {
     InfinityArmor.WINGS_DATA[player_] = {
         isWearingChestplate: false,
         renderer: new ActorRenderer(),
@@ -47,7 +48,6 @@ Callback.addCallback("ServerPlayerLoaded", (player_: number) => {
     }
     const mesh = new RenderMesh();
     mesh.importFromFile(`${__dir__}/assets/models/eyes.obj`, "obj", null);
-    mesh.setBlockTexture("pixel", 0);
     InfinityArmor.EYE_DATA[player_] = {
         isWearingHelmet: false,
         renderer: new ActorRenderer(),
@@ -71,9 +71,11 @@ Network.addServerPacket("avaritia.togglewings", (client, data: { bool: boolean }
 
 var lastFlyingClient: boolean = false;
 Callback.addCallback("LocalTick", () => {
-    if(Player.getFlying() == lastFlyingClient) return;
-    lastFlyingClient = Player.getFlying();
-    InfinityArmor.isWearingChestplateClient && Network.sendToServer("avaritia.togglewings", { bool: lastFlyingClient });
+    if(World.getThreadTime() % PLAYER_FLYING_CHECK_INTERVAL == 0) {
+        if(Player.getFlying() == lastFlyingClient) return;
+        lastFlyingClient = Player.getFlying();
+        InfinityArmor.isWearingChestplateClient && Network.sendToServer("avaritia.togglewings", { bool: lastFlyingClient });
+    }
 });
 
 Armor.registerOnTakeOnListener(ItemID.infinity_chestplate, (item, slot, player) => {
@@ -107,6 +109,7 @@ Callback.addCallback("ServerPlayerTick", (playerUid, isDead) => {
         const col = hsv2rgb(o, 1.0, 1.0);
         __obj.mesh.setColor(col[0], col[1], col[2], 1);
         __obj.renderer.addPart("head").endPart().addPart("eyes", "head", __obj.mesh).endPart();
+        __obj.renderer.setTexture("pixel");
         __obj.attachable.setRenderer(__obj.renderer);
     }
 });
