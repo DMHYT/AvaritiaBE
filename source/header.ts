@@ -13,29 +13,39 @@
 // My VK - https://www.vk.com/vstannumdum
 // Report bugs in VK Public - https://www.vk.com/dmhmods
 
-declare var __loaded_mods: {
-    Thaumcraft: boolean,
-    TConstruct: boolean,
-    HydCraft: boolean,
-    ThermalExpansion: boolean,
-    TSteelworks: boolean,
-    IC2: boolean,
-    ThaumicTinkerer: boolean,
-    technom: boolean,
-    magicalcrops: boolean,
-    AgriCraft: boolean,
-    MineFactoryReloaded: boolean,
-    BigReactors: boolean,
-    EE3: boolean,
-    ProjectE: boolean,
-    Botania: boolean,
-    ExtraUtilities: boolean,
-    appliedenergistics2: boolean,
-    ImmersiveEngineering: boolean,
-    Mekanism: boolean,
-    Torcherino: boolean,
-    DraconicEvolution: boolean
-}
+const __loaded_mods = {
+    Thaumcraft: false,
+    TConstruct: false,
+    HydCraft: false,
+    ThermalExpansion: false,
+    TSteelworks: false,
+    IC2: false,
+    ThaumicTinkerer: false,
+    technom: false,
+    magicalcrops: false,
+    AgriCraft: false,
+    MineFactoryReloaded: false,
+    BigReactors: false,
+    EE3: false,
+    ProjectE: false,
+    Botania: false,
+    ExtraUtilities: false,
+    appliedenergistics2: false,
+    ImmersiveEngineering: false,
+    Mekanism: false,
+    Torcherino: false,
+    DraconicEvolution: false
+};
+
+ModAPI.addAPICallback("TConAPI", function(api) {
+    __loaded_mods.TConstruct = true;
+});
+ModAPI.addAPICallback("ICore", function(api) {
+    __loaded_mods.IC2 = true;
+});
+ModAPI.addAPICallback("BotaniaAPI", function(api) {
+    __loaded_mods.Botania = true;
+});
 
 IMPORT("ItemAnimHelper");
 IMPORT("ToolLib");
@@ -45,6 +55,8 @@ IMPORT("VanillaSlots");
 
 const Color = android.graphics.Color;
 const JavaString = java.lang.String;
+const JavaInt = java.lang.Integer;
+type HashMap<K, V> = java.util.HashMap<K, V>;
 
 const debug_enabled = __config__.getBool("debug");
 const MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getNumber("max_gaping_void_view_distance").intValue();
@@ -52,6 +64,7 @@ const VOID_PARTICLES_PER_TICK = __config__.getNumber("void_particles_per_tick").
 const COLLECTOR_PROCESS_TIME = __config__.getNumber("collector_process_time").intValue();
 const BORING_FOOD = __config__.getBool("boring_food");
 const EYE_COLOR_UPDATE_FREQUENCY = __config__.getNumber("eye_color_update_frequency").intValue();
+const PLAYER_FLYING_CHECK_INTERVAL = __config__.getNumber("player_flying_check_for_wings_interval").intValue()
 
 const rand = new java.util.Random();
 
@@ -103,7 +116,7 @@ namespace Rarity {
         Item.registerNameOverrideFunction(id, (item, name, name2) => {
             if(_func) name = (_func(item, name, name2) ?? name) as string;
             // Fixing stupid bug, when russian 'в' letter appears at the beginning
-            return `${rarity}${name}`.replace("в", "");
+            return `${rarity}${name}`;
         });
     }
 
