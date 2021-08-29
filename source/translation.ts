@@ -22,3 +22,4 @@
     obj[Translation.getLanguage()] ??= obj.en;
     Translation.addTranslation("avaritia.inventory", obj);
 })();
+Translation.addTranslation("avaritia.rv.compressor.amount", {en: "Input Amount: %d", ru: "Требуемое количество: %d", de: "Eingabebetrag: %d", es: "Cantidad de entrada: %d", pt: "Quantidade de entrada: %d", sv: "Ingångsbelopp: %d", zh: "投入金额: %d"});
