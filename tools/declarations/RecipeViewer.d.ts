@@ -15,6 +15,7 @@ declare interface RecipePattern {
     output?: ItemInstance[],
     inputLiq?: LiquidInstance[],
     outputLiq?: LiquidInstance[]
+    [key: string]: any;
 }
 declare interface OldRecipeContents {
     icon: Tile | number;
