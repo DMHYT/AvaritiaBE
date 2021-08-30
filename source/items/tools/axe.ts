@@ -4,7 +4,9 @@ ToolAPI.addToolMaterial("INFINITY_AXE", {level: 32, durability: 9999, efficiency
 ToolLib.setTool(ItemID.infinity_axe, "INFINITY_AXE", ToolType.axe);
 Item.setEnchantType(ItemID.infinity_axe, EEnchantType.AXE, 200);
 
-const destroy_trees = (coords: Vector, region: BlockSource, item: ItemInstance, player: number) => {
+const destroy_trees = (coords: Callback.ItemUseCoordinates, region: BlockSource, item: ItemInstance) => {
+    const toollevel = ToolAPI.getToolLevel(item.id);
+    const enchantdata = ToolAPI.getEnchantExtraData(item.extra);
     const blocks_map: string[] = [`${coords.x}:${coords.y}:${coords.z}`];
     const sides = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     const check = (c: Vector, r: BlockSource) => {
@@ -20,19 +22,20 @@ const destroy_trees = (coords: Vector, region: BlockSource, item: ItemInstance, 
     }
     check(coords, region);
     for(let i in blocks_map){
-        let carr = blocks_map[i].split(":"),
-            cs: Vector = { x: parseInt(carr[0]), y: parseInt(carr[1]), z: parseInt(carr[2]) };
-        let func = Block.getDropFunction(region.getBlockId(cs.x, cs.y, cs.z));
+        const carr = blocks_map[i].split(":"),
+              cs: Vector = { x: parseInt(carr[0]), y: parseInt(carr[1]), z: parseInt(carr[2]) };
+        const state = region.getBlock(cs.x, cs.y, cs.z);
+        const func = Block.getDropFunction(state.id);
         if(!func) continue;
-        const drop = region.breakBlockForJsResult(cs.x, cs.y, cs.z, player, item);
-        for(let d in drop.items) dropItemRandom({ id: drop.items[d].id, count: drop.items[d].count, data: drop.items[d].data, extra: drop.items[d].extra }, region, cs.x, cs.y, cs.z);
-        new PlayerActor(player).addExperience(drop.experience);
+        const drop = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
+        for(let d in drop) dropItemRandom({ id: drop[d][0], count: drop[d][1], data: drop[d][2], extra: drop[d][3] ?? null }, region, cs.x, cs.y, cs.z);
     }
 }
 
-const destroy_nature = (coords: Vector, region: BlockSource, item: ItemInstance, player: number) => {
-    let drops: ItemInstance[] = [];
-    let exp: number = 0;
+const destroy_nature = (coords: Callback.ItemUseCoordinates, region: BlockSource, item: ItemInstance) => {
+    const drops: ItemInstance[] = [];
+    const toollevel = ToolAPI.getToolLevel(item.id);
+    const enchantdata = ToolAPI.getEnchantExtraData(item.extra);
     for(let xx=coords.x-13; xx<coords.x+13; xx++)
         for(let yy=coords.y-3; yy<coords.y+23; yy++)
             for(let zz=coords.z-13; zz<coords.z+13; zz++){
@@ -43,26 +46,26 @@ const destroy_nature = (coords: Vector, region: BlockSource, item: ItemInstance,
                     continue;
                 }
                 if(!!~["wood", "plant", "fibre"].indexOf(ToolAPI.getBlockMaterialName(state.id))) {
-                    const drop = region.breakBlockForJsResult(xx, yy, zz, player, item);
-                    drops = drops.concat(drop.items);
-                    exp += drop.experience;
+                    const func = Block.getDropFunction(state.id);
+                    if(!func) continue;
+                    const drop = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
+                    for(let i in drop) drops.push({ id: drop[i][0], count: drop[i][1], data: drop[i][2], extra: drop[i][3] ?? null });
                 }
             }
     const clusters = MatterCluster.makeClusters(drops);
     for(let i in clusters) dropItemRandom(clusters[i], region, coords.x, coords.y, coords.z);
-    new PlayerActor(player).addExperience(exp);
 }
 
 Callback.addCallback("PlayerAttack", (attacker) => {
-    let item = Entity.getCarriedItem(attacker);
-    if(item.data > 0 && item.id == ItemID.infinity_axe){
+    const item = Entity.getCarriedItem(attacker);
+    if(item.data > 0 && item.id == ItemID.infinity_axe) {
         Entity.setCarriedItem(attacker, item.id, item.count, 0, item.extra);
     }
 });
 Callback.addCallback("DestroyBlock", (coords, block, player) => {
-    let item = Entity.getCarriedItem(player);
-    if(item.id == ItemID.infinity_axe && (block.id == VanillaBlockID.log || block.id == VanillaBlockID.log2)){
-        destroy_trees(coords, BlockSource.getDefaultForActor(player), item, player);
+    const item = Entity.getCarriedItem(player);
+    if(item.id == ItemID.infinity_axe && (block.id == VanillaBlockID.log || block.id == VanillaBlockID.log2)) {
+        destroy_trees(coords, BlockSource.getDefaultForActor(player), item);
         if(item.data > 0)
             Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
     }
@@ -70,14 +73,16 @@ Callback.addCallback("DestroyBlock", (coords, block, player) => {
 
 Item.registerUseFunction(ItemID.infinity_axe, (coords, item, block, player) => {
     if(Entity.getSneaking(player))
-        destroy_nature(coords, BlockSource.getDefaultForActor(player), item, player);
+        destroy_nature(coords, BlockSource.getDefaultForActor(player), item);
     else (ToolType.axe as any).defaultUseItem(coords, item, block, player);
     if(item.data > 0)
         Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
 });
 Item.registerNoTargetUseFunction(ItemID.infinity_axe, (item, player) => {
-    if(Entity.getSneaking(player))
-        destroy_nature(Entity.getPosition(player), BlockSource.getDefaultForActor(player), item, player);
+    if(Entity.getSneaking(player)) {
+        const pos = Entity.getPosition(player);
+        destroy_nature({ ...pos, relative: pos, side: 0 }, BlockSource.getDefaultForActor(player), item);
+    }
 });
 
 AVA_STUFF.push(ItemID.infinity_axe);

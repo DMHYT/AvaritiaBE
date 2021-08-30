@@ -23,21 +23,22 @@ Item.setEnchantType(ItemID.infinity_hammer, EEnchantType.PICKAXE, 200);
 
 Item.registerUseFunction(ItemID.infinity_hammer, (coords, item, block, player) => {
     if(Entity.getSneaking(player)){
+        const toollevel = ToolAPI.getToolLevel(item.id);
+        const enchantdata = ToolAPI.getEnchantExtraData(item.extra);
         const region = BlockSource.getDefaultForActor(player);
-        let drops: ItemInstance[] = [];
-        let experience: number = 0;
+        const drops: ItemInstance[] = [];
         for(let xx=coords.x-8; xx<coords.x+8; xx++)
             for(let yy=coords.y-8; yy<coords.y+8; yy++)
                 for(let zz=coords.z-8; zz<coords.z+8; zz++){
                     const state = region.getBlock(xx, yy, zz);
                     if(state.id == 0) continue;
-                    const drop = region.breakBlockForJsResult(xx, yy, zz, player, item);
-                    drops = drops.concat(drop.items);
-                    experience += drop.experience;
+                    const func = Block.getDropFunction(state.id);
+                    if(!func) continue;
+                    const drop = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
+                    for(let d in drop) drops.push({ id: drop[d][0], count: drop[d][1], data: drop[d][2], extra: drop[d][3] ?? null });
                 }
         const clusters = MatterCluster.makeClusters(drops);
         for(let i in clusters) dropItemRandom(clusters[i], region, coords.x, coords.y, coords.z);
-        new PlayerActor(player).addExperience(experience);
     }
 });
 Item.registerNoTargetUseFunction(ItemID.infinity_hammer, (item, player) => switch_between_pickaxe_and_hammer(item, player, false));
