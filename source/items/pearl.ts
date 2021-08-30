@@ -74,7 +74,7 @@ namespace GapingVoid {
     }
 
     export function summonClientSide(coords: Vector, region: BlockSource): void {
-        const particlespeed = 4.5;
+        const particlespeed = 10;
         runOnClientThread(() => {
             const mesh = new RenderMesh();
             mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
@@ -103,7 +103,7 @@ namespace GapingVoid {
                         .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0))
                         .add(coords.x, coords.y, coords.z);
                     const velocity = particlePos.copy().normalize().multiplyXYZ(particlespeed);
-                    Particles.addParticle(EParticleType.PORTAL, particlePos.x, particlePos.y, particlePos.z, -velocity.x, -velocity.y, -velocity.z);
+                    Particles.addParticle(EParticleType.PORTAL, particlePos.x, particlePos.y, particlePos.z, velocity.x, velocity.y, velocity.z);
                 }
                 mesh.scale(toScale, toScale, toScale);
                 const color = getVoidColor(age, 1);

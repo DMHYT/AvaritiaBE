@@ -4,6 +4,7 @@
         IDRegistry.genItemID(id);
         Item.createItem(id, `item.resource.${id}.name`, {name: id, meta: 0}, {stack: 64});
         AVA_STUFF.push(ItemID[id]);
+        addTooltip(ItemID[id], `tooltip.item.resource.${id}.desc`);
     }
 })(["diamond_lattice", "crystal_matrix_ingot", "neutron_pile", "neutron_nugget", "neutronium_ingot", "infinity_catalyst", "infinity_ingot", "record_fragment"]);
 

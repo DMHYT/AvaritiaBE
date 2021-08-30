@@ -67,7 +67,7 @@ Item.registerNameOverrideFunction(ItemID.matter_cluster, (item, name) => {
     if(item.extra == null) return "BROKEN MATTER CLUSTER";
     name = Translation.translate(`item.avaritia:matter_cluster${item.extra.getInt("item_count") == MatterCluster.capacity ? ".full" : ""}.name`);
     name += `\n${EColor.DARK_GRAY}${Translation.translate("tooltip.matter_cluster.desc")}`;
-    return name; // what the hell is this bug
+    return name;
 });
 Item.registerIconOverrideFunction(ItemID.matter_cluster, (item) => {
     return { name: `matter_cluster_${item.extra != null && item.extra.getInt("item_count") == MatterCluster.capacity ? "full" : "empty"}`, meta: 0 };

@@ -1,9 +1,7 @@
 IDRegistry.genItemID("skullfire_sword");
 Item.createItem("skullfire_sword", "item.avaritia:skullfire_sword.name", {name: "skull_sword", meta: 0}, {stack: 1});
 ToolLib.setTool(ItemID.skullfire_sword, "diamond", ToolType.sword);
-Item.registerNameOverrideFunction(ItemID.skullfire_sword, (item, name) => {
-    return `${name}\n${EColor.DARK_AQUA}${EColor.ITALIC}${Translation.translate("tooltip.skullfire_sword.desc")}`;
-});
+addTooltip(ItemID.skullfire_sword, "tooltip.skullfire_sword.desc");
 Rarity.epic(ItemID.skullfire_sword);
 Callback.addCallback("EntityDeath", (victim, attacker, type) => {
     if(Entity.getCarriedItem(attacker).id == ItemID.skullfire_sword){
