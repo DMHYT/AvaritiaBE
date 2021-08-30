@@ -22,14 +22,10 @@ Callback.addCallback("PostLoaded", () => {
 
 namespace ExtremeCraftingTable {
 
-    class ExtremeRecipeTE extends RecipeTE.Workbench {
+    export const workbench_obj = new (class extends RecipeTE.Workbench {
         public _recipes: RecipeTE.Recipe<any>[];
-        constructor() {
-            super({columns: 9, rows: 9});
-        }
-    }
-
-    export const workbench_obj = new ExtremeRecipeTE();
+        constructor() { super({ columns: 9, rows: 9 }) }
+    })();
 
     export function addShaped(result: ItemInstance, mask: string[], keys: (string | number)[], func?: RecipeTE.CraftFunction) {
         if(keys.length % 3 != 0) throw new java.lang.IllegalArgumentException("Key array in extreme crafting table shaped recipe must be like [char, number, number, ...]");
@@ -45,7 +41,12 @@ namespace ExtremeCraftingTable {
     export function addShapeless(result: ItemInstance, items: [number, number][], func?: RecipeTE.CraftFunction) {
         if(items.length > 81) throw new java.lang.IllegalArgumentException("Extreme crafting table has only 81 slots!");
         const ingredients: RecipeTE.RecipeItem[] = items.map(val => { return { id: val[0], data: val[1] } });
-        workbench_obj.addRecipe(result, ingredients, null, func);
+        const uniqueIngredients: RecipeTE.RecipeItem[] = [];
+        ingredients.forEach(element => {
+            const find = uniqueIngredients.find(value => value.id == element.id && value.data == element.data);
+            typeof find !== "undefined" ? find.count++ : uniqueIngredients.push(element);
+        });
+        workbench_obj.addRecipe(result, uniqueIngredients, null, func);
     }
 
     export function getAllSeparately(): { shaped: RecipePattern[], shapeless: RecipePattern[] } {
@@ -73,9 +74,13 @@ namespace ExtremeCraftingTable {
 
     function getListForShapelessRecipe(recipe: RecipeTE.Recipe): ItemInstance[] {
         const items = [] as ItemInstance[];
-        for(let key in recipe.ingredients) 
-            for(let i=0; i<recipe.ingredients[key].count; i++) 
-                items.push({ id: recipe.ingredients[key].id, count: 1, data: recipe.ingredients[key].data ?? -1 });
+        for(let key in recipe.ingredients) {
+            const ingr = recipe.ingredients[key];
+            const data = parseInt(key.split(":")[1]);
+            for(let i = 0; i < ingr.count; ++i) {
+                items.push({ id: ingr.id, count: 1, data: data });
+            }
+        }
         return items;
     }
 
