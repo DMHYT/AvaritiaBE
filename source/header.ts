@@ -127,6 +127,8 @@ namespace Rarity {
     
 }
 
+const addTooltip = (id: number, key: string) => Item.registerNameOverrideFunction(id, (item, name) => `${name}\n${EColor.ITALIC}${EColor.GRAY}${Translation.translate(key)}`);
+
 const VALID_DIRECTIONS = [EBlockSide.DOWN, EBlockSide.UP, EBlockSide.NORTH, EBlockSide.SOUTH, EBlockSide.WEST, EBlockSide.EAST];
 const getOffsets = (dir: number) => {
     switch(dir){
