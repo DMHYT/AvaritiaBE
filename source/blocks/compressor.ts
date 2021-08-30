@@ -41,9 +41,6 @@ GUI_COMPRESSOR.setCloseOnBackPressed(true);
 type CompressorTEDefaultValues = { put: number, toPut: number, isActive: boolean, resultId: Nullable<number> }
 class CompressorTileEntity extends TileEntityImplementation<CompressorTEDefaultValues> {
 
-    public readonly useNetworkItemContainer = true;
-    public defaultValues = { put: 0, toPut: 1, isActive: false, resultId: null };
-
     constructor() { super({ put: 0, toPut: 1, isActive: false, resultId: null }) }
 
     public getScreenByName() { return GUI_COMPRESSOR };
@@ -112,6 +109,7 @@ class CompressorTileEntity extends TileEntityImplementation<CompressorTEDefaultV
         if(!Entity.getSneaking(player)) {
             Game.prevent();
             this.container.openFor(Network.getClientForPlayer(player), "main");
+            this.container.sendChanges();
         }
     }
 

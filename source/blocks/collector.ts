@@ -56,6 +56,7 @@ class CollectorTileEntity extends TileEntityImplementation<CollectorTEDefaultVal
         if(!Entity.getSneaking(player)) {
             Game.prevent();
             this.container.openFor(Network.getClientForPlayer(player), "main");
+            this.container.sendChanges();
         }
     }
 
