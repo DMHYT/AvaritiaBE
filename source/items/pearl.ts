@@ -79,11 +79,9 @@ namespace GapingVoid {
             const mesh = new RenderMesh();
             mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
             mesh.scale(.1, .1, .1);
-            const initial_color = getVoidColor(0, 1);
-            mesh.setBlockTexture("pixel", 0);
-            mesh.setColor(initial_color[0], initial_color[1], initial_color[2], initial_color[3]);
+            mesh.setColor(...getVoidColor(0, 1));
             const anim = new Animation.Base(coords.x, coords.y, coords.z);
-            anim.describe({ mesh: mesh });
+            anim.describe({ mesh: mesh, skin: "render/pixel.png" });
             let age = 0;
             let currentScale = 0.1;
             anim.loadCustom(() => {
@@ -93,7 +91,7 @@ namespace GapingVoid {
                     return;
                 }
                 age++;
-                const scale = getVoidScale(age) * 0.05 - 0.2;
+                const scale = getVoidScale(age) * 0.08 - 0.2;
                 const toScale = scale / currentScale;
                 currentScale = scale;
                 const particleScale = getVoidScale(age) * 0.5 - 0.2;
@@ -106,8 +104,7 @@ namespace GapingVoid {
                     Particles.addParticle(EParticleType.PORTAL, particlePos.x, particlePos.y, particlePos.z, velocity.x, velocity.y, velocity.z);
                 }
                 mesh.scale(toScale, toScale, toScale);
-                const color = getVoidColor(age, 1);
-                mesh.setColor(color[0], color[1], color[2], color[3]);
+                mesh.setColor(...getVoidColor(age, 1));
                 anim.describe({ mesh: mesh });
                 anim.refresh();
             });

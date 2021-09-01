@@ -71,7 +71,10 @@ namespace Singularity {
     export function getMaterialForSingularity(id: number): number {
         for(let key in recipes) {
             if(recipes[key].id == id) {
+                Logger.Log(`Found material ${Item.getName(parseInt(key), 0)} for singularity ${Item.getName(id, 0)}`, "Avaritia DEBUG");
                 return parseInt(key);
+            } else {
+                Logger.Log(`Material for singularity ${Item.getName(id, 0)} was not found`, "Avaritia ERROR");
             }
         }
         return -1;

@@ -15,7 +15,7 @@ const GUI_COMPRESSOR = new UI.Window({
     ],
     elements: (() => {
         const offset = (UI.getScreenHeight() - 415) / 2;
-        const font = {alignment: UI.Font.ALIGN_CENTER};
+        const font: UI.FontParams = { alignment: UI.Font.ALIGN_CENTER, color: Color.BLACK };
         const elems = {
             textInventory: {type: "text", x: 365, y: offset + 193, font: font, text: Translation.translate("avaritia.inventory")},
             textHeader: {type: "text", x: 500, y: offset + 5, font: font, text: Translation.translate("container.neutronium_compressor")},
@@ -49,11 +49,11 @@ class CompressorTileEntity extends TileEntityImplementation<CompressorTEDefaultV
         this.container.setText("textInput", "Input");
         this.container.setText("textOutput", "Output");
         const slot = this.container.getSlot("slotInput");
-        if(slot.id == 0) {
+        if(slot.id == 0 && this.data.resultId !== null) {
             const material = Singularity.getMaterialForSingularity(this.data.resultId);
             material != -1 && this.container.setSlot("slotInputVisual", material, 1, 0, null);
         } else this.container.setSlot("slotInputVisual", slot.id, 1, slot.data, null);
-        this.container.setSlot("slotOutputVisual", this.data.resultId, 1, 0, null);
+        this.data.resultId !== null && this.container.setSlot("slotOutputVisual", this.data.resultId, 1, 0, null);
         this.container.setText("textAmount", `${this.data.put} / ${this.data.toPut}`);
         const progress = this.data.put / this.data.toPut;
         this.container.setScale("arrowScale", progress);

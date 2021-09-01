@@ -37,15 +37,9 @@ const __loaded_mods = {
     DraconicEvolution: false
 };
 
-ModAPI.addAPICallback("TConAPI", function(api) {
-    __loaded_mods.TConstruct = true;
-});
-ModAPI.addAPICallback("ICore", function(api) {
-    __loaded_mods.IC2 = true;
-});
-ModAPI.addAPICallback("BotaniaAPI", function(api) {
-    __loaded_mods.Botania = true;
-});
+ModAPI.addAPICallback("TConAPI", () => __loaded_mods.TConstruct = true);
+ModAPI.addAPICallback("ICore", () => __loaded_mods.IC2 = true);
+ModAPI.addAPICallback("BotaniaAPI", () => __loaded_mods.Botania = true);
 
 IMPORT("ItemAnimHelper");
 IMPORT("ToolLib");
@@ -72,8 +66,8 @@ const AVA_STUFF: number[] = [];
 
 const addShaped = (id: number, count: number, data: number, mask: string[], keys: (string | number)[]) => Recipes.addShaped({id: id, count: count, data: data}, mask, keys);
 const addShapeless = (id: number, count: number, data: number, ingredients: [number, number][]) => {
-    let ingrobj = [];
-    for(let i in ingredients) ingrobj.push({id: ingredients[i][0], data: ingredients[i][1]});
+    const ingrobj: {id: number, data: number}[] = [];
+    ingredients.forEach(el => ingrobj.push({ id: el[0], data: el[1] }));
     Recipes.addShapeless({id: id, count: count, data: data}, ingrobj);
 }
 
@@ -92,13 +86,13 @@ const check_armor = (player: number) =>
 
 const INFINITY_TOOLS: number[] = [];
 Callback.addCallback("PlayerAttack", (attacker) => {
-    let item = Entity.getCarriedItem(attacker);
+    const item = Entity.getCarriedItem(attacker);
     if(item.data > 0 && !!~INFINITY_TOOLS.indexOf(item.id)){
         Entity.setCarriedItem(attacker, item.id, item.count, 0, item.extra);
     }
 });
 Callback.addCallback("DestroyBlock", (coords, block, player) => {
-    let item = Entity.getCarriedItem(player);
+    const item = Entity.getCarriedItem(player);
     if(item.data > 0 && !!~INFINITY_TOOLS.indexOf(item.id) && !Entity.getSneaking(player)){
         Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
     }
@@ -115,7 +109,6 @@ namespace Rarity {
         let _func = Item.nameOverrideFunctions[id];
         Item.registerNameOverrideFunction(id, (item, name, name2) => {
             if(_func) name = (_func(item, name, name2) ?? name) as string;
-            // Fixing stupid bug, when russian 'в' letter appears at the beginning
             return `${rarity}${name}`;
         });
     }

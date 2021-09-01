@@ -15,7 +15,7 @@ const GUI_COLLECTOR = new UI.Window({
     ],
     elements: (() => {
         const offset = (UI.getScreenHeight() - 415) / 2;
-        const font = {alignment: UI.Font.ALIGN_CENTER};
+        const font: UI.FontParams = { alignment: UI.Font.ALIGN_CENTER, color: Color.BLACK };
         const elems = {
             textInventory: {type: "text", x: 365, y: offset + 193, font: font, text: Translation.translate("avaritia.inventory")},
             textHeader: {type: "text", x: 500, y: offset + 20, font: font, text: Translation.translate("container.neutron_collector")},

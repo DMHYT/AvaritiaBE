@@ -2,7 +2,7 @@ IDRegistry.genItemID("infinity_bow");
 Item.createItem("infinity_bow", "item.avaritia:infinity_bow.name", {name: "infinity_bow_idle", meta: 0}, {stack: 1});
 Item.setToolRender(ItemID.infinity_bow, true);
 Item.setMaxUseDuration(ItemID.infinity_bow, 13);
-Item.setUseAnimation(ItemID.infinity_bow, EItemAnimation.BOW);
+Item.setUseAnimation(ItemID.infinity_bow, 4);
 Item.setEnchantType(ItemID.infinity_bow, EEnchantType.BOW, 1);
 
 type BowData = { timer: number };

@@ -6,5 +6,5 @@
     "collector_process_time": 7111,
     "boring_food": true,
     "eye_color_update_frequency": 4,
-    "player_flying_check_for_wings_interval": 10
+    "player_flying_check_for_wings_interval": 5
 }

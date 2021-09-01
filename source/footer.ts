@@ -230,6 +230,18 @@ ExtremeCraftingTable.addShaped({id: ItemID.endest_pearl, count: 1, data: 0}, [
     'N', ItemID.neutronium_ingot, 0
 ]);
 
+ExtremeCraftingTable.addShaped({id: ItemID.infinity_ingot, count: 1, data: 0}, [
+    "NNNNNNNNN",
+    "NCXXCXXCN",
+    "NXCCXCCXN",
+    "NCXXCXXCN",
+    "NNNNNNNNN"
+], [
+    'C', ItemID.crystal_matrix_ingot, 0,
+    'N', ItemID.neutronium_ingot, 0,
+    'X', ItemID.infinity_catalyst, 0
+]);
+
 if(BORING_FOOD || true) { // TODO make InTeReStInG food some day 0_0
     ExtremeCraftingTable.addShapeless({id: ItemID.ultimate_stew, count: 1, data: 0}, [
         [ItemID.neutron_pile, 0],
@@ -254,8 +266,8 @@ if(BORING_FOOD || true) { // TODO make InTeReStInG food some day 0_0
         [VanillaItemID.porkchop, 0],
         [VanillaItemID.rabbit, 0],
         [VanillaItemID.rabbit, 0],
-        [VanillaItemID.fish, 0],
-        [VanillaItemID.fish, 0]
+        [VanillaItemID.cod, 0],
+        [VanillaItemID.cod, 0]
         // Maybe make all fish from 1.13 update?
     ]);
 }
