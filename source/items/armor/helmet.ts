@@ -17,8 +17,9 @@ Callback.addCallback("ServerPlayerLoaded", player => {
     const mesh = new RenderMesh();
     const renderer = new ActorRenderer().addPart("head").endPart().addPart("eyes", "head", mesh).endPart();
     renderer.setTexture("render/pixel.png");
+    renderer.setMaterial("avaritia_infinity_eyes");
     const attachable = new AttachableRender(player).setRenderer(renderer);
-    EYE_DATA[player] = { isWearingHelmet: false, renderer, attachable, mesh }
+    EYE_DATA[player] = { isWearingHelmet: new PlayerActor(player).getArmor(0).id == ItemID.infinity_helmet, renderer, attachable, mesh }
 });
 
 Armor.registerOnTakeOnListener(ItemID.infinity_helmet, (item, slot, player) => {
@@ -42,7 +43,11 @@ Callback.addCallback("ServerPlayerTick", (player, isDead) => {
         const __obj = EYE_DATA[player];
         if(!__obj || !__obj.isWearingHelmet) return;
         EYE_COLOR_RANDOM.setSeed(Math.round(World.getThreadTime() / 3) * 1723609);
-        __obj.mesh.setColor(...hsv2rgb(EYE_COLOR_RANDOM.nextFloat() * 6.0, 1.0, 1.0), 1);
+        const rgb = hsv2rgb(EYE_COLOR_RANDOM.nextFloat() * 6.0, 1.0, 1.0);
+        const set = __obj.renderer.getUniformSet();
+        set.setUniformValue("Avaritia", "R", rgb[0])
+           .setUniformValue("Avaritia", "G", rgb[1])
+           .setUniformValue("Avaritia", "B", rgb[2]);
     }
 });
 

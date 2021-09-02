@@ -20,7 +20,7 @@ Callback.addCallback("ServerPlayerLoaded", player => {
     const renderer = new ActorRenderer().addPart("body").endPart().addPart("wings", "body", mesh).endPart();
     renderer.setTexture("render/infinity_wings.png");
     const attachable = new AttachableRender(player).setRenderer(renderer);
-    WINGS_DATA[player] = { isWearingChestplate: false, renderer, attachable, mesh }
+    WINGS_DATA[player] = { isWearingChestplate: new PlayerActor(player).getArmor(1).id == ItemID.infinity_chestplate, renderer, attachable, mesh }
 });
 
 Network.addClientPacket("avaritia.toggleflying", (data: { bool: boolean }) => {
@@ -37,6 +37,7 @@ Network.addServerPacket("avaritia.togglewings", (client, data: { bool: boolean }
         if(!__obj || !__obj.isWearingChestplate) return;
         __obj.mesh.clear();
         __obj.mesh.importFromFile(`${__dir__}/assets/models/wings.obj`, "obj", null);
+        __obj.mesh.translate(0, -1/2, 1.01/16);
     } else {
         if(!__obj) return;
         __obj.mesh.clear();
