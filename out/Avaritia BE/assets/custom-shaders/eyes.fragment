@@ -1,0 +1,20 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+precision highp float;
+
+#include "fragmentVersionCentroidUV.h"
+#include "uniformEntityConstants.h"
+#include "uniformShaderConstants.h"
+#include "util.h"
+
+uniform float R;
+uniform float G;
+uniform float B;
+
+void main()
+{
+    gl_FragColor.a = 1.0;
+    gl_FragColor.r = R;
+    gl_FragColor.g = G;
+    gl_FragColor.b = B;
+}
