@@ -32,19 +32,21 @@ Item.registerUseFunction(ItemID.infinity_destroyer, (coords, item, block, player
         const drops: ItemInstance[] = [];
         const toollevel = ToolAPI.getToolLevel(item.id);
         const enchantdata = ToolAPI.getEnchantExtraData(item.extra);
-        for(let xx=coords.x-8; xx<coords.x+8; xx++)
-            for(let yy=coords.y-8; yy<coords.y+8; yy++)
-                for(let zz=coords.z-8; zz<coords.z+8; zz++){
+        for(let xx=coords.x-8; xx<coords.x+8; xx++) {
+            for(let yy=coords.y-8; yy<coords.y+8; yy++) {
+                for(let zz=coords.z-8; zz<coords.z+8; zz++) {
                     const state = region.getBlock(xx, yy, zz);
                     if(state.id == 0) continue;
                     if(ToolAPI.getBlockMaterialName(state.id) != "dirt") continue;
                     const func = Block.getDropFunction(state.id);
                     if(!func) continue;
                     const drop = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
-                    for(let d in drop) drops.push({ id: drop[d][0], count: drop[d][1], data: drop[d][2], extra: drop[d][3] ?? null });
+                    if(Array.isArray(drop)) drop.forEach(d => drops.push(itemInstanceFromArray(d)));
+                    region.setBlock(xx, yy, zz, 0, 0);
                 }
-        const clusters = MatterCluster.makeClusters(drops);
-        for(let i in clusters) dropItemRandom(clusters[i], region, coords.x, coords.y, coords.z);
+            }
+        }
+        MatterCluster.makeClusters(drops).forEach(cluster => dropItemRandom(cluster, region, coords.x, coords.y, coords.z));
     }
 });
 Item.registerNoTargetUseFunction(ItemID.infinity_destroyer, (item, player) => shovel_use_func(item, player, false));

@@ -13,8 +13,5 @@ uniform float B;
 
 void main()
 {
-    gl_FragColor.a = 1.0;
-    gl_FragColor.r = R;
-    gl_FragColor.g = G;
-    gl_FragColor.b = B;
+    gl_FragColor = vec4(R, G, B, 1.0);
 }

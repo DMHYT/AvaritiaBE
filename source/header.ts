@@ -186,3 +186,5 @@ const hsv2rgb = (h: number, s: number, v: number) => {
     }
     return rgb;
 }
+
+const itemInstanceFromArray = (arr: ItemInstanceArray) => ({ id: arr[0], count: arr[1], data: arr[2], extra: arr[3] ?? null } as ItemInstance);

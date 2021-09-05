@@ -33,18 +33,17 @@ namespace TextureWorker {
         if(FileUtil.isExist(`${args.result.path}${args.result.name}.png`)) return;
         const bmp = Bitmap.createBitmap(args.bitmap.width, args.bitmap.height, args.bitmap.config ?? Bitmap.Config.ARGB_8888);
         const cvs = new Canvas(bmp);
-        for(let i in args.overlays){
-            const over = args.overlays[i];
+        args.overlays.forEach(over => {
             const tex = FileUtil.readImage(`${over.path}${over.name}.png`);
             cvs.drawBitmap(over.color ? changeBitmapColor(tex, over.color) : tex, 0, 0, null);
-        }
+        });
         FileUtil.writeImage(`${args.result.path}${args.result.name}.png`, bmp);
         if(fallback) return bmp;
     }
 
     export function createTextureWithOverlaysModDir(args: {bitmap: IBitmap, overlays: IOverlay[], result: ITextureSource}, fallback?: boolean): Bitmap | void {
         args.result = fromModDir(args.result);
-        for(let i in args.overlays) args.overlays[i] = fromModDir(args.overlays[i]);
+        args.overlays = args.overlays.map(fromModDir);
         return createTextureWithOverlays(args, fallback);
     }
 

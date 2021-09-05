@@ -1,12 +1,9 @@
-((args: string[]) => {
-    for(let i in args){
-        let id = args[i];
-        IDRegistry.genItemID(id);
-        Item.createItem(id, `item.resource.${id}.name`, {name: id, meta: 0}, {stack: 64});
-        AVA_STUFF.push(ItemID[id]);
-        addTooltip(ItemID[id], `tooltip.item.resource.${id}.desc`);
-    }
-})(["diamond_lattice", "crystal_matrix_ingot", "neutron_pile", "neutron_nugget", "neutronium_ingot", "infinity_catalyst", "infinity_ingot", "record_fragment"]);
+["diamond_lattice", "crystal_matrix_ingot", "neutron_pile", "neutron_nugget", "neutronium_ingot", "infinity_catalyst", "infinity_ingot", "record_fragment"].forEach(id => {
+    IDRegistry.genItemID(id);
+    Item.createItem(id, `item.resource.${id}.name`, {name: id, meta: 0}, {stack: 64});
+    AVA_STUFF.push(ItemID[id]);
+    addTooltip(ItemID[id], `tooltip.item.resource.${id}.desc`);
+});
 
 Rarity.uncommon(ItemID.diamond_lattice);
 Rarity.rare(ItemID.crystal_matrix_ingot);
@@ -28,7 +25,5 @@ Callback.addCallback("PostLoaded", () => {
     addShaped(ItemID.neutronium_ingot, 1, 0, ["nnn", "nnn", "nnn"], ['n', ItemID.neutron_nugget, 0]);
     addShapeless(ItemID.neutron_nugget, 9, 0, [[ItemID.neutronium_ingot, 0]]);
     addShapeless(ItemID.neutron_pile, 9, 0, [[ItemID.neutron_nugget, 0]]);
-    ((args: number[]) => {
-        for(let i in args) addShapeless(ItemID.record_fragment, 8, 0, [[args[i], 0]]);
-    })([500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 759]);
+    [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 759].forEach(disc => addShapeless(ItemID.record_fragment, 8, 0, [[disc, 0]]));
 });

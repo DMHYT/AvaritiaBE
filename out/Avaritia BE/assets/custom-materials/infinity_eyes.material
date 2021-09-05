@@ -1,8 +1,0 @@
-{
-    "materials": {
-        "version": "1.0.0",
-        "avaritia_infinity_eyes": {
-            "fragmentShader": "./eyes.fragment"
-        }
-    }
-}

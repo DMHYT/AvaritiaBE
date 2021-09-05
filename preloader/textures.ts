@@ -14,17 +14,12 @@
         });
     }
     const obj = FileUtil.readJSON(`${__dir__}/assets/singularities.json`);
-    const keys = Object.keys(obj);
-    for(let i in keys){
-        const key = keys[i], arr = obj[key];
+    Object.keys(obj).forEach(key => {
+        const arr = obj[key];
         gen(`singularity_${key}`, hex2rgb(arr[0]), hex2rgb(arr[1]));
-    }
+    });
 })();
-
-(() => {
-    let files = FileUtil.getListOfFiles(`${__dir__}/assets/animated_items/`, "png");
-    for(let i in files){
-        let fileName = new JavaString(files[i].getName()).replaceFirst("[.][^.]+$", "");
-        IAHelper.convertTexture("assets/animated_items/", fileName, "assets/items-opaque/", fileName);
-    }
-})();
+FileUtil.getListOfFiles(`${__dir__}/assets/animated_items/`, "png").forEach(file => {
+    const fileName = new JavaString(file.getName()).replaceFirst("[.][^.]+$", "");
+    IAHelper.convertTexture("assets/animated_items/", fileName, "assets/items-opaque/", fileName);
+});

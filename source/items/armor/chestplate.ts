@@ -11,9 +11,30 @@ interface WingsData {
     mesh: RenderMesh
 }
 const WINGS_DATA: {[player: number]: WingsData} = {};
+const WINGS_MESH = new RenderMesh(`${__dir__}/assets/models/wings.obj`, "obj", { invertV: false, noRebuild: true, translate: [0, -1/2, 1.01/16] });
 
 var isWearingChestplateClient: boolean = false;
 var lastFlyingClient: boolean = false;
+
+Network.addClientPacket("avaritia.wingsdata.client", (data: { player: number }) => {
+    const mesh = new RenderMesh();
+    const renderer = new ActorRenderer().addPart("body").endPart().addPart("wings", "body", mesh).endPart();
+    renderer.setTexture("render/infinity_wings.png");
+    const attachable = new AttachableRender(data.player).setRenderer(renderer);
+    WINGS_DATA[data.player] = { isWearingChestplate: new PlayerActor(data.player).getArmor(1).id == ItemID.infinity_chestplate, renderer, attachable, mesh }
+});
+Network.addClientPacket("avaritia.togglewings.client", (data: { player: number, bool: boolean }) => {
+    const __obj = WINGS_DATA[data.player];
+    if(data.bool) {
+        if(!__obj || !__obj.isWearingChestplate) return;
+        __obj.mesh.clear();
+        __obj.mesh.addMesh(WINGS_MESH);
+    } else {
+        if(!__obj) return;
+        __obj.mesh.clear();
+    }
+});
+Network.addClientPacket("avaritia.iswearingchestplate.client", (data: { player: number, bool: boolean }) => WINGS_DATA[data.player].isWearingChestplate = data.bool);
 
 Callback.addCallback("ServerPlayerLoaded", player => {
     const mesh = new RenderMesh();
@@ -21,6 +42,12 @@ Callback.addCallback("ServerPlayerLoaded", player => {
     renderer.setTexture("render/infinity_wings.png");
     const attachable = new AttachableRender(player).setRenderer(renderer);
     WINGS_DATA[player] = { isWearingChestplate: new PlayerActor(player).getArmor(1).id == ItemID.infinity_chestplate, renderer, attachable, mesh }
+    Network.sendToAllClients("avaritia.wingsdata.client", { player });
+    const client = Network.getClientForPlayer(player);
+    Object.keys(WINGS_DATA)
+        .map(parseInt)
+        .filter(value => value != player)
+        .forEach(pl => client.send("avaritia.wingsdata.client", { player: pl }));
 });
 
 Network.addClientPacket("avaritia.toggleflying", (data: { bool: boolean }) => {
@@ -32,16 +59,7 @@ Network.addClientPacket("avaritia.chestplate", (data: { bool: boolean }) => {
     isWearingChestplateClient = data.bool;
 });
 Network.addServerPacket("avaritia.togglewings", (client, data: { bool: boolean }) => {
-    const __obj = WINGS_DATA[client.getPlayerUid()];
-    if(data.bool) {
-        if(!__obj || !__obj.isWearingChestplate) return;
-        __obj.mesh.clear();
-        __obj.mesh.importFromFile(`${__dir__}/assets/models/wings.obj`, "obj", null);
-        __obj.mesh.translate(0, -1/2, 1.01/16);
-    } else {
-        if(!__obj) return;
-        __obj.mesh.clear();
-    }
+    Network.sendToAllClients("avaritia.togglewings.client", { player: client.getPlayerUid(), bool: data.bool });
 });
 
 Callback.addCallback("LocalTick", () => {
@@ -59,6 +77,8 @@ Armor.registerOnTakeOnListener(ItemID.infinity_chestplate, (item, slot, player) 
     client.send("avaritia.toggleflying", { bool: true });
     client.send("avaritia.chestplate", { bool: true });
     WINGS_DATA[player].isWearingChestplate = true;
+    Network.sendToAllClients("avaritia.iswearingchestplate.client", { player, bool: true });
+    Network.sendToAllClients("avaritia.togglewings.client", { player, bool: true });
 });
 
 Armor.registerOnTakeOffListener(ItemID.infinity_chestplate, (item, slot, player) => {
@@ -66,6 +86,8 @@ Armor.registerOnTakeOffListener(ItemID.infinity_chestplate, (item, slot, player)
     client.send("avaritia.toggleflying", { bool: false });
     client.send("avaritia.chestplate", { bool: false });
     WINGS_DATA[player].isWearingChestplate = false;
+    Network.sendToAllClients("avaritia.iswearingchestplate.client", { player, bool: false });
+    Network.sendToAllClients("avaritia.togglewings.client", { player, bool: false });
 });
 
 Armor.registerOnTickListener(ItemID.infinity_chestplate, (item, slot, player) => {

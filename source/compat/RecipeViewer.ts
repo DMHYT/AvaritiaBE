@@ -17,7 +17,7 @@ ModAPI.addAPICallback("RecipeViewer", RecipeViewer => {
         }
     })
     const addButtonTo = (gui: UI.Window, key: string) => gui.addAdjacentWindow(button_win(key));
-    Callback.addCallback("LevelLoaded", () => {
+    Callback.addCallback("LevelPreLoaded", () => {
         const all_workbench = ExtremeCraftingTable.getAllSeparately();
         // RECIPE VIEWER WINDOW SIZE: X - 1000, Y - 567
         const extreme_contents: RecipeContents = {

@@ -31,16 +31,16 @@ namespace MatterCluster {
         const extra = new ItemExtraData();
         extra.putInt("cluster_id", nextId++);
         extra.putInt("item_count", count);
-        return {id: ItemID.matter_cluster, count: 1, data: 0, extra: extra};
+        return { id: ItemID.matter_cluster, count: 1, data: 0, extra: extra };
     }
 
     export function deconstructCluster(player: number): void {
         let item = Entity.getCarriedItem(player),
             pos = Entity.getPosition(player);
         if(item.extra != null){
-            let list = MatterCluster.data[item.extra.getInt("cluster_id")];
-            for(let i in list) dropItemRandom(list[i], BlockSource.getDefaultForActor(player), Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z));
-            delete MatterCluster.data[item.extra.getInt("cluster_id")];
+            const clusterId = item.extra.getInt("cluster_id");
+            MatterCluster.data[clusterId].forEach(item => dropItemRandom(item, BlockSource.getDefaultForActor(player), Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z)));
+            delete MatterCluster.data[clusterId];
         } else Network.getClientForPlayer(player).sendMessage("This matter cluster item was obtained illegally! It doesn\'t contain any items inside!");
         Entity.setCarriedItem(player, 0, 0, 0, null);
     }

@@ -49,7 +49,8 @@ namespace Singularity {
         IAHelper.makeCommonAnim(ItemID[id], id, 1, 6);
         AVA_STUFF.push(ItemID[id]);
         singularities.push(ItemID[id]);
-        if(materialId != null && materialCount != null && materialData != null) registerRecipeFor(ItemID[id], materialId, materialCount, materialData, false);
+        materialId != null && materialCount != null && materialData != null &&
+        registerRecipeFor(ItemID[id], materialId, materialCount, materialData, false);
     }
     
     export function isValidMaterial(id: number, data: number): boolean {
@@ -82,10 +83,7 @@ namespace Singularity {
 
 }
 
-((args: [string, Nullable<number>, Nullable<number>, Nullable<number>][]) => {
-    for(let i in args)
-        Singularity.registerSingularity(args[i][0], args[i][1], args[i][2], args[i][3]);
-})([
+([
     ["iron", VanillaBlockID.iron_block, 400, 0],
     ["gold", VanillaBlockID.gold_block, 200, 0],
     ["lapis", VanillaBlockID.lapis_block, 200, 0],
@@ -101,4 +99,5 @@ namespace Singularity {
     ["fluxed", null, null, null],
     ["platinum", null, null, null],
     ["iridium", null, null, null]
-]);
+] as [string, Nullable<number>, Nullable<number>, Nullable<number>][])
+.forEach(element => Singularity.registerSingularity(...element));

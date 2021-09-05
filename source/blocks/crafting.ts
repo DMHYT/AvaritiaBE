@@ -30,7 +30,7 @@ namespace ExtremeCraftingTable {
     export function addShaped(result: ItemInstance, mask: string[], keys: (string | number)[], func?: RecipeTE.CraftFunction) {
         if(keys.length % 3 != 0) throw new java.lang.IllegalArgumentException("Key array in extreme crafting table shaped recipe must be like [char, number, number, ...]");
         const ingredients: RecipeTE.IngredientsList = {};
-        for(let i=0; i<keys.length; i+=3){
+        for(let i=0; i<keys.length; i+=3) {
             if(typeof keys[i] === "string" && typeof keys[i + 1] === "number" && typeof keys[i + 2] === "number")
                 ingredients[keys[i]] = {id: keys[i + 1] as number, data: keys[i + 2] as number};
             else throw new java.lang.IllegalArgumentException();
@@ -58,8 +58,7 @@ namespace ExtremeCraftingTable {
 
     export function getAllSeparately(): { shaped: RecipePattern[], shapeless: RecipePattern[] } {
         const all = { shaped: [] as RecipePattern[], shapeless: [] as RecipePattern[] };
-        for(let i in workbench_obj._recipes) {
-            const recinst = workbench_obj._recipes[i];
+        workbench_obj._recipes.forEach(recinst => {
             const output = { id: recinst.result.id, count: recinst.result.count, data: recinst.result.data } as ItemInstance;
             isGivenRecipeShapeless(recinst) ? 
             all.shapeless.push({
@@ -69,7 +68,7 @@ namespace ExtremeCraftingTable {
                 output: [ output ],
                 input: getListForShapedRecipe(recinst)
             });
-        }
+        });
         return all;
     }
 
@@ -93,13 +92,15 @@ namespace ExtremeCraftingTable {
 
     function getListForShapedRecipe(recipe: RecipeTE.Recipe): ItemInstance[] {
         const items = [] as ItemInstance[];
-        const mask = [ ...recipe.mask ].map(str => str.length < 9 ? `${str}${" ".repeat(9).substr(str.length)}` : str);
-        for(let i in mask)
-            for(let j=0; j<mask[i].length; j++) {
-                const ingredient = recipe.ingredients[mask[i][j]];
-                if(ingredient) items.push({ id: ingredient.id, count: 1, data: ingredient.data ?? -1 });
-                else items.push({ id: 0, count: 0, data: 0 });
-            }
+        [ ...recipe.mask ]
+            .map(str => str.length < 9 ? `${str}${" ".repeat(9).substr(str.length)}` : str)
+            .forEach(str => {
+                for(let j = 0; j < str.length; j++) {
+                    const ingredient = recipe.ingredients[str[j]];
+                    if(ingredient) items.push({ id: ingredient.id, count: 1, data: ingredient.data ?? -1 });
+                    else items.push({ id: 0, count: 0, data: 0 });
+                }
+            });
         return items;
     }
 

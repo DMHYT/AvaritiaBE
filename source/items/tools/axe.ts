@@ -9,36 +9,35 @@ const destroy_trees = (coords: Callback.ItemUseCoordinates, region: BlockSource,
     const enchantdata = ToolAPI.getEnchantExtraData(item.extra);
     const blocks_map: string[] = [`${coords.x}:${coords.y}:${coords.z}`];
     const sides = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
-    const check = (c: Vector, r: BlockSource) => {
-        for(let i in sides){
-            let id = r.getBlockId(c.x + sides[i][0], c.y + sides[i][1], c.z + sides[i][2]);
-            if(id == VanillaBlockID.log || id == VanillaBlockID.log2 || id == VanillaBlockID.leaves || id == VanillaBlockID.leaves2){
-                if(!~blocks_map.indexOf(`${c.x + sides[i][0]}:${c.y + sides[i][1]}:${c.z + sides[i][2]}`)){
-                    blocks_map.push(`${c.x + sides[i][0]}:${c.y + sides[i][1]}:${c.z + sides[i][2]}`)
-                    check({ x: c.x + sides[i][0], y: c.y + sides[i][1], z: c.z + sides[i][2] }, region);
-                }
+    const check = (c: Vector, r: BlockSource) => sides.forEach(side => {
+        const id = r.getBlockId(c.x + side[0], c.y + side[1], c.z + side[2]);
+        if(id == VanillaBlockID.log || id == VanillaBlockID.log2 || id == VanillaBlockID.leaves || id == VanillaBlockID.leaves2) {
+            if(!~blocks_map.indexOf(`${c.x + side[0]}:${c.y + side[1]}:${c.z + side[2]}`)) {
+                blocks_map.push(`${c.x + side[0]}:${c.y + side[1]}:${c.z + side[2]}`)
+                check({ x: c.x + side[0], y: c.y + side[1], z: c.z + side[2] }, region);
             }
         }
-    }
+    });
     check(coords, region);
-    for(let i in blocks_map){
-        const carr = blocks_map[i].split(":"),
-              cs: Vector = { x: parseInt(carr[0]), y: parseInt(carr[1]), z: parseInt(carr[2]) };
-        const state = region.getBlock(cs.x, cs.y, cs.z);
+    blocks_map.forEach(str => {
+        const splitted: number[] = str.split(":").map(parseInt);
+        const vec: Vector = { x: splitted[0], y: splitted[1], z: splitted[2] };
+        const state = region.getBlock(vec.x, vec.y, vec.z);
         const func = Block.getDropFunction(state.id);
-        if(!func) continue;
-        const drop = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
-        for(let d in drop) dropItemRandom({ id: drop[d][0], count: drop[d][1], data: drop[d][2], extra: drop[d][3] ?? null }, region, cs.x, cs.y, cs.z);
-    }
+        if(!func) return;
+        const drops = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
+        if(Array.isArray(drops)) drops.forEach(drop => dropItemRandom(itemInstanceFromArray(drop), region, vec.x, vec.y, vec.z));
+        region.setBlock(vec.x, vec.y, vec.z, 0, 0);
+    });
 }
 
 const destroy_nature = (coords: Callback.ItemUseCoordinates, region: BlockSource, item: ItemInstance) => {
     const drops: ItemInstance[] = [];
     const toollevel = ToolAPI.getToolLevel(item.id);
     const enchantdata = ToolAPI.getEnchantExtraData(item.extra);
-    for(let xx=coords.x-13; xx<coords.x+13; xx++)
-        for(let yy=coords.y-3; yy<coords.y+23; yy++)
-            for(let zz=coords.z-13; zz<coords.z+13; zz++){
+    for(let xx=coords.x-13; xx<coords.x+13; xx++) {
+        for(let yy=coords.y-3; yy<coords.y+23; yy++) {
+            for(let zz=coords.z-13; zz<coords.z+13; zz++) {
                 const state = region.getBlock(xx, yy, zz);
                 if(state.id == 0) continue;
                 if(state.id == VanillaBlockID.grass || state.id == VanillaBlockID.podzol){
@@ -49,11 +48,13 @@ const destroy_nature = (coords: Callback.ItemUseCoordinates, region: BlockSource
                     const func = Block.getDropFunction(state.id);
                     if(!func) continue;
                     const drop = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
-                    for(let i in drop) drops.push({ id: drop[i][0], count: drop[i][1], data: drop[i][2], extra: drop[i][3] ?? null });
+                    if(Array.isArray(drop)) drop.forEach(item => drops.push(itemInstanceFromArray(item)));
+                    region.setBlock(xx, yy, zz, 0, 0);
                 }
             }
-    const clusters = MatterCluster.makeClusters(drops);
-    for(let i in clusters) dropItemRandom(clusters[i], region, coords.x, coords.y, coords.z);
+        }
+    }     
+    MatterCluster.makeClusters(drops).forEach(cluster => dropItemRandom(cluster, region, coords.x, coords.y, coords.z));
 }
 
 Callback.addCallback("PlayerAttack", (attacker) => {
