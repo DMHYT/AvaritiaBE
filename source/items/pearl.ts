@@ -99,7 +99,6 @@ namespace GapingVoid {
             .setUniformValue("Avaritia", "G", initial_color[1])
             .setUniformValue("Avaritia", "B", initial_color[2]);
         let age = 0;
-        let currentScale = 0.1;
         anim.loadCustom(() => {
             if(age >= maxLifetime){
                 anim.destroy();
@@ -108,8 +107,6 @@ namespace GapingVoid {
             }
             age++;
             const scale = getVoidScale(age) * 0.06 - 0.2;
-            const toScale = scale / currentScale;
-            currentScale = scale;
             const size = getVoidScale(age) * 0.5 - 0.2;
             for(let i = 0; i < VOID_PARTICLES_PER_TICK; i++){
                 const particlePos = new Vector3(0, 0, size)
@@ -118,7 +115,11 @@ namespace GapingVoid {
                 const velocity = particlePos.copy().normalize().multiplyXYZ(particlespeed);
                 Particles.addParticle(EParticleType.PORTAL, particlePos.x, particlePos.y, particlePos.z, velocity.x, velocity.y, velocity.z);
             }
-            anim.transform().scale(toScale, toScale, toScale);
+            anim.transform()
+                .lock()
+                .clear()
+                .scale(scale, scale, scale)
+                .unlock();
             const color = getVoidColor(age, 1);
             anim.getShaderUniforms()
                 .setUniformValue("Avaritia", "R", color[0])

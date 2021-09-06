@@ -1,8 +1,5 @@
 {
-    "materials": {
-        "version": "1.0.0",
-        "avaritia_coloring": {
-            "fragmentShader": "./coloring.fragment"
-        }
+    "avaritia_coloring:entity_alphatest_custom": {
+        "fragmentShader": "./coloring.fragment"
     }
 }
