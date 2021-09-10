@@ -233,13 +233,33 @@ def task_load_docs():
 		content = response.read().decode('utf-8')
 		with open(make_config.get_path("toolchain/declarations/" + name + ".d.ts"), 'w') as docs:
 			docs.write(content)
-	print("downloading...")
+		print(name + ".d.ts downloaded")
+	print("downloading ts declarations...")
 	_load("core-engine")
 	_load("android")
 	_load("android-declarations")
 	print("complete!")
 	return 0
 
+@task("loadJavaDependencies")
+def task_load_java_dependencies():
+	from urllib.request import urlretrieve
+	def _load(name):
+		url = "https://github.com/DMHYT/innercore-development-cloud/blob/main/classpath/" + name + ".jar?raw=true"
+		local_path = make_config.get_path("toolchain/classpath/" + name + ".jar")
+		urlretrieve(url, filename=local_path)
+		print(name + ".jar downloaded")
+	print("downloading java dependencies...")
+	_load("android-support-multidex")
+	_load("android-support-v4")
+	_load("android-support-v7-recyclerview")
+	_load("android")
+	_load("classes-dex2jar")
+	_load("classes2-dex2jar")
+	_load("horizon-classes")
+	_load("rhino-1.7.7")
+	print("complete!")
+	return 0
 
 @task("connectToADB")
 def task_connect_to_adb():

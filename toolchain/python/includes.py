@@ -182,7 +182,7 @@ class Includes:
 	def get_tsconfig(self):
 		return join(self.directory, "tsconfig.json")
 		
-	def create_tsconfig(self, temp_path):
+	def create_tsconfig(self, temp_path: str):
 		declarations = []
 		declarations.extend(glob.glob(make_config.get_path(
 			"toolchain/declarations/**/*.d.ts"), recursive=True))
@@ -191,13 +191,16 @@ class Includes:
 		filteredDeclarations = []
 		for declaration in declarations:
 			declaration = str(declaration)
-			if not (declaration.endswith("preloader.d.ts") or declaration.endswith("AvaritiaAPI.d.ts")):
+			if temp_path.endswith("preloader.js"):
+				print("checking " + declaration + " declaration for preloader")
+				if declaration.endswith("preloader.d.ts") or declaration.endswith("android.d.ts") or declaration.endswith("android-declarations.d.ts"):
+					filteredDeclarations.append(declaration)
+					print("passed")
+			elif not (declaration.endswith("preloader.d.ts") or declaration.endswith("AvaritiaAPI.d.ts")):
 				filteredDeclarations.append(declaration)
 		declarations = filteredDeclarations
-		currentName = splitext(basename(temp_path))[0]
-		for d in declarations:
-			if d.endswith(f"{currentName}.d.ts") or currentName == "preloader" or currentName == "AvaritiaAPI":
-				declarations.remove(d)
+		if temp_path.endswith("preloader.js"):
+			print("declarations for preloader are " + str(declarations))
 
 		template = {
 			"compilerOptions": {
