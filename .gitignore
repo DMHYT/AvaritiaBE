@@ -13,3 +13,12 @@ output
 core-engine.d.ts
 android.d.ts
 android-declarations.d.ts
+
+toolchain/classpath/android-support-multidex.jar
+toolchain/classpath/android-support-v4.jar
+toolchain/classpath/android-support-v7-recyclerview.jar
+toolchain/classpath/android.jar
+toolchain/classpath/classes-dex2jar.jar
+toolchain/classpath/classes2-dex2jar.jar
+toolchain/classpath/horizon-classes.jar
+toolchain/classpath/rhino-1.7.7.jar
