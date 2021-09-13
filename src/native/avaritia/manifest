@@ -1,0 +1,10 @@
+{
+    "shared": {
+        "name": "avaritia",
+		"include": [ ]
+    },
+    "depends": [
+    	"innercore",
+    	"nativejs"
+	]
+}
