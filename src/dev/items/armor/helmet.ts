@@ -12,7 +12,7 @@ interface EyeData {
 }
 const EYE_DATA: {[player: number]: EyeData} = {};
 const EYE_COLOR_RANDOM = new java.util.Random();
-const EYE_MESH = new RenderMesh(`${__dir__}/assets/models/eyes.obj`, "obj", { invertV: false, noRebuild: true, translate: [0, 7/16, -1/16], scale: [1.25, 1.25, 1.25] });
+const EYE_MESH = new RenderMesh(`${__dir__}/resources/res/models/eyes.obj`, "obj", { invertV: false, noRebuild: true, translate: [0, 7/16, -1/16], scale: [1.25, 1.25, 1.25] });
 
 Network.addClientPacket("avaritia.eyedata.client", (data: { player: number }) => {
     const mesh = new RenderMesh();

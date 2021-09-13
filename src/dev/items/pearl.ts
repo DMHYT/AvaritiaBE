@@ -87,7 +87,7 @@ namespace GapingVoid {
     export function summonClientSide(coords: Vector): void {
         const particlespeed = 10;
         const mesh = new RenderMesh();
-        mesh.importFromFile(`${__dir__}/assets/models/gaping_void.obj`, "obj", null);
+        mesh.importFromFile(`${__dir__}/resources/res/models/gaping_void.obj`, "obj", null);
         mesh.scale(.1, .1, .1);
         const anim = new Animation.Base(coords.x, coords.y, coords.z);
         anim.setIgnoreLightMode();

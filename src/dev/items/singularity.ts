@@ -42,7 +42,7 @@ namespace Singularity {
     }
     
     export function registerSingularity(key: string, materialId: Nullable<number>, materialCount: Nullable<number>, materialData: Nullable<number>): void {
-        if(!FileTools.ReadJSON(`${__dir__}/assets/singularities.json`)[key]) return Logger.Log(`No textures were generated for singularity \'${key}\', please specify two layer colors in \'assets/singularities.json\'`, "Avaritia ERROR");
+        if(!FileTools.ReadJSON(`${__dir__}/resources/res/singularities.json`)[key]) return Logger.Log(`No textures were generated for singularity \'${key}\', please specify two layer colors in \'resources/res/singularities.json\'`, "Avaritia ERROR");
         const id = `singularity_${key}`;
         IDRegistry.genItemID(id);
         Item.createItem(id, `item.singularity.${key}.name`, {name: id, meta: 0}, {stack: 64});

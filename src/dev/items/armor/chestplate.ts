@@ -11,7 +11,7 @@ interface WingsData {
     mesh: RenderMesh
 }
 const WINGS_DATA: {[player: number]: WingsData} = {};
-const WINGS_MESH = new RenderMesh(`${__dir__}/assets/models/wings.obj`, "obj", { invertV: false, noRebuild: true, translate: [0, -1/2, 1.01/16] });
+const WINGS_MESH = new RenderMesh(`${__dir__}/resources/res/models/wings.obj`, "obj", { invertV: false, noRebuild: true, translate: [0, -1/2, 1.01/16] });
 
 var isWearingChestplateClient: boolean = false;
 var lastFlyingClient: boolean = false;
