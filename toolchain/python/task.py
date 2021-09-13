@@ -228,16 +228,20 @@ def stop_horizon():
 @task("loadDocs")
 def task_load_docs():
 	import urllib.request
-	def _load(name):
-		response = urllib.request.urlopen("https://docs.mineprogramming.org/" + name + ".d.ts")
+	def _load(name, fromDocs=True, fileName=None):
+		url = ("https://docs.mineprogramming.org/" + name + ".d.ts") if fromDocs else name
+		response = urllib.request.urlopen(url)
 		content = response.read().decode('utf-8')
-		with open(make_config.get_path("toolchain/declarations/" + name + ".d.ts"), 'w') as docs:
+		if fileName == None:
+			fileName = name
+		with open(make_config.get_path("toolchain/declarations/" + fileName + ".d.ts"), 'w') as docs:
 			docs.write(content)
-		print(name + ".d.ts downloaded")
+		print(fileName + ".d.ts downloaded")
 	print("downloading ts declarations...")
 	_load("core-engine")
 	_load("android")
 	_load("android-declarations")
+	_load("https://raw.githubusercontent.com/DMHYT/innercore-development-cloud/main/preloader.d.ts", fromDocs=False, fileName="preloader")
 	print("complete!")
 	return 0
 
@@ -259,6 +263,14 @@ def task_load_java_dependencies():
 	_load("horizon-classes")
 	_load("rhino-1.7.7")
 	print("complete!")
+	return 0
+
+@task("downloadNdkIfNeeded")
+def task_download_ndk_if_needed():
+	from native.native_setup import require_compiler_executable
+	print("preparing ndk...")
+	require_compiler_executable(arch="arm", install_if_required=True)
+	print("ndk was locally downloaded successfully!")
 	return 0
 
 @task("connectToADB")
