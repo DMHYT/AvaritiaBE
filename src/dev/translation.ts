@@ -1,7 +1,7 @@
 (() => {
     const all_translation_keys: {[translation_key: string]: {[language: string]: string}} = {};
     const readFile = (name: string) => 
-        FileTools.ReadText(`${__dir__}/assets/lang/${name}.lang`)
+        FileTools.ReadText(`${__dir__}/resources/res/lang/${name}.lang`)
             .split("\n")
             .filter(element => element.length > 0 && !element.startsWith("#"))
             .forEach(line => {
@@ -9,7 +9,7 @@
                 all_translation_keys[kv[0]] ??= {};
                 all_translation_keys[kv[0]][name] = kv[1];
             });
-    FileTools.GetListOfFiles(`${__dir__}/assets/lang`, "lang")
+    FileTools.GetListOfFiles(`${__dir__}/resources/res/lang`, "lang")
         .forEach(file => readFile(new JavaString(file.getName()).replaceFirst("[.][^.]+$", "")));
     for (let key in all_translation_keys) {
         all_translation_keys[key][Translation.getLanguage()] ??= all_translation_keys[key].en;

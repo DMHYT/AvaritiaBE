@@ -7,19 +7,19 @@
         TextureWorker.createTextureWithOverlaysModDir({
             bitmap: { width: 16, height: 96 },
             overlays: [
-                { path: "assets/texture_source/", name: "singularity_back", color: rgb2 },
-                { path: "assets/texture_source/", name: "singularity_front", color: rgb1 }
+                { path: "resources/res/texture_source/", name: "singularity_back", color: rgb2 },
+                { path: "resources/res/texture_source/", name: "singularity_front", color: rgb1 }
             ],
-            result: { path: "assets/animated_items/", name: id }
+            result: { path: "resources/res/animated_items/", name: id }
         });
     }
-    const obj = FileUtil.readJSON(`${__dir__}/assets/singularities.json`);
+    const obj = FileUtil.readJSON(`${__dir__}/resources/res/singularities.json`);
     Object.keys(obj).forEach(key => {
         const arr = obj[key];
         gen(`singularity_${key}`, hex2rgb(arr[0]), hex2rgb(arr[1]));
     });
 })();
-FileUtil.getListOfFiles(`${__dir__}/assets/animated_items/`, "png").forEach(file => {
+FileUtil.getListOfFiles(`${__dir__}/resources/res/animated_items/`, "png").forEach(file => {
     const fileName = new JavaString(file.getName()).replaceFirst("[.][^.]+$", "");
-    IAHelper.convertTexture("assets/animated_items/", fileName, "assets/items-opaque/", fileName);
+    IAHelper.convertTexture("resources/res/animated_items/", fileName, "resources/res/items-opaque/", fileName);
 });

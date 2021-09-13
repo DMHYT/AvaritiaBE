@@ -192,10 +192,8 @@ class Includes:
 		for declaration in declarations:
 			declaration = str(declaration)
 			if temp_path.endswith("preloader.js"):
-				print("checking " + declaration + " declaration for preloader")
 				if declaration.endswith("preloader.d.ts") or declaration.endswith("android.d.ts") or declaration.endswith("android-declarations.d.ts"):
 					filteredDeclarations.append(declaration)
-					print("passed")
 			elif not (declaration.endswith("preloader.d.ts") or declaration.endswith("AvaritiaAPI.d.ts")):
 				filteredDeclarations.append(declaration)
 		declarations = filteredDeclarations
