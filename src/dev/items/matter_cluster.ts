@@ -6,8 +6,8 @@ namespace MatterCluster {
     export var data: {[key: number]: ItemInstance[]} = {};
 
     export function makeClusters(list: ItemInstance[]): ItemInstance[] {
-        let returnData: ItemInstance[] = [], 
-            cloned: ItemInstance[] = [].concat(list);
+        let returnData: ItemInstance[] = [],
+            cloned: ItemInstance[] = [ ...list ];
         while(cloned.length != 0) returnData.push(makeCluster(cloned));
         return returnData;
     }

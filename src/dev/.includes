@@ -1,4 +1,8 @@
+polyfill.js
 header.ts
+core/mods.ts
+core/funcs.ts
+core/rarity.ts
 translation.ts
 utils.ts
 items/matter_cluster.ts
