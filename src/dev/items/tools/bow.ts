@@ -8,73 +8,74 @@ Item.setEnchantType(ItemID.infinity_bow, EEnchantType.BOW, 1);
 type BowData = { timer: number };
 var CURRENT_BOW_ICON_CLIENT_SIDE: number = 0;
 
-const check_arrow = (player: number) => {
-    const actor = new PlayerActor(player);
-    for(let i=0; i<36; ++i)
-        if(actor.getInventorySlot(i).id == VanillaItemID.arrow)
-            return i;
-    return -1;
-}
+namespace InfinityBow {
 
-const infinity_bow_shoot = (item: ItemInstance, ticks: number, player: number) => {
-    let actor = new PlayerActor(player),
-        j = 13 - ticks,
-        flag = actor.getGameMode() == 1 || (item.extra != null && item.extra.isEnchanted() && item.extra.getEnchantLevel(EEnchantment.INFINITY) > 0),
-        inventoryArrow = check_arrow(player);
-    if(flag || inventoryArrow != -1){
-        let f = j / 13;
-        f = (f * f + f * 2) / 3;
+    export const HEAVEN_ARROWS_TEMP: {[key: number]: boolean} = {};
+    
+    export function checkArrow(player: number): number {
+        const actor = new PlayerActor(player);
+        for(let i=0; i<36; ++i)
+            if(actor.getInventorySlot(i).id == VanillaItemID.arrow)
+                return i;
+        return -1;
+    }
+
+    export function shoot(item: ItemInstance, ticks: number, player: number): void {
+        const region = BlockSource.getDefaultForActor(player);
+        const j = 13 - ticks;
+        let f: number = j / 13.0;
+        f = (f * f + f * 2.0) / 3.0;
         if(f < .1) return;
         if(f > 1) f = 1;
-        let lookAngle = Entity.getLookAngle(player),
-            pos = Entity.getPosition(player),
-            velocity = { x: -Math.sin(lookAngle.yaw) * Math.cos(lookAngle.pitch), y: Math.sin(lookAngle.pitch), z: Math.cos(lookAngle.yaw) * Math.cos(lookAngle.pitch) },
-            region = BlockSource.getDefaultForActor(player),
-            arrow = region.spawnEntity(pos.x + (velocity.x * .5), pos.y + (velocity.y * .5), pos.z + (velocity.z * .5), EEntityType.ARROW);
-        let tag = Entity.getCompoundTag(arrow);
-        tag.putByte("AVARITIA_HEAVEN_ARROW", 1);
-        tag.putInt64("AVARITIA_BOW_SHOOTER", player);
-        tag.putDouble("AVARITIA_ARROW_DAMAGE", 60);
-        if(f == 1) tag.putByte("crit", 1);
-        if(item.extra != null && item.extra.isEnchanted()){
-            let power = item.extra.getEnchantLevel(EEnchantment.POWER);
-            if(power > 0) tag.putDouble("AVARITIA_ARROW_DAMAGE", 61 + power);
-            // TODO make punch
-            if(item.extra.getEnchantLevel(EEnchantment.FLAME) > 0) Entity.setFire(arrow, 100, true);
+        const pos = Entity.getPosition(player);
+        const entity = region.spawnEntity(pos.x, pos.y, pos.z, EEntityType.ARROW);
+        const arrow = new EntityArrow(entity);
+        const look = Entity.getLookAngle(player);
+        arrow.shoot(pos.x, pos.y, pos.z, look.pitch, look.yaw, 0, f * 3.0, 1.0);
+        arrow.setDamage(20.0);
+        if(f == 1.0) arrow.setIsCritical(true);
+        if(item.extra != null && item.extra.isEnchanted()) {
+            const power = item.extra.getEnchantLevel(EEnchantment.POWER);
+            if(power > 0) arrow.setDamage(arrow.getDamage() + power + 1);
+            const punch = item.extra.getEnchantLevel(EEnchantment.PUNCH);
+            if(punch > 0) arrow.setKnockbackStrength(punch);
+            const flame = item.extra.getEnchantLevel(EEnchantment.FLAME);
+            if(flame > 0) arrow.setFire(flame);
         }
-        if(flag) tag.putByte("pickup", 2);
-        else {
-            let slot = actor.getInventorySlot(inventoryArrow);
-            actor.setInventorySlot(inventoryArrow, slot.id, slot.count - 1, slot.data, slot.extra);
-        }
-        Entity.setCompoundTag(arrow, tag);
-        Entity.setVelocity(arrow, velocity.x * 1, velocity.y * 1 + 0.2, velocity.z * 1);
-        Entity.setSkin(arrow, "entity/heavenarrow.png");
-        Entity.setLookAngle(arrow, lookAngle.yaw, lookAngle.pitch);
+        Entity.setSkin(entity, "entity/heavenarrow.png");
         playSound(pos.x, pos.y, pos.z, Entity.getDimension(player), "random.bow", 1, 1 / (rand.nextFloat() * 0.4 + 1.2) + f * 0.5);
+        const actor = new PlayerActor(player);
+        if(actor.getGameMode() == 1 || (item.extra != null && item.extra.isEnchanted() && item.extra.getEnchantLevel(EEnchantment.INFINITY) > 0)) {
+            const tag = Entity.getCompoundTag(entity);
+            tag.putByte("pickup", 2);
+            Entity.setCompoundTag(entity, tag);
+        }
+        HEAVEN_ARROWS_TEMP[entity] = true;
     }
-}
 
-const summon_arrow_rain = (coords: Vector, region: BlockSource) => {
-    for(let i=0; i<35; i++){
-        let angle = rand.nextDouble() * 2 * Math.PI,
-            dist = rand.nextGaussian() * 0.75,
-            x = Math.sin(angle) * dist + coords.x,
-            z = Math.cos(angle) * dist + coords.z,
-            y = coords.y + 25,
-            dangle = rand.nextDouble() * 2 * Math.PI,
-            ddist = rand.nextDouble() * 0.35,
-            dx = Math.sin(dangle) * ddist,
-            dz = Math.cos(dangle) * ddist,
-            arrow = region.spawnEntity(x, y, z, EEntityType.ARROW);
-        Entity.setSkin(arrow, "entity/heavenarrow.png");
-        Entity.addVelocity(arrow, dx, -(rand.nextDouble() * 1.85 + 0.15), dz);
-        Entity.setLookAngle(arrow, 0, 0);
-        let tag = Entity.getCompoundTag(arrow);
-        tag.putDouble("damage", 60);
-        tag.putByte("crit", 1);
-        Entity.setCompoundTag(arrow, tag);
+    export function barrage(coords: Vector, region: BlockSource, damage: number): void {
+        for(let i = 0; i < 10; i++) {
+            const angle = rand.nextDouble() * 2 * Math.PI;
+            const dist = rand.nextGaussian() * .5;
+            const x = Math.sin(angle) * dist + coords.x;
+            const z = Math.cos(angle) * dist + coords.z;
+            const y = coords.y + 25.0;
+            const dangle = rand.nextDouble() * 2 + Math.PI;
+            const ddist = rand.nextDouble() * .35;
+            const dx = Math.sin(dangle) * ddist;
+            const dz = Math.cos(dangle) * ddist;
+            const entity = region.spawnEntity(x, y, z, EEntityType.ARROW);
+            // TODO arrow.shootingEtity = player who made a shot with a bow
+            Entity.addVelocity(entity, dx, -(rand.nextDouble() * 1.85 + .15), dz);
+            const arrow = new EntityArrow(entity);
+            arrow.setDamage(damage);
+            arrow.setIsCritical(true);
+            const tag = Entity.getCompoundTag(entity);
+            tag.putByte("pickup", 2);
+            Entity.setCompoundTag(entity, tag);
+        }
     }
+
 }
 
 Item.registerNoTargetUseFunction(ItemID.infinity_bow, (item, player) => {
@@ -86,23 +87,19 @@ Item.registerNoTargetUseFunction(ItemID.infinity_bow, (item, player) => {
         }
     } as any);
 });
-Item.registerUsingCompleteFunction(ItemID.infinity_bow, (item, player) => {
-    infinity_bow_shoot(item, 13, player);
-});
-Item.registerUsingReleasedFunction(ItemID.infinity_bow, (item, ticks, player) => {
-    infinity_bow_shoot(item, ticks, player);
-});
+Item.registerUsingCompleteFunction(ItemID.infinity_bow, (item, player) => InfinityBow.shoot(item, 13, player));
+Item.registerUsingReleasedFunction(ItemID.infinity_bow, (item, ticks, player) => InfinityBow.shoot(item, ticks, player));
 
 Callback.addCallback("ProjectileHit", (projectile, item, target) => {
     if(Entity.getType(projectile) == EEntityType.ARROW){
-        let tag = Entity.getCompoundTag(projectile);
-        if(tag.contains("AVARITIA_HEAVEN_ARROW")) 
-            if(target.entity != -1 && target.coords == null) 
-                if(tag.contains("AVARITIA_ARROW_DAMAGE") && tag.contains("AVARITIA_BOW_SHOOTER"))
-                    Entity.damageEntity(target.entity, tag.getDouble("AVARITIA_ARROW_DAMAGE"), 12, {attacker: tag.getInt64("AVARITIA_BOW_SHOOTER"), bool1: true});
-                else debug_enabled && Debug.m("No damage and player tags found in heaven arrow entity!");
-            else summon_arrow_rain(target.coords, BlockSource.getDefaultForActor(projectile));
-        else debug_enabled && Debug.m("No heaven arrow tag found in arrow entity!");
+        if(
+            projectile in InfinityBow.HEAVEN_ARROWS_TEMP &&
+            target.entity == -1 && target.coords != null
+        ) {
+            const arrow = new EntityArrow(projectile);
+            InfinityBow.barrage(target.coords, BlockSource.getDefaultForActor(projectile), arrow.getDamage());
+            delete InfinityBow.HEAVEN_ARROWS_TEMP[projectile];
+        }
     }
 });
 

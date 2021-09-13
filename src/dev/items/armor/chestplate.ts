@@ -68,6 +68,7 @@ Callback.addCallback("LocalTick", () => {
         lastFlyingClient = Player.getFlying();
         if(isWearingChestplateClient) {
             Network.sendToServer("avaritia.togglewings", { bool: lastFlyingClient });
+            Network.sendToServer("avaritia.isflying.server", { bool: lastFlyingClient });
         }
     }
 });
