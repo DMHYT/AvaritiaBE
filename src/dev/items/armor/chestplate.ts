@@ -37,15 +37,9 @@ Network.addClientPacket("avaritia.togglewings.client", (data: { player: number, 
 Network.addClientPacket("avaritia.iswearingchestplate.client", (data: { player: number, bool: boolean }) => WINGS_DATA[data.player].isWearingChestplate = data.bool);
 
 Callback.addCallback("ServerPlayerLoaded", player => {
-    const mesh = new RenderMesh();
-    const renderer = new ActorRenderer().addPart("body").endPart().addPart("wings", "body", mesh).endPart();
-    renderer.setTexture("render/infinity_wings.png");
-    const attachable = new AttachableRender(player).setRenderer(renderer);
-    WINGS_DATA[player] = { isWearingChestplate: new PlayerActor(player).getArmor(1).id == ItemID.infinity_chestplate, renderer, attachable, mesh }
     Network.sendToAllClients("avaritia.wingsdata.client", { player });
     const client = Network.getClientForPlayer(player);
-    Object.keys(WINGS_DATA)
-        .map(parseInt)
+    Network.getConnectedPlayers()
         .filter(value => value != player)
         .forEach(pl => client.send("avaritia.wingsdata.client", { player: pl }));
 });
@@ -77,7 +71,6 @@ Armor.registerOnTakeOnListener(ItemID.infinity_chestplate, (item, slot, player) 
     const client = Network.getClientForPlayer(player);
     client.send("avaritia.toggleflying", { bool: true });
     client.send("avaritia.chestplate", { bool: true });
-    WINGS_DATA[player].isWearingChestplate = true;
     Network.sendToAllClients("avaritia.iswearingchestplate.client", { player, bool: true });
     Network.sendToAllClients("avaritia.togglewings.client", { player, bool: true });
 });
@@ -86,7 +79,6 @@ Armor.registerOnTakeOffListener(ItemID.infinity_chestplate, (item, slot, player)
     const client = Network.getClientForPlayer(player);
     client.send("avaritia.toggleflying", { bool: false });
     client.send("avaritia.chestplate", { bool: false });
-    WINGS_DATA[player].isWearingChestplate = false;
     Network.sendToAllClients("avaritia.iswearingchestplate.client", { player, bool: false });
     Network.sendToAllClients("avaritia.togglewings.client", { player, bool: false });
 });

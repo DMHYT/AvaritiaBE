@@ -1,40 +1,27 @@
 #include <hook.h>
-#include <mod.h>
 #include <logger.h>
 #include <symbol.h>
 #include <innercore_callbacks.h>
 #include <nativejs.h>
 #include <jni.h>
 #include "recovered.hpp"
+#include "mod.hpp"
 
-using namespace HookManager;
-
-jclass getMyJavaCallbackClass() {
-	static jclass myCallbackClass = nullptr;
-	if(myCallbackClass == nullptr) {
+AvaritiaNativeModule::AvaritiaNativeModule(const char* id): Module(id) {};
+void AvaritiaNativeModule::initialize() {
+	DLHandleManager::initializeHandle("libminecraftpe.so", "mcpe");
+	HookManager::addCallback(SYMBOL("mcpe", "_ZN6Player14jumpFromGroundEv"), LAMBDA((Player* player), {
 		JNIEnv* env;
 		ATTACH_JAVA(env, JNI_VERSION) {
-			jclass localClass = env->FindClass("ua/vsdum/avaritia/Avaritia");
-			myCallbackClass = reinterpret_cast<jclass>(env->NewGlobalRef(localClass));
+			jclass clazz = env->FindClass("ua/vsdum/avaritia/Avaritia");
+			jmethodID method = env->GetStaticMethodID(clazz, "onPlayerJump", "(J)V");
+			env->CallStaticVoidMethod(clazz, method, (jlong) (player->getUniqueID()->id));
 		}
-	}
-	return myCallbackClass;
+	}, ), HookManager::CALL | HookManager::LISTENER);
 }
 
-class MainModule : public Module {
-public:
-	MainModule(const char* id): Module(id) {};
-
-	virtual void initialize() {
-		DLHandleManager::initializeHandle("libminecraftpe.so", "mcpe");
-		addCallback(SYMBOL("mcpe", "_ZN6Player14jumpFromGroundEv"), LAMBDA((Player* player), {
-			JavaCallbacks::invokeCallback(getMyJavaCallbackClass(), "onPlayerJump", "(J)V", (jlong) player->getUniqueID()->id);
-		}, ), CALL | LISTENER);
-    }
-};
-
 MAIN {
-	Module* main_module = new MainModule("avaritia");
+	Module* main_module = new AvaritiaNativeModule("avaritia");
 }
 
 JS_MODULE_VERSION(AvaritiaNative, 1);
@@ -43,6 +30,9 @@ JS_EXPORT(AvaritiaNative, moveActorRelative, "V(LFFFF)", (JNIEnv*, long long ent
 	Actor* actor = GlobalContext::getLevel()->fetchEntity(uid, true);
 	if(actor != nullptr) { 
 		actor->moveRelative(f1, f2, f3, f4);
+	} else {
+		Logger::error("AVARITIA", "Fetched entity is nullptr!");
+		Logger::flush();
 	}
 	return 0;
 });
@@ -56,6 +46,8 @@ JS_EXPORT(AvaritiaNative, isActorInWater, "I(L)", (JNIEnv*, long long entity) {
 		return NativeJS::wrapIntegerResult(inWater ? 1 : 0);
 	}
 });
+
+extern "C" {
 
 JNIEXPORT jlong JNICALL Java_ua_vsdum_avaritia_NativeArrow_nativeGetForEntity
 (JNIEnv*, jclass, jlong entity) {
@@ -106,6 +98,8 @@ JNIEXPORT jfloat JNICALL Java_ua_vsdum_avaritia_NativeArrow_nativeGetDamage
 (JNIEnv*, jclass, jlong ptr) {
 	Arrow* arrow = (Arrow*) ptr;
 	return arrow->getBaseDamage();
+}
+
 }
 
 // native js signature rules:
