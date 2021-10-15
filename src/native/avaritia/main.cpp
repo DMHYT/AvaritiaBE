@@ -7,12 +7,13 @@
 #include "recovered.hpp"
 #include "mod.hpp"
 
+
 AvaritiaNativeModule::AvaritiaNativeModule(const char* id): Module(id) {};
 void AvaritiaNativeModule::initialize() {
 	DLHandleManager::initializeHandle("libminecraftpe.so", "mcpe");
 	HookManager::addCallback(SYMBOL("mcpe", "_ZN6Player14jumpFromGroundEv"), LAMBDA((Player* player), {
 		JNIEnv* env;
-		ATTACH_JAVA(env, JNI_VERSION) {
+		ATTACH_JAVA(env, JNI_VERSION_1_4) {
 			jclass clazz = env->FindClass("ua/vsdum/avaritia/Avaritia");
 			jmethodID method = env->GetStaticMethodID(clazz, "onPlayerJump", "(J)V");
 			env->CallStaticVoidMethod(clazz, method, (jlong) (player->getUniqueID()->id));
@@ -24,30 +25,32 @@ MAIN {
 	Module* main_module = new AvaritiaNativeModule("avaritia");
 }
 
-JS_MODULE_VERSION(AvaritiaNative, 1);
-JS_EXPORT(AvaritiaNative, moveActorRelative, "V(LFFFF)", (JNIEnv*, long long entity, float f1, float f2, float f3, float f4) {
+extern "C" {
+
+JNIEXPORT void JNICALL Java_ua_vsdum_avaritia_Avaritia_nativeMoveActorRelative
+(JNIEnv*, jclass, jlong entity, jfloat f1, jfloat f2, jfloat f3, jfloat f4) {
 	ActorUniqueID uid(entity);
 	Actor* actor = GlobalContext::getLevel()->fetchEntity(uid, true);
-	if(actor != nullptr) { 
+	if(actor != nullptr) {
 		actor->moveRelative(f1, f2, f3, f4);
 	} else {
 		Logger::error("AVARITIA", "Fetched entity is nullptr!");
 		Logger::flush();
 	}
-	return 0;
-});
-JS_EXPORT(AvaritiaNative, isActorInWater, "I(L)", (JNIEnv*, long long entity) {
+}
+
+JNIEXPORT jboolean JNICALL Java_ua_vsdum_avaritia_Avaritia_nativeIsActorInWater
+(JNIEnv*, jclass, jlong entity) {
 	ActorUniqueID uid(entity);
 	Actor* actor = GlobalContext::getLevel()->fetchEntity(uid, true);
 	if(actor == nullptr) {
-		return NativeJS::wrapIntegerResult(0);
+		Logger::error("AVARITIA", "Fetched entity is nullptr!");
+		Logger::flush();
+		return false;
 	} else {
-		bool inWater = actor->isInWater();
-		return NativeJS::wrapIntegerResult(inWater ? 1 : 0);
+		return actor->isInWater();
 	}
-});
-
-extern "C" {
+}
 
 JNIEXPORT jlong JNICALL Java_ua_vsdum_avaritia_NativeArrow_nativeGetForEntity
 (JNIEnv*, jclass, jlong entity) {

@@ -1,7 +1,6 @@
 #ifndef AVARITIA_RECOVERED_HPP
 #define AVARITIA_RECOVERED_HPP
 
-
 class ActorUniqueID {
     public:
     long long id;
@@ -21,6 +20,9 @@ class Mob : public Actor {
     public:
 };
 class Player : public Mob {
+    public:
+};
+class LocalPlayer : public Player {
     public:
 };
 class BlockPos {
@@ -53,7 +55,8 @@ class Level {
 };
 namespace GlobalContext {
     Level* getLevel();
+    LocalPlayer* getLocalPlayer();
 }
-
+class PlayerRewindContext;
 
 #endif //AVARITIA_RECOVERED_HPP

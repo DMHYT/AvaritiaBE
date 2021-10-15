@@ -15,11 +15,17 @@ android.d.ts
 android-declarations.d.ts
 preloader.d.ts
 
-toolchain/classpath/android-support-multidex.jar
-toolchain/classpath/android-support-v4.jar
-toolchain/classpath/android-support-v7-recyclerview.jar
-toolchain/classpath/android.jar
-toolchain/classpath/classes-dex2jar.jar
-toolchain/classpath/classes2-dex2jar.jar
-toolchain/classpath/horizon-classes.jar
-toolchain/classpath/rhino-1.7.7.jar
+android-support-multidex.jar
+android-support-v4.jar
+android-support-v7-recyclerview.jar
+android.jar
+classes-dex2jar.jar
+classes2-dex2jar.jar
+horizon-classes.jar
+rhino-1.7.7.jar
+
+toolchain/adb
+toolchain/bin
+
+src/native/avaritia/shared_headers/**
+!src/native/avaritia/shared_headers/.placeholder

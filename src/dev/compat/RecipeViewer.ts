@@ -48,8 +48,8 @@ ModAPI.addAPICallback("RecipeViewer", RecipeViewer => {
                 {type: "bitmap", x: 217.5, y: 40, bitmap: "avaritia.extreme_rv", scale: 3}
             ],
             elements: (() => {
-                const elements: {[key: string]: Partial<UI.UISlotElement>} = { output0: { x: 704.5, y: 246, size: 78, bitmap: "_default_slot_empty", isTransparentBackground: true } }
-                for(let i=0; i<81; i++) elements[`input${i}`] = { x: 219.5 + (i % 9) * 54, y: 42 + Math.floor(i / 9) * 54, size: 54, bitmap: "_default_slot_empty", isTransparentBackground: true };
+                const elements: {[key: string]: UI.UISlotElement} = { output0: { type: "slot", x: 704.5, y: 246, size: 78, bitmap: "_default_slot_empty"} }
+                for(let i=0; i<81; i++) elements[`input${i}`] = { type: "slot", x: 219.5 + (i % 9) * 54, y: 42 + Math.floor(i / 9) * 54, size: 54, bitmap: "_default_slot_empty"};
                 return elements;
             })()
         }
@@ -95,8 +95,8 @@ ModAPI.addAPICallback("RecipeViewer", RecipeViewer => {
                 }
                 return result;
             }
-            public onOpen(elements: HashMap<string, UI.Element>, recipe: CompressorRecipePattern): void {
-                (elements.get("textAmount") as UI.Element).setBinding("text", JavaString.format(Translation.translate("avaritia.rv.compressor.amount"), [JavaInt.valueOf(recipe.requiredAmount)]));
+            public onOpen(elements: HashMap<string, UIElement>, recipe: CompressorRecipePattern): void {
+                (elements.get("textAmount") as UIElement).setBinding<string>("text", JString.format(Translation.translate("avaritia.rv.compressor.amount"), [Integer.valueOf(recipe.requiredAmount)]));
             }
         }
         RecipeViewer.RecipeTypeRegistry.register("avaritia_extreme_shaped", new ExtremeCraftingShapedRecipe());

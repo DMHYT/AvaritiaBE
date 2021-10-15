@@ -1,10 +1,3 @@
-declare interface AvaritiaNative {
-    moveActorRelative(entity: number, x: number, y: number, z: number, a: number): void;
-    isActorInWater(entity: number): boolean;
-}
-
-declare function WRAP_NATIVE(module: "AvaritiaNative"): AvaritiaNative;
-
 declare namespace Callback {
     interface PlayerJumpFunction {
         (player: number): void;
@@ -12,7 +5,7 @@ declare namespace Callback {
     function addCallback(callbackName: "PlayerJump", func: PlayerJumpFunction): void;
 }
 
-declare class NativeArrow {
+declare class ____NativeArrow {
     public getPointer(): number;
     public constructor(arrowEntity: number);
     public setDamage(damage: number): void;
@@ -22,5 +15,12 @@ declare class NativeArrow {
     public shoot(x: number, y: number, z: number, pitch: number, yaw: number, ax: number, ay: number, az: number): void;
     public getDamage(): number;
 }
+declare function WRAP_JAVA(clazz: "ua.vsdum.avaritia.NativeArrow"): typeof ____NativeArrow;
 
-declare function WRAP_JAVA(clazz: "ua.vsdum.avaritia.NativeArrow"): typeof NativeArrow;
+declare interface AvaritiaMainClass {
+    nativeMoveActorRelative(entity: number, f1: number, f2: number, f3: number, f4: number): void;
+    nativeIsActorInWater(entity: number): boolean;
+    boot(something: java.util.HashMap<any, any>): void;
+    onPlayerJump(uid: number): void;
+}
+declare function WRAP_JAVA(clazz: "ua.vsdum.avaritia.Avaritia"): AvaritiaMainClass;

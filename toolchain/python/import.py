@@ -44,8 +44,18 @@ def import_build_config(make_file, source, destination):
 
 		# some pre-defined resource folders
 		resources = [
-
+			{
+				"path": "src/assets/resource_packs/*",
+				"type": "minecraft_resource_pack"
+			},
+			{
+				"path": "src/assets/behavior_packs/*",
+				"type": "minecraft_behavior_pack"
+			}
 		]
+
+		os.makedirs(os.path.join(assets_dir, "resource_packs"))
+		os.makedirs(os.path.join(assets_dir, "behavior_packs"))
 
 		# import assets
 		for res_dir in config.get_filtered_list("resources", "resourceType", ("resource", "gui")):

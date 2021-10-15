@@ -194,11 +194,11 @@ class Includes:
 			if temp_path.endswith("preloader.js"):
 				if declaration.endswith("preloader.d.ts") or declaration.endswith("android.d.ts") or declaration.endswith("android-declarations.d.ts"):
 					filteredDeclarations.append(declaration)
-			elif not (declaration.endswith("preloader.d.ts") or declaration.endswith("AvaritiaAPI.d.ts")):
+			# Here you can add declarations that must be ignored in the mod sources
+			# For example, `or declaration.endswith("AvaritiaAPI.d.ts")`
+			elif not (declaration.endswith("preloader.d.ts") or False): # Here instead of False
 				filteredDeclarations.append(declaration)
 		declarations = filteredDeclarations
-		if temp_path.endswith("preloader.js"):
-			print("declarations for preloader are " + str(declarations))
 
 		template = {
 			"compilerOptions": {

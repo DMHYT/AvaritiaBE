@@ -94,6 +94,8 @@ def build_all_scripts():
 def build_all_resources():
 	mod_structure.cleanup_build_target("resource_directory")
 	mod_structure.cleanup_build_target("gui")
+	mod_structure.cleanup_build_target("minecraft_resource_pack")
+	mod_structure.cleanup_build_target("minecraft_behavior_pack")
 	overall_result = 0
 	
 	for resource in make_config.get_value("resources", fallback=[]):

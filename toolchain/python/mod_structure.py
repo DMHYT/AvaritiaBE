@@ -15,6 +15,9 @@ class BuildTargetType:
 BUILD_TARGETS = {
 	"resource_directory": BuildTargetType(directory="resources", list_property="resources"),
 	"gui": BuildTargetType(directory="gui", list_property="resources"),
+	"minecraft_resource_pack": BuildTargetType(directory="minecraft_packs/resource", list_property="resources"),
+	"minecraft_behavior_pack": BuildTargetType(directory="minecraft_packs/behavior", list_property="resources"),
+
 	"script_source": BuildTargetType(directory="source", list_property="compile"),
 	"script_library": BuildTargetType(directory="library", list_property="compile"),
 	"native": BuildTargetType(directory="native", list_property="nativeDirs"),

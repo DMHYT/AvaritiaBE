@@ -20,9 +20,12 @@ IMPORT("StorageInterface");
 IMPORT("VanillaSlots");
 
 const Color = android.graphics.Color;
-const JavaString = java.lang.String;
-const JavaInt = java.lang.Integer;
+const JString = java.lang.String;
+const Integer = java.lang.Integer;
 type HashMap<K, V> = java.util.HashMap<K, V>;
+type ItemContainerSlot = com.zhekasmirnov.apparatus.api.container.ItemContainerSlot;
+type UIElement = com.zhekasmirnov.innercore.api.mod.ui.elements.UIElement;
+type IWindow = com.zhekasmirnov.innercore.api.mod.ui.window.IWindow;
 
 const debug_enabled = __config__.getBool("debug");
 const MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getNumber("max_gaping_void_view_distance").intValue();
@@ -36,7 +39,7 @@ const rand = new java.util.Random();
 
 const AVA_STUFF: number[] = [];
 
-const AvaritiaNative = WRAP_NATIVE("AvaritiaNative");
 const EntityArrow = WRAP_JAVA("ua.vsdum.avaritia.NativeArrow");
+const AvaritiaFuncs = WRAP_JAVA("ua.vsdum.avaritia.Avaritia");
 
 const INFINITY_ITEM_FRAMES = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1];

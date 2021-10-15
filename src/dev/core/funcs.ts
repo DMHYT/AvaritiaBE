@@ -88,3 +88,6 @@ const hsv2rgb = (h: number, s: number, v: number) => {
 }
 
 const itemInstanceFromArray = (arr: ItemInstanceArray) => ({ id: arr[0], count: arr[1], data: arr[2], extra: arr[3] ?? null } as ItemInstance);
+
+const isPlayerFlying = (player: number) => Entity.getCompoundTag(player).getCompoundTagNoClone("abilities").getByte("flying") == 1;
+const isPlayerOnGround = (player: number) => Entity.getCompoundTag(player).getByte("OnGround") == 1;

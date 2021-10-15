@@ -10,7 +10,7 @@
                 all_translation_keys[kv[0]][name] = kv[1];
             });
     FileTools.GetListOfFiles(`${__dir__}/resources/res/lang`, "lang")
-        .forEach(file => readFile(new JavaString(file.getName()).replaceFirst("[.][^.]+$", "")));
+        .forEach(file => readFile(new JString(file.getName()).replaceFirst("[.][^.]+$", "")));
     for (let key in all_translation_keys) {
         all_translation_keys[key][Translation.getLanguage()] ??= all_translation_keys[key].en;
         Translation.addTranslation(key, all_translation_keys[key]);
