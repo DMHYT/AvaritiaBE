@@ -1,4 +1,4 @@
-package ua.vsdum.avaritia;
+package vsdum.avaritia;
 
 public class NativeArrow {
     

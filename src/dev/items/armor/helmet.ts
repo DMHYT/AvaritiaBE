@@ -36,12 +36,6 @@ Network.addClientPacket("avaritia.toggleeyes.client", (data: { player: number, b
 Network.addClientPacket("avaritia.iswearinghelmet.client", (data: { player: number, bool: boolean }) => EYE_DATA[data.player].isWearingHelmet = data.bool);
 
 Callback.addCallback("ServerPlayerLoaded", player => {
-    const mesh = new RenderMesh();
-    const renderer = new ActorRenderer().addPart("head").endPart().addPart("eyes", "head", mesh).endPart();
-    renderer.setTexture("render/pixel.png");
-    renderer.setMaterial("avaritia_infinity_eyes");
-    const attachable = new AttachableRender(player).setRenderer(renderer);
-    EYE_DATA[player] = { isWearingHelmet: new PlayerActor(player).getArmor(0).id == ItemID.infinity_helmet, renderer, attachable, mesh }
     Network.sendToAllClients("avaritia.eyedata.client", { player });
     const client = Network.getClientForPlayer(player);
     Object.keys(EYE_DATA)

@@ -302,15 +302,18 @@ def task_load_adb_and_bin():
 
 @task("downloadGnustlHeaders")
 def task_download_gnustl_headers():
-	from zipfile import ZipFile
-	print("downloading gnustl shared headers")
-	url = "https://github.com/DMHYT/mobile-gnustl-headers/releases/download/000/stl.zip"
-	local_path = make_config.get_path("src/native/avaritia/shared_headers/stl.zip")
-	request.urlretrieve(url, filename=local_path)
-	with ZipFile(local_path, 'r') as zipp:
-		zipp.extractall(local_path[:-7])
-	os.remove(local_path)
-	print("complete!")
+	try:
+		from zipfile import ZipFile
+		print("downloading gnustl shared headers")
+		url = "https://github.com/DMHYT/mobile-gnustl-headers/releases/download/000/stl.zip"
+		local_path = make_config.get_path("toolchain/stdincludes/gnustl/stl.zip")
+		request.urlretrieve(url, filename=local_path)
+		with ZipFile(local_path, 'r') as zipp:
+			zipp.extractall(local_path[:-7])
+		os.remove(local_path)
+		print("complete!")
+	except:
+		print("some shit happened")
 	return 0
 
 @task("downloadNdkIfNeeded")

@@ -1,9 +1,5 @@
-const addShaped = (id: number, count: number, data: number, mask: string[], keys: (string | number)[]) => Recipes.addShaped({id: id, count: count, data: data}, mask, keys);
-const addShapeless = (id: number, count: number, data: number, ingredients: [number, number][]) => {
-    const ingrobj: {id: number, data: number}[] = [];
-    ingredients.forEach(el => ingrobj.push({ id: el[0], data: el[1] }));
-    Recipes.addShapeless({id: id, count: count, data: data}, ingrobj);
-}
+const addShaped = (id: number, count: number, data: number, mask: string[], keys: (string | number)[]) => Recipes.addShaped({ id, count, data }, mask, keys);
+const addShapeless = (id: number, count: number, data: number, ingredients: [number, number][]) => Recipes.addShapeless({ id, count, data }, ingredients.map(el => { return { id: el[0], data: el[1] } }));
 
 type SoundPacket = { x: number, y: number, z: number, sound: string, volume: number, pitch: number };
 Network.addClientPacket("avaritia.sound", (data: SoundPacket) => World.playSound(data.x, data.y, data.z, data.sound, data.volume, data.pitch));

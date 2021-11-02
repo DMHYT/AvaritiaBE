@@ -27,7 +27,7 @@ def get_push_pack_directory():
 
 def push(directory, cleanup=False):
 	items = glob(directory + "/*")
-	changed = [os.path.relpath(path, directory) for path in items if storage.is_path_changed(path)]
+	changed = [os.path.relpath(path, directory) for path in items]
 
 	if len(changed) < 1:
 		print_progress_bar(1, 1, suffix = 'Complete!', length = 50)

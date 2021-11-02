@@ -15,5 +15,15 @@
         "toolchain/build/lock": true,
         "**/*.log": true
     },
-    "vscode.tsc.compiler.alertTSConfigChanges": "never"
+    "vscode.tsc.compiler.alertTSConfigChanges": "never",
+    "files.associations": {
+        "vector": "cpp",
+        "__bit_reference": "cpp",
+        "algorithm": "cpp",
+        "bit": "cpp",
+        "limits": "cpp",
+        "type_traits": "cpp",
+        "__config": "cpp",
+        "cstddef": "cpp"
+    }
 }

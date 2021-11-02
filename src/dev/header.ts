@@ -23,7 +23,6 @@ const Color = android.graphics.Color;
 const JString = java.lang.String;
 const Integer = java.lang.Integer;
 type HashMap<K, V> = java.util.HashMap<K, V>;
-type ItemContainerSlot = com.zhekasmirnov.apparatus.api.container.ItemContainerSlot;
 type UIElement = com.zhekasmirnov.innercore.api.mod.ui.elements.UIElement;
 type IWindow = com.zhekasmirnov.innercore.api.mod.ui.window.IWindow;
 

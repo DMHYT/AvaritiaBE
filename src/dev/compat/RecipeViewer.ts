@@ -1,10 +1,4 @@
 ModAPI.addAPICallback("RecipeViewer", RecipeViewer => {
-    var SubUI: SubUI;
-    var target: ViewInfo;
-    try {
-        SubUI = RecipeViewer.requireGlobal("SubUI");
-        target = SubUI.getTarget();
-    } catch(e) {}
     const button_win = (key: string | string[]) => new UI.Window({
         location: {x: 872, y: UI.getScreenHeight() - 96, width: 64, height: 64},
         elements: {
@@ -12,24 +6,7 @@ ModAPI.addAPICallback("RecipeViewer", RecipeViewer => {
                 type: "button",
                 x: 0, y: 0, scale: 62.5,
                 bitmap: "default_button_up", bitmap2: "default_button_down",
-                clicker: {
-                    onClick: () => {
-                        if(typeof key === "string") {
-                            RecipeViewer.RecipeTypeRegistry.openRecipePage(key);
-                        } else {
-                            if(typeof SubUI !== "undefined") {
-                                key.forEach(type => {
-                                    if(!RecipeViewer.RecipeTypeRegistry.isExist(type) || target && target.mode === 2 && target.recipe === type) return;
-                                    if(RecipeViewer.RecipeTypeRegistry.get(type).getAllList().length > 0)
-                                        SubUI.cache.push({ mode: 2, recipe: type, tray: [type] });
-                                });
-                                SubUI.page = 0;
-                                SubUI.updateWindow();
-                                SubUI.window.open();
-                            } else RecipeViewer.RecipeTypeRegistry.openRecipePage(key[0]);
-                        }
-                    }
-                } 
+                clicker: { onClick: () => RecipeViewer.RecipeTypeRegistry.openRecipePage(key) } 
             },
             text: {
                 type: "text",

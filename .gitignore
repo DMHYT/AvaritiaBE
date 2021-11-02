@@ -27,5 +27,5 @@ rhino-1.7.7.jar
 toolchain/adb
 toolchain/bin
 
-src/native/avaritia/shared_headers/**
-!src/native/avaritia/shared_headers/.placeholder
+toolchain/stdincludes/gnustl/**
+!toolchain/stdincludes/gnustl/.placeholder

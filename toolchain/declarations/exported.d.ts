@@ -1,3 +1,5 @@
+/// <reference path="android.d.ts" />
+
 declare namespace Callback {
     interface PlayerJumpFunction {
         (player: number): void;
@@ -20,6 +22,7 @@ declare function WRAP_JAVA(clazz: "ua.vsdum.avaritia.NativeArrow"): typeof ____N
 declare interface AvaritiaMainClass {
     nativeMoveActorRelative(entity: number, f1: number, f2: number, f3: number, f4: number): void;
     nativeIsActorInWater(entity: number): boolean;
+    nativeRemoveHarmfulEffectsFrom(entity: number): void;
     boot(something: java.util.HashMap<any, any>): void;
     onPlayerJump(uid: number): void;
 }

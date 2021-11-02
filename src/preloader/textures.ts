@@ -20,6 +20,6 @@
     });
 })();
 FileUtil.getListOfFiles(`${__dir__}/resources/res/animated_items/`, "png").forEach(file => {
-    const fileName = new JString(file.getName()).replaceFirst("[.][^.]+$", "");
+    const fileName = new JavaString(file.getName()).replaceFirst("[.][^.]+$", "");
     IAHelper.convertTexture("resources/res/animated_items/", fileName, "resources/res/items-opaque/", fileName);
 });
