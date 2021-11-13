@@ -11,7 +11,8 @@ interface WingsData {
     mesh: RenderMesh
 }
 const WINGS_DATA: {[player: number]: WingsData} = {};
-const WINGS_MESH = new RenderMesh(`${__dir__}/resources/res/models/wings.obj`, "obj", { invertV: false, noRebuild: true, translate: [0, -1/2, 1.001/16] });
+const WINGS_MESH = new RenderMesh(`${__dir__}/resources/res/models/wings.obj`, "obj", null);
+WINGS_MESH.translate(0, -1/2, 1.001/16);
 
 var isWearingChestplateClient: boolean = false;
 var lastFlyingClient: boolean = false;
@@ -20,7 +21,6 @@ Network.addClientPacket("avaritia.wingsdata.client", (data: { player: number }) 
     const mesh = new RenderMesh();
     mesh.setBlockTexture("infinity_wings", 0);
     const renderer = new ActorRenderer().addPart("body").endPart().addPart("wings", "body", mesh).endPart();
-    renderer.setTexture("terrain-atlas/infinity_wings_0.png");
     const attachable = new AttachableRender(data.player).setRenderer(renderer);
     WINGS_DATA[data.player] = { isWearingChestplate: new PlayerActor(data.player).getArmor(1).id == ItemID.infinity_chestplate, renderer, attachable, mesh }
 });
