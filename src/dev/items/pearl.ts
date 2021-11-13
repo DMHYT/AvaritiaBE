@@ -121,22 +121,24 @@ namespace GapingVoid {
                 .unlock();
             const color = getVoidColor(age, 1);
             anim.getShaderUniforms()
-                .lock()
                 .setUniformValue("Avaritia", "COLOR_R", color[0])
                 .setUniformValue("Avaritia", "COLOR_G", color[1])
-                .setUniformValue("Avaritia", "COLOR_B", color[2])
-                .unlock();
+                .setUniformValue("Avaritia", "COLOR_B", color[2]);
             anim.refresh();
         });
         anim.setIgnoreLightMode();
         anim.setInterpolationEnabled(true);
+        const initial_scale = getVoidScale(0);
+        anim.transform()
+            .lock()
+            .clear()
+            .scale(initial_scale, initial_scale, initial_scale)
+            .unlock();
         const initial_color = getVoidColor(0, 1);
         anim.getShaderUniforms()
-            .lock()
             .setUniformValue("Avaritia", "COLOR_R", initial_color[0])
             .setUniformValue("Avaritia", "COLOR_G", initial_color[1])
             .setUniformValue("Avaritia", "COLOR_B", initial_color[2])
-            .unlock();
     }
 
     export function getVoidScale(age: number): number {
