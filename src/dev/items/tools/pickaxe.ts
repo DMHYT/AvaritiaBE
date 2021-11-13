@@ -68,5 +68,5 @@ IAHelper.makeAdvancedAnim(ItemID.infinity_hammer, "infinity_hammer", 1, INFINITY
 AVA_STUFF.push(ItemID.infinity_pickaxe);
 Rarity.cosmic(ItemID.infinity_pickaxe);
 Rarity.cosmic(ItemID.infinity_hammer);
-undestroyable_item("infinity_pickaxe");
-undestroyable_item("infinity_hammer");
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_pickaxe);
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_hammer);

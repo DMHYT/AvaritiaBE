@@ -14,4 +14,4 @@ Callback.addCallback("EntityDeath", (victim, attacker, type) => {
 });
 IAHelper.makeAdvancedAnim(ItemID.skullfire_sword, "skull_sword", 1, [0, 0, 0, 1, 1, 2, 2, 3, 2, 2, 1, 1]);
 AVA_STUFF.push(ItemID.skullfire_sword);
-undestroyable_item("skullfire_sword");
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.skullfire_sword);

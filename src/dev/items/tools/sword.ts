@@ -18,4 +18,4 @@ Callback.addCallback("DestroyBlock", (coords, block, player) => {
 IAHelper.makeAdvancedAnim(ItemID.infinity_sword, "infinity_sword", 1, INFINITY_ITEM_FRAMES);
 AVA_STUFF.push(ItemID.infinity_sword);
 Rarity.cosmic(ItemID.infinity_sword);
-undestroyable_item("infinity_sword");
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_sword);

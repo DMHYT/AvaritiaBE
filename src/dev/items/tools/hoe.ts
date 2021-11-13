@@ -44,4 +44,4 @@ IAHelper.makeAdvancedAnim(ItemID.infinity_hoe, "infinity_hoe", 1, INFINITY_ITEM_
 
 AVA_STUFF.push(ItemID.infinity_hoe);
 Rarity.cosmic(ItemID.infinity_hoe);
-undestroyable_item("infinity_hoe");
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_hoe);

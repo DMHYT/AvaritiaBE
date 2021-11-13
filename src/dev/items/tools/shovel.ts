@@ -67,5 +67,5 @@ IAHelper.makeAdvancedAnim(ItemID.infinity_shovel, "infinity_shovel", 1, INFINITY
 AVA_STUFF.push(ItemID.infinity_shovel);
 Rarity.cosmic(ItemID.infinity_shovel);
 Rarity.cosmic(ItemID.infinity_destroyer);
-undestroyable_item("infinity_shovel");
-undestroyable_item("infinity_destroyer");
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_shovel);
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_destroyer);

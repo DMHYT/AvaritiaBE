@@ -89,4 +89,4 @@ Item.registerNoTargetUseFunction(ItemID.infinity_axe, (item, player) => {
 AVA_STUFF.push(ItemID.infinity_axe);
 INFINITY_TOOLS.push(ItemID.infinity_axe);
 Rarity.cosmic(ItemID.infinity_axe);
-undestroyable_item("infinity_axe");
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_axe);

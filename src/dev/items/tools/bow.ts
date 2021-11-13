@@ -30,8 +30,7 @@ namespace InfinityBow {
         const pos = Entity.getPosition(player);
         const entity = region.spawnEntity(pos.x, pos.y, pos.z, EEntityType.ARROW);
         const arrow = new EntityArrow(entity);
-        const look = Entity.getLookAngle(player);
-        arrow.shoot(pos.x, pos.y, pos.z, look.pitch, look.yaw, 0, f * 3.0, 1.0);
+        arrow.shoot(0, 0, 0, 1.0, f * 3.0, 0, 0, 0);
         arrow.setDamage(20.0);
         if(f == 1.0) arrow.setIsCritical(true);
         if(item.extra != null && item.extra.isEnchanted()) {
@@ -126,4 +125,4 @@ Item.registerIconOverrideFunction(ItemID.infinity_bow, (item) => {
 
 AVA_STUFF.push(ItemID.infinity_bow);
 Rarity.cosmic(ItemID.infinity_bow);
-undestroyable_item("infinity_bow");
+AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_bow);
