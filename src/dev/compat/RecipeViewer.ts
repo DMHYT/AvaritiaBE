@@ -31,20 +31,12 @@ ModAPI.addAPICallback("RecipeViewer", RecipeViewer => {
             })()
         }
         class ExtremeCraftingShapedRecipe extends RecipeViewer.RecipeType {
-            constructor() {
-                super(Translation.translate("crafting.extreme"), BlockID.extreme_crafting_table, extreme_contents)
-            }
-            getAllList(): RecipePattern[] {
-                return all_workbench.shaped;
-            }
+            constructor() { super(Translation.translate("crafting.extreme"), BlockID.extreme_crafting_table, extreme_contents) }
+            readonly getAllList = () => all_workbench.shaped;
         }
         class ExtremeCraftingShapelessRecipe extends RecipeViewer.RecipeType {
-            constructor() {
-                super(Translation.translate("crafting.extreme.shapeless"), BlockID.extreme_crafting_table, extreme_contents)
-            }
-            getAllList(): RecipePattern[] {
-                return all_workbench.shapeless;
-            }
+            constructor() { super(Translation.translate("crafting.extreme.shapeless"), BlockID.extreme_crafting_table, extreme_contents) }
+            readonly getAllList = () => all_workbench.shapeless
         }
         interface CompressorRecipePattern extends RecipePattern { requiredAmount: number }
         class CompressorRecipe extends RecipeViewer.RecipeType {
@@ -57,7 +49,7 @@ ModAPI.addAPICallback("RecipeViewer", RecipeViewer => {
                         arrow: { type: "scale",  x: 344, y: 183.5, bitmap: "avaritia.compressor_arrow", direction: 0, value: 1, scale: 6},
                         singularity: { type: "scale", x: 512, y: 183.5, bitmap: "avaritia.compressor_singularity", direction: 1, value: 1, scale: 6 },
                         textAmount: { type: "text", x: 500, y: 320.5, width: 600, height: 120, font: { alignment: UI.Font.ALIGN_CENTER, color: Color.BLACK, size: 40 } }
-                    } as {[key: string]: Partial<UI.UISlotElement | UI.UIScaleElement | UI.UITextElement>}
+                    } as {[key: string]: Partial<UI.Elements>}
                 });
             }
             public getAllList(): CompressorRecipePattern[] {
