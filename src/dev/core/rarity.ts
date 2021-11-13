@@ -8,9 +8,9 @@ namespace Rarity {
         });
     }
 
-    export function uncommon(id: number) { makeRarity(id, EColor.GREEN) }
-    export function rare(id: number) { makeRarity(id, EColor.AQUA) }
-    export function epic(id: number) { makeRarity(id, EColor.LIGHT_PURPLE) }
-    export function cosmic(id: number) { makeRarity(id, EColor.RED) }
+    export function uncommon(id: number) { makeRarity(id, "§a") }
+    export function rare(id: number) { makeRarity(id, "§b") }
+    export function epic(id: number) { makeRarity(id, "§d") }
+    export function cosmic(id: number) { makeRarity(id, "§c") }
     
 }
