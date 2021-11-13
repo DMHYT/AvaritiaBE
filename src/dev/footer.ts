@@ -273,6 +273,7 @@ if(BORING_FOOD || true) { // TODO make InTeReStInG food some day 0_0
 }
 
 Callback.addCallback("ModsLoaded", () => {
+    Gregorizer.balance();
     const arr = [
         [ItemID.diamond_lattice, 0],
         [ItemID.crystal_matrix_ingot, 0],
