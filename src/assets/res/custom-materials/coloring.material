@@ -1,7 +1,6 @@
 {
     "avaritia_coloring:entity_alphatest_custom": {
         "+states": [
-            "Blending",
             "DisableCulling"
         ],
         "-defines": ["ALPHA_TEST"],
