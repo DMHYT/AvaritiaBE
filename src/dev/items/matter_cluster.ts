@@ -49,9 +49,11 @@ namespace MatterCluster {
 
 Saver.addSavesScope(
 "AvaritiaMatterClusters", 
-(scope: any) => {
-    MatterCluster.nextId = scope?.nextId ?? 0;
-    MatterCluster.data = scope?.data ?? {};
+(scope: { nextId: number, data: {[key: number]: ItemInstance[]} }) => {
+    if(typeof scope !== "undefined" && typeof scope.nextId === "number" && typeof scope.data !== "undefined") {
+        MatterCluster.nextId = scope?.nextId ?? 0;
+        MatterCluster.data = scope?.data ?? {};
+    }
 },
 () => {
     return {
@@ -66,7 +68,7 @@ Item.createItem("matter_cluster", "item.avaritia:matter_cluster.name", {name: "m
 Item.registerNameOverrideFunction(ItemID.matter_cluster, (item, name) => {
     if(item.extra == null) return "BROKEN MATTER CLUSTER";
     name = Translation.translate(`item.avaritia:matter_cluster${item.extra.getInt("item_count") == MatterCluster.capacity ? ".full" : ""}.name`);
-    name += `\n${EColor.DARK_GRAY}${Translation.translate("tooltip.matter_cluster.desc")}`;
+    name += `\n§8${Translation.translate("tooltip.matter_cluster.desc")}`;
     return name;
 });
 Item.registerIconOverrideFunction(ItemID.matter_cluster, (item) => {
