@@ -12,7 +12,10 @@ interface EyeData {
 }
 const EYE_DATA: {[player: number]: EyeData} = {};
 const EYE_COLOR_RANDOM = new java.util.Random();
-const EYE_MESH = new RenderMesh(`${__dir__}/resources/res/models/eyes.obj`, "obj", { invertV: false, noRebuild: true, translate: [0, .53125, 0], scale: [1.2, 1.2, 1.2] });
+const EYE_MESH = new RenderMesh();
+EYE_MESH.importFromFile(`${__dir__}/resources/res/models/eyes.obj`, "obj", null);
+EYE_MESH.translate(0, .4375, 0);
+EYE_MESH.scale(1.2, 1.2, 1.2);
 
 Network.addClientPacket("avaritia.eyedata.client", (data: { player: number }) => {
     const mesh = new RenderMesh();
@@ -20,9 +23,7 @@ Network.addClientPacket("avaritia.eyedata.client", (data: { player: number }) =>
     renderer.setMaterial("avaritia_coloring");
     renderer.getPart("head").clear();
     renderer.addPart("eyes", "head", mesh).endPart();
-    const attachable = new AttachableRender(data.player)
-        .setMaterial("avaritia_coloring")
-        .setRenderer(renderer);
+    const attachable = new AttachableRender(data.player).setRenderer(renderer).setMaterial("avaritia_coloring");
     EYE_DATA[data.player] = { isWearingHelmet: new PlayerActor(data.player).getArmor(0).id == ItemID.infinity_helmet, renderer, attachable, mesh }
 });
 Network.addClientPacket("avaritia.toggleeyes.client", (data: { player: number, bool: boolean }) => {
@@ -70,18 +71,10 @@ Callback.addCallback("LocalTick", () => {
         EYE_COLOR_RANDOM.setSeed(Math.round(World.getThreadTime() / 3) * 1723609);
         players.forEach(pl => {
             const rgb = hsv2rgb(EYE_COLOR_RANDOM.nextFloat() * 6.0, 1.0, 1.0);
-            EYE_DATA[pl].renderer.getUniformSet()
-                .lock()
-                .setUniformValue("Avaritia", "COLOR_R", rgb[0])
-                .setUniformValue("Avaritia", "COLOR_G", rgb[1])
-                .setUniformValue("Avaritia", "COLOR_B", rgb[2])
-                .unlock();
             EYE_DATA[pl].attachable.getUniformSet()
-                .lock()
                 .setUniformValue("Avaritia", "COLOR_R", rgb[0])
                 .setUniformValue("Avaritia", "COLOR_G", rgb[1])
-                .setUniformValue("Avaritia", "COLOR_B", rgb[2])
-                .unlock();
+                .setUniformValue("Avaritia", "COLOR_B", rgb[2]);
         });
     }
 });
