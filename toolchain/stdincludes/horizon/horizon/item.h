@@ -1,42 +1,37 @@
-//
-// Created by zheka on 18/11/10.
-//
+#ifndef INNER_CORE_ITEM_REGISTRY_H
+#define INNER_CORE_ITEM_REGISTRY_H
 
-#ifndef HORIZON_ITEM_H
-#define HORIZON_ITEM_H
+#include <string>
 
-#include <stdlib.h>
-#include <string.h>
 
 class Item;
-class IdentifierPool;
+class ItemDescriptor;
+class ItemStack;
 
-class CustomItem : public Item {
+// provider class represents set of callbacks for given item to simplify work with it
+class ItemProvider {
 public:
-    CustomItem(std::string const& nameId);
+	Item* item;
+	
+	// more callbacks will be added
+	virtual void onItemCreated();  // called just after item is registered
+	virtual void patchVtable(void**); // patch item vtable (if onItemCreated was not overloaded)
+	virtual void setupItem(); // run item setup (if onItemCreated was not overloaded)
+	virtual void onAddToCreative();  // called as the item may be added to creative inv
+	virtual void onGraphicsUpdate();  // called as the graphics updated and by default resets item icon
+	
+	virtual std::string getNameForItemStack(ItemStack& stack);
+	virtual int getCreativeCategoryForStack(ItemStack& stack);
+	virtual bool isAnimatedIcon(ItemStack& stack);
+	virtual void updateCustomIcon(ItemStack& stack, int, bool);
+
+	virtual bool isArmorDamageable(ItemDescriptor& stack);
 };
 
-
-
 namespace ItemRegistry {
-    const int ITEM_REGISTER_OFFSET = 1024;
-    const int ITEM_REGISTER_MAX = 64502;
-    const int ITEM_REGISTER_COUNT = ITEM_REGISTER_MAX - ITEM_REGISTER_OFFSET;
+	Item* getItemById(int32_t id);
+	Item* getItemByName(std::string name);
+	ItemProvider* getItemProviderById(int32_t id);
+};
 
-    struct Extra {
-        bool graphicsUpdateRequired = true;
-    };
-
-    IdentifierPool* Pool;
-
-    Item* getItemForId(unsigned short id);
-    Item* getItemForId(std::string name);
-    unsigned int registerVanillaItem(Item* item, std::string nameId, unsigned int numericId);
-    unsigned int registerNewFixedItem(Item* item, std::string nameId, unsigned int id);
-    unsigned int registerNewItem(Item* item, std::string nameId);
-    Extra* getRegistrationExtra(int id);
-    Extra* getRegistrationExtra(Item* item);
-}
-
-
-#endif //HORIZON_ITEM_H
+#endif //INNER_CORE_ITEM_REGISTRY_H
