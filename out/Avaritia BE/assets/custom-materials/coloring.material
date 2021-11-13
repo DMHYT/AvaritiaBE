@@ -1,0 +1,5 @@
+{
+    "avaritia_coloring:entity_alphatest_custom": {
+        "fragmentShader": "./coloring.fragment"
+    }
+}

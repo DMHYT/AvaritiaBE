@@ -1,0 +1,45 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "removeComments": true,
+        "experimentalDecorators": false,
+        "downlevelIteration": true,
+        "target": "ES5",
+        "lib": ["ESNext"],
+        "outFile": "../out/Avaritia BE/main.js"
+    },
+    "compileOnSave": false,
+    "include": [
+        "../tools/declarations/*.d.ts",
+        "header.ts",
+        "translation.ts",
+        "utils.ts",
+        "items/matter_cluster.ts",
+        "items/resource.ts",
+        "items/singularity.ts",
+        "items/tools/sword.ts",
+        "items/tools/bow.ts",
+        "items/tools/pickaxe.ts",
+        "items/tools/shovel.ts",
+        "items/tools/axe.ts",
+        "items/tools/hoe.ts",
+        "items/armor/helmet.ts",
+        "items/armor/chestplate.ts",
+        "items/armor/leggings.ts",
+        "items/armor/boots.ts",
+        "items/tools/skull_sword.ts",
+        "items/pearl.ts",
+        "items/food.ts",
+        "blocks/crafting.ts",
+        "blocks/resource.ts",
+        "blocks/collector.ts",
+        "blocks/compressor.ts",
+        "footer.ts",
+        "api.ts",
+        "compat/RecipeViewer.ts"
+    ],
+    "exclude": [
+        "../tools/declarations/preloader.d.ts",
+        "../tools/declarations/AvaritiaAPI.d.ts"
+    ]
+}
