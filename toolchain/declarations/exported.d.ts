@@ -17,13 +17,17 @@ declare class ____NativeArrow {
     public shoot(x: number, y: number, z: number, pitch: number, yaw: number, ax: number, ay: number, az: number): void;
     public getDamage(): number;
 }
-declare function WRAP_JAVA(clazz: "ua.vsdum.avaritia.NativeArrow"): typeof ____NativeArrow;
+declare function WRAP_JAVA(clazz: "vsdum.avaritia.NativeArrow"): typeof ____NativeArrow;
 
 declare interface AvaritiaMainClass {
-    nativeMoveActorRelative(entity: number, f1: number, f2: number, f3: number, f4: number): void;
-    nativeIsActorInWater(entity: number): boolean;
+    nativeSetUndestroyableItem(id: number): void;
     nativeRemoveHarmfulEffectsFrom(entity: number): void;
-    boot(something: java.util.HashMap<any, any>): void;
-    onPlayerJump(uid: number): void;
+    nativeSetFullAirSupply(entity: number): void;
+    nativeIsPlayerInWater(): boolean;
+    nativeIsPlayerFlying(): boolean;
+    nativeIsPlayerOnGround(): boolean;
+    nativeIsPlayerSneaking(): boolean;
+    moveActorRelative(strafe: number, up: number, forward: number, friction: number): void;
+    nativeGetPlayerMoveForward(): number;
 }
-declare function WRAP_JAVA(clazz: "ua.vsdum.avaritia.Avaritia"): AvaritiaMainClass;
+declare function WRAP_JAVA(clazz: "vsdum.avaritia.Avaritia"): AvaritiaMainClass;
