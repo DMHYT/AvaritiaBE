@@ -33,7 +33,7 @@ Callback.addCallback("ItemUse", (coords, item, block, isExternal, player) => {
     }
 });
 
-const addTooltip = (id: number, key: string) => Item.registerNameOverrideFunction(id, (item, name) => `${name}\n${EColor.ITALIC}${EColor.GRAY}${Translation.translate(key)}`);
+const addTooltip = (id: number, key: string) => Item.registerNameOverrideFunction(id, (item, name) => `${name}\n§o§7${Translation.translate(key)}`);
 
 const VALID_DIRECTIONS = [EBlockSide.DOWN, EBlockSide.UP, EBlockSide.NORTH, EBlockSide.SOUTH, EBlockSide.WEST, EBlockSide.EAST];
 const getOffsets = (dir: number) => {
@@ -50,14 +50,6 @@ const getOffsets = (dir: number) => {
 
 const dropItemRandom = (drop: ItemInstance, world: BlockSource, x: number, y: number, z: number) =>
     world.spawnDroppedItem(x + (rand.nextFloat() * .7 + .15), y + (rand.nextFloat() * .7 + .15), z + (rand.nextFloat() * .7 + .15), drop.id, drop.count, drop.data, drop.extra);
-
-const undestroyable_item = (id: string) => {
-    const item = Item.getItemById(id);
-    if(item != null){
-        item.setProperties(JSON.stringify({ "minecraft:explodable": false, /* TODO fire res */ }));
-        debug_enabled && Logger.Log(`Successfully applied undestroyability to item \'${id}\'`, "Avaritia DEBUG");
-    }
-}
 
 const hsv2rgb = (h: number, s: number, v: number) => {
     let m: number, n: number, f: number, i: number,
@@ -84,6 +76,3 @@ const hsv2rgb = (h: number, s: number, v: number) => {
 }
 
 const itemInstanceFromArray = (arr: ItemInstanceArray) => ({ id: arr[0], count: arr[1], data: arr[2], extra: arr[3] ?? null } as ItemInstance);
-
-const isPlayerFlying = (player: number) => Entity.getCompoundTag(player).getCompoundTagNoClone("abilities").getByte("flying") == 1;
-const isPlayerOnGround = (player: number) => Entity.getCompoundTag(player).getByte("OnGround") == 1;
