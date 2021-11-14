@@ -30,8 +30,11 @@ Callback.addCallback("LocalTick", () => {
     }
 });
 
+Network.addClientPacket("avaritia.bootsjumpboost", () => Entity.addVelocity(Player.get(), 0, .4, 0));
+
 Callback.addCallback("PlayerJump", (player) => {
     if(Entity.getArmorSlot(player, 3).id == ItemID.infinity_boots) {
-        Entity.addVelocity(player, 0, .4, 0);
+        Network.getClientForPlayer(player)
+            ?.send("avaritia.bootsjumpboost", {});
     }
 });
