@@ -8,3 +8,4 @@ Item.createArmorItem("infinity_leggings", "item.avaritia:infinity_pants.name", {
 AVA_STUFF.push(ItemID.infinity_leggings);
 Rarity.cosmic(ItemID.infinity_leggings);
 AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_leggings);
+undestroyableArmor(ItemID.infinity_leggings);

@@ -76,3 +76,5 @@ const hsv2rgb = (h: number, s: number, v: number) => {
 }
 
 const itemInstanceFromArray = (arr: ItemInstanceArray) => ({ id: arr[0], count: arr[1], data: arr[2], extra: arr[3] ?? null } as ItemInstance);
+
+const undestroyableArmor = (id: number) => Armor.registerOnHurtListener(id, (item, slot, player) => item.data > 0 && Entity.setArmorSlot(player, slot, item.id, item.count, 0, item.extra));

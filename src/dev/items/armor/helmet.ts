@@ -88,3 +88,5 @@ Armor.registerOnTickListener(ItemID.infinity_helmet, (item, slot, player) => {
         actor.getSaturation() < 20 && actor.setSaturation(20);
     }
 });
+
+undestroyableArmor(ItemID.infinity_helmet);

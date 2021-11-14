@@ -38,3 +38,5 @@ Callback.addCallback("PlayerJump", (player) => {
             ?.send("avaritia.bootsjumpboost", {});
     }
 });
+
+undestroyableArmor(ItemID.infinity_boots);

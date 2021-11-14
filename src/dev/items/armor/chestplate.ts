@@ -90,4 +90,7 @@ Armor.registerOnTickListener(ItemID.infinity_chestplate, (item, slot, player) =>
     AvaritiaFuncs.nativeRemoveHarmfulEffectsFrom(player);
 });
 
-Armor.registerOnHurtListener(ItemID.infinity_chestplate, (item, slot, player) => Entity.getType(player) == EEntityType.PLAYER && Game.prevent());
+Armor.registerOnHurtListener(ItemID.infinity_chestplate, (item, slot, player) => {
+    Entity.getType(player) == EEntityType.PLAYER && Game.prevent();
+    item.data > 0 && Entity.setArmorSlot(player, slot, item.id, item.count, 0, item.extra);
+});
