@@ -7,34 +7,39 @@ AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_chestplate);
 interface WingsData {
     isWearingChestplate: boolean,
     renderer: ActorRenderer,
-    attachable: AttachableRender,
-    mesh: RenderMesh
+    attachable: AttachableRender
 }
 const WINGS_DATA: {[player: number]: WingsData} = {};
-const WINGS_MESH = new RenderMesh(`${__dir__}/resources/res/models/wings.obj`, "obj", null);
-WINGS_MESH.translate(0, -1/2, 1.001/16);
 
 var isWearingChestplateClient: boolean = false;
 var lastFlyingClient: boolean = false;
 
 Network.addClientPacket("avaritia.wingsdata.client", (data: { player: number }) => {
-    const mesh = new RenderMesh();
-    mesh.setBlockTexture("infinity_wings", 0);
-    const renderer = new ActorRenderer().addPart("body").endPart().addPart("wings", "body", mesh).endPart();
+    const renderer = new ActorRenderer()
+        .addPart("body")
+        .endPart()
+        .addPart("wings", "body")
+        .setTextureSize(128, 32)
+        .setTexture("render/wings.png")
+        .endPart();
     const attachable = new AttachableRender(data.player).setRenderer(renderer);
-    WINGS_DATA[data.player] = { isWearingChestplate: new PlayerActor(data.player).getArmor(1).id == ItemID.infinity_chestplate, renderer, attachable, mesh }
+    WINGS_DATA[data.player] = { isWearingChestplate: new PlayerActor(data.player).getArmor(1).id == ItemID.infinity_chestplate, renderer, attachable }
 });
+
 Network.addClientPacket("avaritia.togglewings.client", (data: { player: number, bool: boolean }) => {
     const __obj = WINGS_DATA[data.player];
     if(data.bool) {
         if(!__obj || !__obj.isWearingChestplate || !AvaritiaFuncs.nativeIsPlayerFlying()) return;
-        __obj.mesh.clear();
-        __obj.mesh.addMesh(WINGS_MESH);
+        __obj.renderer.getPart("wings")
+            .clear()
+            .addBox(-28, -10, 3.015, 56, 30, 0, 0, 0, 0)
+            .endPart();
     } else {
         if(!__obj) return;
-        __obj.mesh.clear();
+        __obj.renderer.getPart("wings").clear();
     }
 });
+
 Network.addClientPacket("avaritia.iswearingchestplate.client", (data: { player: number, bool: boolean }) => WINGS_DATA[data.player].isWearingChestplate = data.bool);
 
 Callback.addCallback("ServerPlayerLoaded", player => {
