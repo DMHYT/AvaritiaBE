@@ -2,55 +2,63 @@ package vsdum.avaritia;
 
 public class NativeArrow {
     
-    private static native long nativeGetForEntity(long entity);
-    private static native void nativeSetDamage(long ptr, float damage);
-    private static native void nativeSetIsCritical(long ptr, boolean critical);
-    private static native void nativeSetKnockbackStrength(long ptr, int strength);
-    private static native void nativeSetFire(long ptr, int flame);
-    private static native void nativeShoot(long ptr, float x, float y, float z, float pitch, float yaw, float ax, float ay, float az);
-    private static native float nativeGetDamage(long ptr);
+    private static native boolean nativeIsArrowEntity(long entity);
+    private static native void nativeSetPower(long uid, int power);
+    private static native void nativeSetIsCritical(long uid, boolean critical);
+    private static native void nativeSetKnockbackStrength(long uid, int strength);
+    private static native void nativeSetFire(long uid, int flame);
+    private static native void nativeSetIsCreative(long uid, boolean creative);
+    private static native void nativeSetOwner(long uid, long owner);
+    private static native long nativeGetOwner(long uid);
+    private static native void nativeShoot(long uid, float pitch, float yaw, float velocity, float inaccuracy, long shooter);
 
-    private final long pointer;
-
-    public final long getPointer()
-    {
-        return this.pointer;
-    }
+    private final long uid;
 
     public NativeArrow(long entity)
     {
-        this.pointer = nativeGetForEntity(entity);
-        if(this.pointer == 0L) throw new IllegalArgumentException("Given entity is not arrow!");
+        this.uid = entity;
+        if(!nativeIsArrowEntity(entity))
+            throw new IllegalArgumentException("Given entity is not arrow!");
     }
 
-    public void setDamage(float damage)
+    public void setPower(int power)
     {
-        nativeSetDamage(this.pointer, damage);
+        nativeSetPower(this.uid, power);
     }
 
     public void setIsCritical(boolean crit)
     {
-        nativeSetIsCritical(this.pointer, crit);
+        nativeSetIsCritical(this.uid, crit);
     }
 
     public void setKnockbackStrength(int strength)
     {
-        nativeSetKnockbackStrength(this.pointer, strength);
+        nativeSetKnockbackStrength(this.uid, strength);
     }
 
     public void setFire(int ticks)
     {
-        nativeSetFire(this.pointer, ticks);
+        nativeSetFire(this.uid, ticks);
     }
 
-    public void shoot(float x, float y, float z, float pitch, float yaw, float ax, float ay, float az)
+    public void setIsCreative(boolean creative)
     {
-        nativeShoot(this.pointer, x, y, z, pitch, yaw, ax, ay, az);
+        nativeSetIsCreative(this.uid, creative);
     }
 
-    public float getDamage()
+    public void setOwner(long owner)
     {
-        return nativeGetDamage(this.pointer);
+        nativeSetOwner(this.uid, owner);
+    }
+
+    public long getOwner()
+    {
+        return nativeGetOwner(this.uid);
+    }
+
+    public void shoot(float yaw, float pitch, float velocity, float inaccuracy, long shooter)
+    {
+        nativeShoot(this.uid, pitch, yaw, velocity, inaccuracy, shooter);
     }
     
 }

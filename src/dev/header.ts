@@ -22,22 +22,24 @@ IMPORT("VanillaSlots");
 const Color = android.graphics.Color;
 const JString = java.lang.String;
 const Integer = java.lang.Integer;
+const Random = java.util.Random;
 type HashMap<K, V> = java.util.HashMap<K, V>;
 type UIElement = com.zhekasmirnov.innercore.api.mod.ui.elements.UIElement;
-type IWindow = com.zhekasmirnov.innercore.api.mod.ui.window.IWindow;
 
-const debug_enabled = __config__.getBool("debug");
-const MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getInteger("max_gaping_void_view_distance");
-const VOID_PARTICLES_PER_TICK = __config__.getInteger("void_particles_per_tick");
-const COLLECTOR_PROCESS_TIME = __config__.getInteger("collector_process_time");
-const BORING_FOOD = __config__.getBool("boring_food");
-const EYE_COLOR_UPDATE_FREQUENCY = __config__.getInteger("eye_color_update_frequency");
+var debug_enabled: boolean = __config__.getBool("debug");
+var MAX_GAPING_VOID_VIEW_DISTANCE: number = __config__.getInteger("max_gaping_void_view_distance");
+var VOID_PARTICLES_PER_TICK: number = __config__.getInteger("void_particles_per_tick");
+var COLLECTOR_PROCESS_TIME: number = __config__.getInteger("collector_process_time");
+var BORING_FOOD: boolean = __config__.getBool("boring_food");
+var EYE_COLOR_UPDATE_FREQUENCY: number = __config__.getInteger("eye_color_update_frequency");
+var EYE_COLOR_RANDOM_SEED_CHANGING: boolean = __config__.getBool("eye_color_random_seed_changing");
 
-const rand = new java.util.Random();
+const rand = new Random();
 
 const AVA_STUFF: number[] = [];
 
 const EntityArrow = WRAP_JAVA("vsdum.avaritia.NativeArrow");
+type EntityArrow = ____NativeArrow;
 const AvaritiaFuncs = WRAP_JAVA("vsdum.avaritia.Avaritia");
 
 const INFINITY_ITEM_FRAMES = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1];

@@ -113,7 +113,7 @@ class TileEntityImplementation<T> implements TileEntity, TileEntity.TileEntityPr
     public sendResponse(packetName: string, data: any): void {}
     public created(): void {}
     public events: {[packetName: string]: (data: any, extra: any) => void};
-    public containerEvents: {[eventName: string]: (container: ItemContainer, window: Nullable<IWindow>, windowContent: Nullable<UI.WindowContent>, eventData: any) => void};
+    public containerEvents: {[eventName: string]: (container: ItemContainer, window: Nullable<UI.IWindow>, windowContent: Nullable<UI.WindowContent>, eventData: any) => void};
     public init(): void {}
     public tick(): void {}
     public click(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean | void {}
@@ -122,9 +122,9 @@ class TileEntityImplementation<T> implements TileEntity, TileEntity.TileEntityPr
     public projectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {}
     public destroy(): boolean | void {}
     /** @deprecated */
-    public getGuiScreen(): IWindow { return }
+    public getGuiScreen(): UI.IWindow { return }
     public getScreenName(player: number, coords: Vector): string { return }
-    public getScreenByName(screenName?: string): IWindow { return }
+    public getScreenByName(screenName?: string): UI.IWindow { return }
     public requireMoreLiquid(liquid: string, amount: number): void {}
     constructor(public readonly defaultValues: T) {}
     

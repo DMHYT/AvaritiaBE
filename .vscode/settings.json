@@ -84,5 +84,9 @@
         "typeinfo": "cpp",
         "unordered_map": "cpp",
         "utility": "cpp"
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.project.sourcePaths": [
+        "src/java/avaritia/src"
+    ]
 }

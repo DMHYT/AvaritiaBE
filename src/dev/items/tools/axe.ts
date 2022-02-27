@@ -57,18 +57,10 @@ const destroy_nature = (coords: Callback.ItemUseCoordinates, region: BlockSource
     MatterCluster.makeClusters(drops).forEach(cluster => dropItemRandom(cluster, region, coords.x, coords.y, coords.z));
 }
 
-Callback.addCallback("PlayerAttack", (attacker) => {
-    const item = Entity.getCarriedItem(attacker);
-    if(item.data > 0 && item.id == ItemID.infinity_axe) {
-        Entity.setCarriedItem(attacker, item.id, item.count, 0, item.extra);
-    }
-});
 Callback.addCallback("DestroyBlock", (coords, block, player) => {
     const item = Entity.getCarriedItem(player);
     if(item.id == ItemID.infinity_axe && (block.id == VanillaBlockID.log || block.id == VanillaBlockID.log2)) {
         destroy_trees(coords, BlockSource.getDefaultForActor(player), item);
-        if(item.data > 0)
-            Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
     }
 });
 
@@ -76,8 +68,6 @@ Item.registerUseFunction(ItemID.infinity_axe, (coords, item, block, player) => {
     if(Entity.getSneaking(player))
         destroy_nature(coords, BlockSource.getDefaultForActor(player), item);
     else (ToolType.axe as any).defaultUseItem(coords, item, block, player);
-    if(item.data > 0)
-        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
 });
 Item.registerNoTargetUseFunction(ItemID.infinity_axe, (item, player) => {
     if(Entity.getSneaking(player)) {
@@ -87,6 +77,5 @@ Item.registerNoTargetUseFunction(ItemID.infinity_axe, (item, player) => {
 });
 
 AVA_STUFF.push(ItemID.infinity_axe);
-INFINITY_TOOLS.push(ItemID.infinity_axe);
 Rarity.cosmic(ItemID.infinity_axe);
 AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_axe);

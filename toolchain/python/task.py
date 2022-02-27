@@ -358,35 +358,40 @@ def task_update_includes():
 			return 1
 	sources = sorted(make_config.get_value("sources", fallback=[]), key=cmp_to_key(libraries_first))
 	for item in sources:
-		_source = item["source"]
-		_target = item["target"] if "target" in item else None
-		_type = item["type"]
-		if _type not in ("main", "library", "preloader"):
-			print(f"skipped invalid source with type {_type}")
-			continue
-		for source_path in make_config.get_paths(_source):
-			if not os.path.exists(source_path):
-				print(f"skipped non-existing source path {_source}")
+		try:
+			_source = item["source"]
+			_target = item["target"] if "target" in item else None
+			_type = item["type"]
+			if _type not in ("main", "library", "preloader"):
+				print(f"skipped invalid source with type {_type}")
 				continue
-			target_path = _target if _target is not None else f"{os.path.splitext(os.path.basename(source_path))[0]}.js"
-			declare = {
-				"sourceType": {
-					"main": "mod",
-					"launcher": "launcher",
-					"preloader": "preloader",
-					"library": "library"
-				}[_type]
-			}
-			if "api" in item:
-				declare["api"] = item["api"]
-			try:
-				dot_index = target_path.rindex(".")
-				target_path = target_path[:dot_index] + "{}" + target_path[dot_index:]
-			except ValueError:
-				target_path += "{}"
-			mod_structure.update_build_config_list("compile")
-			incl = Includes.invalidate(source_path)
-			incl.create_tsconfig(os.path.join(temp_directory, os.path.basename(target_path)))
+			for source_path in make_config.get_paths(_source):
+				if not os.path.exists(source_path):
+					print(f"skipped non-existing source path {_source}")
+					continue
+				target_path = _target if _target is not None else f"{os.path.splitext(os.path.basename(source_path))[0]}.js"
+				declare = {
+					"sourceType": {
+						"main": "mod",
+						"launcher": "launcher",
+						"preloader": "preloader",
+						"library": "library"
+					}[_type]
+				}
+				if "api" in item:
+					declare["api"] = item["api"]
+				try:
+					dot_index = target_path.rindex(".")
+					target_path = target_path[:dot_index] + "{}" + target_path[dot_index:]
+				except ValueError:
+					target_path += "{}"
+				mod_structure.update_build_config_list("compile")
+				incl = Includes.invalidate(source_path)
+				incl.create_tsconfig(os.path.join(temp_directory, os.path.basename(target_path)))
+			print(f"successfully processed source with type {_type}")
+		except:
+			_type = item["type"]
+			print(f"skipped source which gives error with type {_type}")
 	return 0
 
 @task("connectToADB")

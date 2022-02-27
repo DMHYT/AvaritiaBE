@@ -1,7 +1,7 @@
 IDRegistry.genItemID("infinity_pickaxe");
 Item.createItem("infinity_pickaxe", "item.avaritia:infinity_pickaxe.name", {name: "infinity_pickaxe", meta: 0}, {stack: 1});
 ToolAPI.addToolMaterial("INFINITY_PICKAXE", {level: 32, durability: 9999, efficiency: 9999, damage: 6});
-ToolLib.setTool(ItemID.infinity_pickaxe, "INFINITY_PICKAXE", ToolType.pickaxe);
+ToolLib.setTool(ItemID.infinity_pickaxe, "INFINITY_PICKAXE", ToolType.pickaxe, ItemID.infinity_pickaxe);
 Item.setEnchantType(ItemID.infinity_pickaxe, EEnchantType.PICKAXE, 200);
 
 const switch_between_pickaxe_and_hammer = (item: ItemInstance, player: number, hammer: boolean) => {
@@ -18,7 +18,7 @@ Item.registerNoTargetUseFunction(ItemID.infinity_pickaxe, (item, player) => swit
 
 IDRegistry.genItemID("infinity_hammer");
 Item.createItem("infinity_hammer", "item.avaritia:infinity_pickaxe.name", {name: "infinity_hammer", meta: 0}, {stack: 1, isTech: true});
-ToolLib.setTool(ItemID.infinity_hammer, "INFINITY_PICKAXE", ToolType.pickaxe);
+ToolLib.setTool(ItemID.infinity_hammer, "INFINITY_PICKAXE", ToolType.pickaxe, ItemID.infinity_hammer);
 Item.setEnchantType(ItemID.infinity_hammer, EEnchantType.PICKAXE, 200);
 
 Item.registerUseFunction(ItemID.infinity_hammer, (coords, item, block, player) => {
@@ -53,13 +53,6 @@ Callback.addCallback("EntityHurt", (attacker, victim, damageValue, damageType, b
             Entity.addVelocity(victim, -Math.sin(angle.yaw) * 5, 2, Math.cos(angle.yaw) * 5);
         }
     }
-    if((stack.id == ItemID.infinity_hammer || stack.id == ItemID.infinity_pickaxe) && stack.data > 0)
-        Entity.setCarriedItem(attacker, stack.id, stack.count, 0, stack.extra);
-});
-Callback.addCallback("DestroyBlock", (coords, block, player) => {
-    let item = Entity.getCarriedItem(player);
-    if((item.id == ItemID.infinity_pickaxe || item.id == ItemID.infinity_hammer) && item.data > 0)
-        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
 });
 
 IAHelper.makeAdvancedAnim(ItemID.infinity_pickaxe, "infinity_pickaxe", 1, INFINITY_ITEM_FRAMES);

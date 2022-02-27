@@ -8,6 +8,9 @@ namespace GapingVoid {
     export const collapse = .95;
     export const suckRange = 20.0;
 
+    const MESH = new RenderMesh();
+    MESH.importFromFile(`${__dir__}/resources/res/models/gaping_void.obj`, "obj", null);
+
     export function SUCK_PREDICATE(input: number): boolean {
         if(!Entity.isExist(input)) return false;
         if(Entity.getType(input) == EEntityType.PLAYER) {
@@ -31,6 +34,7 @@ namespace GapingVoid {
                 if(age >= maxLifetime) {
                     region.explode(coords.x, coords.y, coords.z, 6, true);
                     this.remove = true;
+                    return;
                 } else if(age == 0) {
                     playSound(coords.x, coords.y, coords.z, region.getDimension(), "mob.endermen.stare", 8, 1);
                 }
@@ -63,9 +67,7 @@ namespace GapingVoid {
                     .forEach(nommee => {
                         const nomedPos = Vector3.fromEntity(nommee);
                         const len = pos.copy().subtract(nomedPos.x, nomedPos.y, nomedPos.z).mag();
-                        if(len <= nomrange) {
-                            Entity.damageEntity(nommee, 3, 12);
-                        }
+                        if(len <= nomrange) Entity.damageEntity(nommee, 3, 12);
                     });
                 if(age % 10 == 0) {
                     const posFloor = pos.copy().floor();
@@ -88,36 +90,36 @@ namespace GapingVoid {
                     }
                 }
             }
-        });
+        })
     }
 
     export function summonClientSide(coords: Vector): void {
         const particlespeed = 10;
-        const mesh = new RenderMesh();
-        mesh.importFromFile(`${__dir__}/resources/res/models/gaping_void.obj`, "obj", null);
         const anim = new Animation.Base(coords.x, coords.y, coords.z);
-        anim.describe({ mesh: mesh, material: "avaritia_coloring", skin: "render/pixel.png" });
-        let age = 0;
-        anim.loadCustom(() => {
-            if(age >= maxLifetime){
+        anim.describe({ mesh: MESH, material: "avaritia_coloring", skin: "render/pixel.png" });
+        let age: number = 0;
+        anim.loadCustom(function() {
+            if(age >= maxLifetime) {
                 anim.destroy();
                 this.remove = true;
                 return;
             }
             age++;
-            const scale = getVoidScale(age) * 0.06 - 0.2;
-            const size = getVoidScale(age) * 0.5 - 0.2;
-            for(let i = 0; i < VOID_PARTICLES_PER_TICK; i++){
-                const particlePos = new Vector3(coords.x, coords.y, coords.z + size)
-                    .rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0))
-                    .rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0));
-                const velocity = particlePos.copy().normalize().multiplyXYZ(particlespeed);
-                Particles.addParticle(EParticleType.PORTAL, particlePos.x, particlePos.y, particlePos.z, velocity.x, velocity.y, velocity.z);
+            for(let i = 0; i < VOID_PARTICLES_PER_TICK; i++) {
+                const particlePos = new Vector3(0, 0, getVoidScale(age) * .5 - .2);
+                particlePos.rotate(rand.nextFloat() * 180.0, new Vector3(0, 1, 0));
+                particlePos.rotate(rand.nextFloat() * 360.0, new Vector3(1, 0, 0));
+                const velocity = particlePos.copy().normalize();
+                velocity.multiplyXYZ(particlespeed);
+                particlePos.add(coords.x, coords.y, coords.z);
+                Particles.addParticle(21, particlePos.x, particlePos.y, particlePos.z, velocity.x, velocity.y, velocity.z);
             }
+            const scale = getVoidScale(age) * 0.05 - 0.2;
             anim.transform()
                 .lock()
                 .clear()
                 .scale(scale, scale, scale)
+                .translate(2, 2, 2)
                 .unlock();
             const color = getVoidColor(age, 1);
             anim.getShaderUniforms()
@@ -133,6 +135,7 @@ namespace GapingVoid {
             .lock()
             .clear()
             .scale(initial_scale, initial_scale, initial_scale)
+            .translate(2, 2, 2)
             .unlock();
         const initial_color = getVoidColor(0, 1);
         anim.getShaderUniforms()
@@ -163,7 +166,7 @@ namespace GapingVoid {
 
 }
 
-Network.addClientPacket("avaritia.gapingvoidclient", (data: { coords: Vector }) => GapingVoid.summonClientSide(data.coords));
+Network.addClientPacket("avaritia.gapingvoidclient", (data: Vector) => GapingVoid.summonClientSide(data));
 
 const summon_gaping_void = (coords: Vector, region: BlockSource) => {
     GapingVoid.summonServerSide(coords, region);
@@ -171,7 +174,7 @@ const summon_gaping_void = (coords: Vector, region: BlockSource) => {
         .setupDistancePolicy(coords.x, coords.y, coords.z, region.getDimension(), MAX_GAPING_VOID_VIEW_DISTANCE)
         .iterator();
     while(iter.hasNext())
-        iter.next().send("avaritia.gapingvoidclient", { coords });
+        iter.next().send("avaritia.gapingvoidclient", coords);
 }
 
 Item.registerThrowableFunction(ItemID.endest_pearl, (proj, item, target) => {

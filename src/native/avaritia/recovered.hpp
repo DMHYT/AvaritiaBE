@@ -42,27 +42,21 @@ class MoveInputHandler {
     float movingForward; // 12 bytes
 };
 
-class BlockPos {
-    public:
-    BlockPos(float, float, float);
-    BlockPos(double, double, double);
-};
 
+class Vec2 { public: float x, y; };
 class Vec3 {
     public:
     float x, y, z;
-    Vec3(BlockPos const&);
-};
-
-class BreathableComponent {
-    public:
-    short getMaxAirSupply() const;
-    void setAirSupply(short);
+    Vec3(float, float, float);
+    void directionFromRotation(float pitch, float yaw);
+    void directionFromRotation(Vec2 const&);
+    Vec3& operator-(Vec3 const&) const;
 };
 
 class ItemStackBase {
     public:
     Item* getItem() const;
+    void setDamageValue(short);
 };
 
 class ItemStack : public ItemStackBase {
@@ -73,6 +67,11 @@ enum ArmorSlot {
     helmet, chestplate, leggings, boots
 };
 
+class SynchedActorData {public:};
+enum ActorFlags: int {};
+
+class Level;
+class BlockSource;
 class Actor {
     public:
     char filler1[372];
@@ -81,13 +80,30 @@ class Actor {
     virtual bool isInWater() const;
     virtual bool isOnFire() const;
     virtual void setOnFire(int) const;
-    virtual ItemStack* getArmor(ArmorSlot) const;
+    virtual void heal(int);
+    virtual ItemStack* getCarriedItem() const;
     std::__ndk1::vector<MobEffectInstance>& getAllEffects() const;
     void removeEffect(int);
     bool isSneaking() const;
+    int getMaxHealth() const;
+    Actor* getOwner() const;
+    void setOwner(ActorUniqueID);
+    Level* getLevel() const;
+    BlockSource* getRegion() const;
+    Vec2& getRotation() const;
     template<typename COMPONENT>
     COMPONENT* tryGetComponent();
     static Actor* wrap(long long);
+};
+
+class BreathableComponent {
+    public:
+    short getMaxAirSupply() const;
+    void setAirSupply(short);
+};
+class ProjectileComponent {
+    public:
+    void shoot(Actor&, Vec3 const&, float, float, Vec3 const&, Actor*);
 };
 
 class Mob : public Actor {
@@ -95,9 +111,15 @@ class Mob : public Actor {
     virtual void setOnFire(int) const;
 };
 
+enum GameType {
+    survival, creative, adventure, spectator
+};
+
 class Player : public Mob {
     public:
+    virtual ItemStack* getCarriedItem() const;
     virtual bool isLocalPlayer() const;
+    bool isUsingItem() const;
 };
 
 class LocalPlayer : public Player {
@@ -107,30 +129,52 @@ class LocalPlayer : public Player {
     bool isFlying() const;
 };
 
+class ActorDamageSource;
+
 class AbstractArrow {
     public:
     virtual void shoot(Vec3 const&, float, float, Vec3 const&);
-    void setBaseDamage(float);
-    void setIsCreative(bool);
     void setIsPlayerOwned(bool);
+    void setIsCreative(bool);
     float getBaseDamage();
 };
 
 class Arrow : public Actor, public AbstractArrow {
     public:
-    virtual void shoot(Vec3 const&, float, float, Vec3 const&);
+    virtual void shoot(Vec3 const& facing, float power, float inaccuracy, Vec3 const& someAnotherVec);
+    void setEnchantPower(int);
     void setEnchantFlame(int);
     void setCritical(bool);
     void setEnchantPunch(int);
 };
 
+enum ActorType : int {};
+class ActorDefinitionIdentifier {
+    public:
+    ActorDefinitionIdentifier(ActorType);
+    ActorDefinitionIdentifier(std::__ndk1::string, std::__ndk1::string, std::__ndk1::string);
+    std::__ndk1::string const& getIdentifier() const;
+    std::__ndk1::string const& getFullName() const;
+};
+
+class Spawner {
+    public:
+    Actor* spawnProjectile(BlockSource&, ActorDefinitionIdentifier const&, Actor*, Vec3 const&, Vec3 const&);
+};
+
 class Level {
     public:
-    Actor* fetchEntity(ActorUniqueID, bool) const;
+    Spawner* getSpawner() const;
+    bool isClientSide() const;
+};
+
+class ServerLevel : public Level {
+    public:
 };
 
 namespace GlobalContext {
     Level* getLevel();
+    ServerLevel* getServerLevel();
     LocalPlayer* getLocalPlayer();
 }
 

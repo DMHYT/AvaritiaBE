@@ -18,6 +18,7 @@ public class Avaritia {
     public static native boolean nativeIsPlayerOnGround();
     public static native boolean nativeIsPlayerSneaking();
     public static native float nativeGetPlayerMoveForward();
+    public static native boolean nativeIsPlayerUsingItem();
 
     public static void moveActorRelative(float strafe, float up, float forward, float friction)
     {
@@ -49,6 +50,11 @@ public class Avaritia {
     public static void onPlayerJump(long uid)
     {
         Callback.invokeAPICallback("PlayerJump", new Object[]{ Long.valueOf(uid) });
+    }
+
+    public static void onPlayerGameModeChanged(int mode)
+    {
+        Callback.invokeAPICallback("PlayerGameModeChanged", new Object[]{ Integer.valueOf(mode) });
     }
 
 }

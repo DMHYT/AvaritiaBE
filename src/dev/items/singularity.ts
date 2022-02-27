@@ -21,6 +21,10 @@ namespace Gregorizer {
         __loaded_mods.Mekanism && (modifier += 500, multiplier++);
         __loaded_mods.Torcherino && (multiplier += 2);
         __loaded_mods.DraconicEvolution && (modifier += 300, multiplier++);
+        if(debug_enabled) {
+            const mods = Object.keys(__loaded_mods).filter(val => __loaded_mods[val]).length;
+            Logger.Log(`Successfully performed Gregorizer.balance(), it has found ${mods} mods, that change quantity modifying values, and now modifier is ${modifier} and multiplier is ${multiplier}.`, "AVARITIA DEBUG");
+        }
     }
 
     export function balanceCost(cost: number): number {
@@ -31,18 +35,18 @@ namespace Gregorizer {
 
 namespace Singularity {
 
-    type SingularityData = { id: number, countdata: [number, number] };
+    type SingularityData = { id: number, countdata: [number, number], specific: boolean };
     
     export const recipes: {[key: number]: SingularityData} = {};
     export const singularities: number[] = [];
 
     export function registerRecipeFor(singularity: number, materialId: number, materialCount: number, materialData: number, specific: boolean): void {
-        if(recipes[materialId]) return Logger.Log(`An error occured while creating singularity recipe. Another recipe has already been registered for the material ${Item.getName(materialId, materialData)}`, "Avaritia WARNING");
-        recipes[materialId] = { id: singularity, countdata: [specific ? materialCount : Gregorizer.balanceCost(materialCount), materialData] };
+        if(recipes[materialId]) return debug_enabled && Logger.Log(`An error occured while creating singularity recipe. Another recipe has already been registered for the material ${Item.getName(materialId, materialData)}`, "AVARITIA WARNING");
+        recipes[materialId] = { id: singularity, countdata: [materialCount, materialData], specific };
     }
     
     export function registerSingularity(key: string, materialId: Nullable<number>, materialCount: Nullable<number>, materialData: Nullable<number>): void {
-        if(!FileTools.ReadJSON(`${__dir__}/resources/res/singularities.json`)[key]) return Logger.Log(`No textures were generated for singularity \'${key}\', please specify two layer colors in \'resources/res/singularities.json\'`, "Avaritia ERROR");
+        if(!FileTools.ReadJSON(`${__dir__}/resources/res/singularities.json`)[key]) return debug_enabled && Logger.Log(`No textures were generated for singularity \'${key}\', please specify two layer colors in \'resources/res/singularities.json\'`, "AVARITIA ERROR");
         const id = `singularity_${key}`;
         IDRegistry.genItemID(id);
         Item.createItem(id, `item.singularity.${key}.name`, {name: id, meta: 0}, {stack: 64});
@@ -72,10 +76,10 @@ namespace Singularity {
     export function getMaterialForSingularity(id: number): number {
         for(let key in recipes) {
             if(recipes[key].id == id) {
-                Logger.Log(`Found material ${Item.getName(parseInt(key), 0)} for singularity ${Item.getName(id, 0)}`, "Avaritia DEBUG");
+                debug_enabled && Logger.Log(`Found material ${Item.getName(parseInt(key), 0)} for singularity ${Item.getName(id, 0)}`, "AVARITIA DEBUG");
                 return parseInt(key);
             } else {
-                Logger.Log(`Material for singularity ${Item.getName(id, 0)} was not found`, "Avaritia ERROR");
+                debug_enabled && Logger.Log(`Material for singularity ${Item.getName(id, 0)} was not found`, "AVARITIA ERROR");
             }
         }
         return -1;

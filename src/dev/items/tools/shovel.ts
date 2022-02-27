@@ -1,11 +1,10 @@
 IDRegistry.genItemID("infinity_shovel");
 Item.createItem("infinity_shovel", "item.avaritia:infinity_shovel.name", {name: "infinity_shovel", meta: 0}, {stack: 1});
 ToolAPI.addToolMaterial("INFINITY_SHOVEL", {level: 32, durability: 9999, efficiency: 9999, damage: 7});
-ToolLib.setTool(ItemID.infinity_shovel, "INFINITY_SHOVEL", ToolType.shovel);
+ToolLib.setTool(ItemID.infinity_shovel, "INFINITY_SHOVEL", ToolType.shovel, ItemID.infinity_shovel);
 Item.setEnchantType(ItemID.infinity_shovel, EEnchantType.SHOVEL, 200);
 
 const shovel_use_func = (item: ItemInstance, player: number, destroyer: boolean) => {
-    item.data = 0;
     if(Entity.getSneaking(player))
         Entity.setCarriedItem(player, ItemID[`infinity_${destroyer ? "destroyer" : "shovel"}`], item.count, item.data, item.extra);
 }
@@ -23,7 +22,7 @@ Item.registerNoTargetUseFunction(ItemID.infinity_shovel, (item, player) => {
 
 IDRegistry.genItemID("infinity_destroyer");
 Item.createItem("infinity_destroyer", "item.avaritia:infinity_shovel.name", {name: "destroyer", meta: 0}, {stack: 1, isTech: true});
-ToolLib.setTool(ItemID.infinity_destroyer, "INFINITY_SHOVEL", ToolType.shovel);
+ToolLib.setTool(ItemID.infinity_destroyer, "INFINITY_SHOVEL", ToolType.shovel, ItemID.infinity_destroyer);
 Item.setEnchantType(ItemID.infinity_destroyer, EEnchantType.SHOVEL, 200);
 
 Item.registerUseFunction(ItemID.infinity_destroyer, (coords, item, block, player) => {
@@ -50,17 +49,6 @@ Item.registerUseFunction(ItemID.infinity_destroyer, (coords, item, block, player
     }
 });
 Item.registerNoTargetUseFunction(ItemID.infinity_destroyer, (item, player) => shovel_use_func(item, player, false));
-
-Callback.addCallback("PlayerAttack", (attacker) => {
-    let item = Entity.getCarriedItem(attacker);
-    if((item.id == ItemID.infinity_shovel || item.id == ItemID.infinity_destroyer) && item.data > 0)
-        Entity.setCarriedItem(attacker, item.id, item.count, 0, item.extra);
-});
-Callback.addCallback("DestroyBlock", (coords, block, player) => {
-    let item = Entity.getCarriedItem(player);
-    if((item.id == ItemID.infinity_shovel || item.id == ItemID.infinity_destroyer) && item.data > 0)
-        Entity.setCarriedItem(player, item.id, item.count, 0, item.extra);
-});
 
 IAHelper.makeAdvancedAnim(ItemID.infinity_shovel, "infinity_shovel", 1, INFINITY_ITEM_FRAMES);
 
