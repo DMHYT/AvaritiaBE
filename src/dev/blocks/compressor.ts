@@ -88,13 +88,15 @@ class CompressorTileEntity extends TileEntityImplementation<CompressorTEDefaultV
         StorageInterface.checkHoppers(this);
         const slin = this.container.getSlot("slotInput");
         const slout = this.container.getSlot("slotOutput");
-        if(this.data.isActive && this.data.resultId != null && Singularity.getRecipeResult(slin.id) == this.data.resultId && (slout.id == 0 || (slout.id == this.data.resultId && slout.count > 0 && slout.count < Item.getMaxStack(this.data.resultId))))
-            return this.decreaseMaterial(slin, slout);
-        if(!this.data.isActive && slin.id != 0 && slin.count > 0 && (slout.id == 0 || slout.id == Singularity.getRecipeResult(slin.id))) {
-            this.data.isActive = true;
-            this.data.toPut = Singularity.getRequiredMaterialCount(slin.id);
-            this.data.resultId = Singularity.getRecipeResult(slin.id);
-            this.decreaseMaterial(slin, slout);
+        if(Singularity.isValidMaterial(slin.id, slin.data)) {
+            if(this.data.isActive && this.data.resultId != null && Singularity.getRecipeResult(slin.id) == this.data.resultId && (slout.id == 0 || (slout.id == this.data.resultId && slout.count > 0 && slout.count < Item.getMaxStack(this.data.resultId))))
+                return this.decreaseMaterial(slin, slout);
+            if(!this.data.isActive && slin.id != 0 && slin.count > 0 && (slout.id == 0 || slout.id == Singularity.getRecipeResult(slin.id))) {
+                this.data.isActive = true;
+                this.data.toPut = Singularity.getRequiredMaterialCount(slin.id);
+                this.data.resultId = Singularity.getRecipeResult(slin.id);
+                this.decreaseMaterial(slin, slout);
+            }
         }
     }
 
@@ -108,6 +110,9 @@ class CompressorTileEntity extends TileEntityImplementation<CompressorTEDefaultV
     public click(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number) {
         if(!Entity.getSneaking(player)) {
             Game.prevent();
+            const progress = this.data.put / this.data.toPut;
+            this.container.setScale("arrowScale", progress);
+            this.container.setScale("singularityScale", progress);
             this.container.openFor(Network.getClientForPlayer(player), "main");
             this.container.sendChanges();
         }
@@ -119,7 +124,7 @@ TileEntity.registerPrototype(BlockID.neutronium_compressor, new CompressorTileEn
 StorageInterface.createInterface(BlockID.neutronium_compressor, {
     slots: {
         slotInput: { input: true, output: false, isValid: (item) => Singularity.isValidMaterial(item.id, item.data) },
-        slotOutput: { input: false, output: true }
+        slotOutput: { input: false, output: true, isValid: () => false }
     },
     getInputSlots: () => ["slotInput"],
     getOutputSlots: () => ["slotOutput"]

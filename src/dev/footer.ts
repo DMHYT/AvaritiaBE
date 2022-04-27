@@ -1,6 +1,6 @@
 Item.addCreativeGroup("AVARITIA", Translation.translate("itemGroup.avaritia"), AVA_STUFF);
 
-ExtremeCraftingTable.addShaped({id: BlockID.neutron_collector, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("neutron_collector", {id: BlockID.neutron_collector, count: 1, data: 0}, [
     "IIQQQQQII",
     "I QQQQQ I",
     "I  RRR  I",
@@ -17,7 +17,7 @@ ExtremeCraftingTable.addShaped({id: BlockID.neutron_collector, count: 1, data: 0
     'R', VanillaBlockID.redstone_block, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: BlockID.neutronium_compressor, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("neutronium_compressor", {id: BlockID.neutronium_compressor, count: 1, data: 0}, [
     "IIIHHHIII",
     "X N   N X",
     "I N   N I",
@@ -36,7 +36,7 @@ ExtremeCraftingTable.addShaped({id: BlockID.neutronium_compressor, count: 1, dat
     'O', BlockID.neutronium_block, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_boots, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_boots", {id: ItemID.infinity_boots, count: 1, data: 0}, [
     " NNN NNN ",
     " NIN NIN ",
     " NIN NIN ",
@@ -48,7 +48,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_boots, count: 1, data: 0}, [
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_chestplate, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_chestplate", {id: ItemID.infinity_chestplate, count: 1, data: 0}, [
     " NN   NN ",
     "NNN   NNN",
     "NNN   NNN",
@@ -64,7 +64,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_chestplate, count: 1, data: 
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_helmet, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_helmet", {id: ItemID.infinity_helmet, count: 1, data: 0}, [
     "  NNNNN  ",
     " NIIIIIN ",
     " N XIX N ",
@@ -77,7 +77,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_helmet, count: 1, data: 0}, 
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_leggings, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_pants", {id: ItemID.infinity_leggings, count: 1, data: 0}, [
     "NNNNNNNNN",
     "NIIIXIIIN",
     "NINNXNNIN",
@@ -94,7 +94,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_leggings, count: 1, data: 0}
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_axe, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_axe", {id: ItemID.infinity_axe, count: 1, data: 0}, [
     "   I     ",
     "  IIIII  ",
     "   IIII  ",
@@ -109,7 +109,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_axe, count: 1, data: 0}, [
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_bow, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_bow", {id: ItemID.infinity_bow, count: 1, data: 0}, [
     "   II    ",
     "  I W    ",
     " I  W    ",
@@ -125,7 +125,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_bow, count: 1, data: 0}, [
     'W', VanillaBlockID.wool, -1
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_hoe, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_hoe", {id: ItemID.infinity_hoe, count: 1, data: 0}, [
     "     N   ",
     " IIIIII  ",
     "IIIIIII  ",
@@ -140,7 +140,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_hoe, count: 1, data: 0}, [
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_pickaxe, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_pickaxe", {id: ItemID.infinity_pickaxe, count: 1, data: 0}, [
     " IIIIIII ",
     "IIIICIIII",
     "II  N  II",
@@ -161,7 +161,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_pickaxe, count: 1, data: 0},
     container.sendChanges();
 });
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_shovel, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_shovel", {id: ItemID.infinity_shovel, count: 1, data: 0}, [
     "      III",
     "     IIXI",
     "      III",
@@ -177,7 +177,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_shovel, count: 1, data: 0}, 
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_sword, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_sword", {id: ItemID.infinity_sword, count: 1, data: 0}, [
     "       II",
     "      III",
     "     III ",
@@ -195,7 +195,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_sword, count: 1, data: 0}, [
 ]);
 
 for(let i=0; i<2; i++)
-    ExtremeCraftingTable.addShaped({id: ItemID.skullfire_sword, count: 1, data: 0}, [
+    ExtremeCraftingTable.addShaped("skullfire_sword", {id: ItemID.skullfire_sword, count: 1, data: 0}, [
         "       IX",
         "      IXI",
         "     IXI ",
@@ -213,7 +213,7 @@ for(let i=0; i<2; i++)
         'W', VanillaBlockID[`log${i == 1 ? 2 : ""}`], -1
     ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.endest_pearl, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("endest_pearl", {id: ItemID.endest_pearl, count: 1, data: 0}, [
     "   EEE   ",
     " EEPPPEE ",
     " EPPPPPE ",
@@ -230,7 +230,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.endest_pearl, count: 1, data: 0}, [
     'N', ItemID.neutronium_ingot, 0
 ]);
 
-ExtremeCraftingTable.addShaped({id: ItemID.infinity_ingot, count: 1, data: 0}, [
+ExtremeCraftingTable.addShaped("infinity_ingot", {id: ItemID.infinity_ingot, count: 1, data: 0}, [
     "NNNNNNNNN",
     "NCXXCXXCN",
     "NXCCXCCXN",
@@ -243,7 +243,7 @@ ExtremeCraftingTable.addShaped({id: ItemID.infinity_ingot, count: 1, data: 0}, [
 ]);
 
 if(BORING_FOOD || true) { // TODO make InTeReStInG food some day 0_0
-    ExtremeCraftingTable.addShapeless({id: ItemID.ultimate_stew, count: 1, data: 0}, [
+    ExtremeCraftingTable.addShapeless("ultimate_stew", {id: ItemID.ultimate_stew, count: 1, data: 0}, [
         [ItemID.neutron_pile, 0],
         [VanillaBlockID.wheat, 0],
         [VanillaItemID.carrot, 0],
@@ -256,7 +256,7 @@ if(BORING_FOOD || true) { // TODO make InTeReStInG food some day 0_0
         [VanillaBlockID.red_mushroom, 0],
         [VanillaBlockID.brown_mushroom, 0]
     ]);
-    ExtremeCraftingTable.addShapeless({id: ItemID.cosmic_meatballs, count: 1, data: 0}, [
+    ExtremeCraftingTable.addShapeless("cosmic_meatballs", {id: ItemID.cosmic_meatballs, count: 1, data: 0}, [
         [ItemID.neutron_pile, 0],
         [VanillaItemID.beef, 0],
         [VanillaItemID.beef, 0],
@@ -307,5 +307,5 @@ Callback.addCallback("ModsLoaded", () => {
     BlockID.blockDarkSteel && arr.push([BlockID.blockDarkSteel, 0]); // No EnderIO
     BlockID.blockPlatinum && (arr.push([ItemID.singularity_platinum, 0]), Singularity.registerRecipeFor(ItemID.singularity_platinum, BlockID.blockPlatinum, 80, 0, false)); // No ThermalFoundation
     BlockID.blockIridium && (arr.push([ItemID.singularity_iridium, 0]), Singularity.registerRecipeFor(ItemID.singularity_iridium, BlockID.blockIridium, 80, 0, false)); // No MorePlanets (no Galacticraft LOL)
-    ExtremeCraftingTable.addShapeless({id: ItemID.infinity_catalyst, count: 1, data: 0}, arr);
+    ExtremeCraftingTable.addShapeless("infinity_catalyst", {id: ItemID.infinity_catalyst, count: 1, data: 0}, arr);
 });

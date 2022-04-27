@@ -1,13 +1,12 @@
-#include <vector>
+#include <regex>
 #include <string.h>
+#include <mod.h>
 #include <hook.h>
 #include <logger.h>
 #include <symbol.h>
-#include <innercore_callbacks.h>
-#include <nativejs.h>
 #include <jni.h>
 #include <horizon/item.h>
-#include <stl/vector>
+#include <innercore_callbacks.h>
 #include <innercore/idconversion.h>
 #include <innercore/vtable.h>
 #include "recovered.hpp"
@@ -15,48 +14,25 @@
 
 class AvaritiaModule : public Module {
 	public:
-	static jclass ava_class;
-	static std::vector<int> undestroyable;
+	static void _swordInfinityDamage(Item* _this, ItemStackBase const& stack, Level& level, std::__ndk1::string& text, bool someBool) {
+		STATIC_SYMBOL(Item_appendFormattedHovertext, "_ZNK4Item24appendFormattedHovertextERK13ItemStackBaseR5LevelRNSt6__ndk112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEEb", (Item*, ItemStackBase const&, Level&, std::__ndk1::string&, bool));
+		Item_appendFormattedHovertext(_this, stack, level, text, someBool);
+		text.append("\n\n§9+§cI§6n§ef§ai§bn§1i§dt§cy §9");
+		text.append(I18n::get("attribute.name.generic.attackDamage"));
+		text.append("§r");
+	}
 	AvaritiaModule(): Module("avaritia") {}
 	virtual void initialize() {
 		Callbacks::addCallback("postModItemsInit", CALLBACK([], (), {
-			for (int static_id : undestroyable) {
-				int dynamic_id = IdConversion::staticToDynamic(static_id, IdConversion::Scope::ITEM);
-				Item* item = ItemRegistry::getItemById(dynamic_id);
-				VTABLE_FIND_OFFSET(Item_setExplodable, _ZTV4Item, _ZN4Item13setExplodableEb);
-				VTABLE_CALL<void>(Item_setExplodable, item, false);
-				VTABLE_FIND_OFFSET(Item_setFireResistant, _ZTV4Item, _ZN4Item16setFireResistantEb);
-				VTABLE_CALL<void>(Item_setFireResistant, item, true);
-				VTABLE_FIND_OFFSET(Item_setShouldDespawn, _ZTV4Item, _ZN4Item16setShouldDespawnEb);
-				VTABLE_CALL<void>(Item_setShouldDespawn, item, false);
+			Item* sword = ItemRegistry::getItemByName("item_infinity_sword");
+			if(sword != nullptr) {
+				void** vtable = *(void***) sword;
+				vtable[
+					getVtableOffset("_ZTV10WeaponItem", "_ZNK10WeaponItem24appendFormattedHovertextERK13ItemStackBaseR5LevelRNSt6__ndk112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEEb")
+				] = ADDRESS(_swordInfinityDamage);
 			}
-			undestroyable.clear();
-		})); 
+		}));
 		DLHandleManager::initializeHandle("libminecraftpe.so", "mcpe");
-		HookManager::addCallback(SYMBOL("mcpe", "_ZN6Player14jumpFromGroundEv"), LAMBDA((Player* player), {
-			if(ava_class != nullptr) {
-				JavaCallbacks::invokeCallback(ava_class, "onPlayerJump", "(J)V", (jlong) (player->getUniqueID()->id));
-			}
-		}, ), HookManager::CALL | HookManager::LISTENER);
-		HookManager::addCallback(SYMBOL("mcpe", "_ZN11LocalPlayer17setPlayerGameTypeE8GameType"), LAMBDA((LocalPlayer* player, GameType mode), {
-			if(ava_class != nullptr) {
-				JavaCallbacks::invokeCallback(ava_class, "onPlayerGameModeChanged", "(I)V", (jint) mode);
-			}
-		}, ), HookManager::RETURN | HookManager::LISTENER);
-		HookManager::addCallback(SYMBOL("mcpe", "_ZN5Actor13setStatusFlagE10ActorFlagsb"), LAMBDA((HookManager::CallbackController* controller, ActorFlags flag, bool b), {
-			if(flag == 21 && !b) {
-				VTABLE_FIND_OFFSET(Actor_getArmor, _ZTV5Actor, _ZNK5Actor8getArmorE9ArmorSlot);
-				ItemStack* stack = VTABLE_CALL<ItemStack*>(Actor_getArmor, GlobalContext::getLocalPlayer(), ArmorSlot::chestplate);
-				if(stack != nullptr) {
-					Item* item = stack->getItem();
-					if(item != nullptr) {
-						if(strcmp(item->nameId.c_str(), "item_infinity_chestplate") == 0) {
-							Logger::debug("AVARITIA", "HERE TO REPLACE!");
-						}
-					}
-				}
-			}
-		}, ), HookManager::CALL | HookManager::LISTENER);
 		HookManager::addCallback(SYMBOL("mcpe", "_ZNK5Actor12isFireImmuneEv"), LAMBDA((HookManager::CallbackController* controller, Actor* actor), {
 			VTABLE_FIND_OFFSET(Actor_getArmor, _ZTV5Actor, _ZNK5Actor8getArmorE9ArmorSlot);
 			ItemStack* stack = VTABLE_CALL<ItemStack*>(Actor_getArmor, actor, ArmorSlot::leggings);
@@ -111,18 +87,7 @@ class AvaritiaModule : public Module {
 				strcmp(nameId, "item_infinity_helmet") == 0 ||
 				strcmp(nameId, "item_infinity_chestplate") == 0 ||
 				strcmp(nameId, "item_infinity_leggings") == 0 ||
-				strcmp(nameId, "item_infinity_boots") == 0
-				) {
-					controller->prevent();
-					return 0;
-				}
-			}
-		}, ), HookManager::CALL | HookManager::LISTENER | HookManager::CONTROLLER);
-		HookManager::addCallback(SYMBOL("mcpe", "_ZN6Player14setCarriedItemERK9ItemStack"), LAMBDA((Player* actor, ItemStack const& stack), {
-			Item* item = stack.getItem();
-			if(item != nullptr) {
-				const char* nameId = item->nameId.c_str();
-				if(
+				strcmp(nameId, "item_infinity_boots") == 0 ||
 				strcmp(nameId, "item_infinity_sword") == 0 ||
 				strcmp(nameId, "item_infinity_axe") == 0 ||
 				strcmp(nameId, "item_infinity_pickaxe") == 0 ||
@@ -131,10 +96,11 @@ class AvaritiaModule : public Module {
 				strcmp(nameId, "item_infinity_destroyer") == 0 ||
 				strcmp(nameId, "item_infinity_hoe") == 0
 				) {
-					((ItemStack&) stack).setDamageValue(0);
+					controller->prevent();
+					return 0;
 				}
 			}
-		}, ), HookManager::CALL | HookManager::LISTENER);
+		}, ), HookManager::CALL | HookManager::LISTENER | HookManager::CONTROLLER | HookManager::RESULT);
 	}
 	static bool preventDamageByChestplate(HookManager::CallbackController* controller, Actor* actor) {
 		VTABLE_FIND_OFFSET(Actor_getArmor, _ZTV5Actor, _ZNK5Actor8getArmorE9ArmorSlot);
@@ -151,8 +117,6 @@ class AvaritiaModule : public Module {
 		return false;
 	}
 };
-jclass AvaritiaModule::ava_class = nullptr;
-std::vector<int> AvaritiaModule::undestroyable;
 
 
 MAIN {
@@ -161,64 +125,6 @@ MAIN {
 
 
 extern "C" {
-
-	JNIEXPORT void JNICALL Java_vsdum_avaritia_Avaritia_initJNI
-	(JNIEnv* env, jclass clazz) {
-		AvaritiaModule::ava_class = (jclass) env->NewGlobalRef(clazz);
-	}
-	JNIEXPORT void JNICALL Java_vsdum_avaritia_Avaritia_nativeSetUndestroyableItem
-	(JNIEnv*, jclass, jint id) {
-		AvaritiaModule::undestroyable.push_back(id);
-	}
-	JNIEXPORT void JNICALL Java_vsdum_avaritia_Avaritia_nativeRemoveHarmfulEffectsFrom
-	(JNIEnv*, jclass, jlong entity) {
-		Actor* actor = Actor::wrap(entity);
-		if(actor != nullptr) {
-			std::__ndk1::vector<MobEffectInstance>& effects = actor->getAllEffects();
-			for(MobEffectInstance& ieffect : effects) {
-				int id = ieffect.getId();
-				MobEffect* effect = MobEffect::getById(id);
-				if(effect != nullptr && effect->isHarmful()) {
-					actor->removeEffect(id);
-				}
-			}
-		}
-	}
-	JNIEXPORT void JNICALL Java_vsdum_avaritia_Avaritia_nativeSetFullAirSupply
-	(JNIEnv*, jclass, jlong entity) {
-		Actor* actor = Actor::wrap(entity);
-		if(actor != nullptr) {
-			BreathableComponent* breathable = actor->tryGetComponent<BreathableComponent>();
-			if(breathable != nullptr) {
-				breathable->setAirSupply(breathable->getMaxAirSupply());
-			}
-		}
-	}
-	JNIEXPORT jboolean JNICALL Java_vsdum_avaritia_Avaritia_nativeIsPlayerInWater
-	(JNIEnv*, jclass) {
-		return GlobalContext::getLocalPlayer()->isInWater();
-	}
-	JNIEXPORT jboolean JNICALL Java_vsdum_avaritia_Avaritia_nativeIsPlayerFlying
-	(JNIEnv*, jclass) {
-		return GlobalContext::getLocalPlayer()->isFlying();
-	}
-	JNIEXPORT jboolean JNICALL Java_vsdum_avaritia_Avaritia_nativeIsPlayerOnGround
-	(JNIEnv*, jclass) {
-		return GlobalContext::getLocalPlayer()->onGround;
-	}
-	JNIEXPORT jboolean JNICALL Java_vsdum_avaritia_Avaritia_nativeIsPlayerSneaking
-	(JNIEnv*, jclass) {
-		return GlobalContext::getLocalPlayer()->isSneaking();
-	}
-	JNIEXPORT jfloat JNICALL Java_vsdum_avaritia_Avaritia_nativeGetPlayerMoveForward
-	(JNIEnv*, jclass) {
-		return GlobalContext::getLocalPlayer()->getMoveInputHandler().movingForward;
-	}
-	JNIEXPORT jboolean JNICALL Java_vsdum_avaritia_Avaritia_nativeIsPlayerUsingItem
-	(JNIEnv*, jclass) {
-		return GlobalContext::getLocalPlayer()->isUsingItem();
-	}
-	
 	JNIEXPORT jboolean JNICALL Java_vsdum_avaritia_NativeArrow_nativeIsArrowEntity
 	(JNIEnv*, jclass, jlong entity) {
 		Arrow* arrow = (Arrow*) Actor::wrap(entity);

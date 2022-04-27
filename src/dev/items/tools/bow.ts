@@ -117,7 +117,7 @@ IAHelper.itemAnims.infinity_bow = { meta: 0, timer: 0, frameIndex: 0 };
 
 Item.registerIconOverrideFunction(ItemID.infinity_bow, (item) => {
     let name = "infinity_bow_idle";
-    if(AvaritiaFuncs.nativeIsPlayerUsingItem()) {
+    if(KEX.GlobalContext.getLocalPlayer().isUsingItem()) {
         const progress = Math.min(72000 - new PlayerActor(Player.get()).getItemUseDuration(), 13) / 13;
         const meta = Math.max(Math.floor(progress * 3) - 1, 0);
         name = `infinity_bow_pull_${meta}`;
@@ -125,6 +125,8 @@ Item.registerIconOverrideFunction(ItemID.infinity_bow, (item) => {
     return { name: name, data: IAHelper.itemAnims.infinity_bow.meta }
 });
 
+Item.registerNameOverrideFunction(ItemID.infinity_bow, (item, name) => name + " §c[WIP]§r");
+
 AVA_STUFF.push(ItemID.infinity_bow);
 Rarity.cosmic(ItemID.infinity_bow);
-AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_bow);
+undestroyableItem(ItemID.infinity_bow);

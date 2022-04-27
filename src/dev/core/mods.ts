@@ -25,3 +25,4 @@ const __loaded_mods = {
 ModAPI.addAPICallback("TConAPI", () => __loaded_mods.TConstruct = true);
 ModAPI.addAPICallback("ICore", () => __loaded_mods.IC2 = true);
 ModAPI.addAPICallback("BotaniaAPI", () => __loaded_mods.Botania = true);
+ModAPI.addAPICallback("ProjectE", () => __loaded_mods.ProjectE = true);

@@ -2,7 +2,7 @@ IDRegistry.genItemID("infinity_helmet");
 Item.createArmorItem("infinity_helmet", "item.avaritia:infinity_helmet.name", {name: "infinity_helmet", meta: 0}, {type: "helmet", armor: 6, durability: 9999, texture: "armor/infinity_0.png"}).setEnchantability(EEnchantType.HELMET, 1000);
 AVA_STUFF.push(ItemID.infinity_helmet);
 Rarity.cosmic(ItemID.infinity_helmet);
-AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_helmet);
+undestroyableItem(ItemID.infinity_helmet);
 
 
 interface EyeData {
@@ -83,10 +83,10 @@ Callback.addCallback("ServerPlayerLeft", player => Network.sendToAllClients("ava
 
 
 Armor.registerOnTickListener(ItemID.infinity_helmet, (item, slot, player) => {
-    AvaritiaFuncs.nativeSetFullAirSupply(player);
+    const actor = new KEX.Player(player);
+    actor.setAirSupply(actor.getMaxAirSupply());
     if(World.getThreadTime() % 20 == 0) {
         Entity.addEffect(player, EPotionEffect.NIGHT_VISION, 1, 300, false, false);
-        const actor = new PlayerActor(player);
         actor.getHunger() < 20 && actor.setHunger(20);
         actor.getSaturation() < 20 && actor.setSaturation(20);
     }

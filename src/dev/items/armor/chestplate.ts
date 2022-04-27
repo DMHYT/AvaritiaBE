@@ -2,7 +2,7 @@ IDRegistry.genItemID("infinity_chestplate");
 Item.createArmorItem("infinity_chestplate", "item.avaritia:infinity_chestplate.name", {name: "infinity_chestplate", meta: 0}, {type: "chestplate", armor: 16, durability: 9999, texture: "armor/infinity_0.png"}).setEnchantability(EEnchantType.CHESTPLATE, 1000);
 AVA_STUFF.push(ItemID.infinity_chestplate);
 Rarity.cosmic(ItemID.infinity_chestplate);
-AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_chestplate);
+undestroyableItem(ItemID.infinity_chestplate);
 
 
 Network.addClientPacket("avaritia.toggleflying", 
@@ -15,7 +15,7 @@ Network.addClientPacket("avaritia.toggleflying",
 
 
 var gm: number = 1;
-Callback.addCallback("PlayerGameModeChanged", mode => {
+Callback.addCallback("GameModeChanged", mode => {
     if(mode != 1 && isWearingChestplateClient)
         ensureWorldLoaded(() => ensurePlayerInGame(() => Player.setFlyingEnabled(true)));
     if(mode != gm) gm = mode;
@@ -30,7 +30,7 @@ Network.addClientPacket("avaritia.flyingupdate.client", (data: { player: number,
     toggleWings(data.player, data.bool);
 });
 Network.addClientPacket("avaritia.firstflyingrequest", () => {
-    lastFlyingClient = AvaritiaFuncs.nativeIsPlayerFlying();
+    lastFlyingClient = KEX.GlobalContext.getLocalPlayer().isFlying();
     Network.sendToServer("avaritia.flyingupdate.server", { bool: lastFlyingClient });
     Network.sendToServer("avaritia.chestplatedatarequest.server", {});
 });
@@ -117,4 +117,4 @@ Network.addClientPacket("avaritia.playerdisconnect.chestplate", (data: { player:
 Callback.addCallback("ServerPlayerLeft", player => Network.sendToAllClients("avaritia.playerdisconnect.chestplate", { player }));
 
 
-Armor.registerOnTickListener(ItemID.infinity_chestplate, (item, slot, player) => AvaritiaFuncs.nativeRemoveHarmfulEffectsFrom(player));
+Armor.registerOnTickListener(ItemID.infinity_chestplate, (item, slot, player) => new KEX.Actor(player).removeEffects(true, false));

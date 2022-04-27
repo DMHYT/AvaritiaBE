@@ -1,8 +1,7 @@
 IDRegistry.genItemID("infinity_hoe");
-Item.createItem("infinity_hoe", "item.avaritia:infinity_hoe.name", {name: "infinity_hoe", meta: 0}, {stack: 1});
-ToolAPI.addToolMaterial("INFINITY_HOE", {level: 32, durability: 9999, efficiency: 9999, damage: 20});
-ToolLib.setTool(ItemID.infinity_hoe, "INFINITY_HOE", {}, ItemID.infinity_hoe);
-Item.setEnchantType(ItemID.infinity_hoe, EEnchantType.HOE, 200);
+ToolAPI.addToolMaterial("INFINITY_HOE", { level: 32, durability: 9999, efficiency: 9999, damage: 20, enchantability: 200 });
+Item.createHoeItem("infinity_hoe", "item.avaritia:infinity_hoe.name", { name: "infinity_hoe", meta: 0 }, { stack: 1, tier: "INFINITY_HOE" });
+
 Item.registerUseFunction(ItemID.infinity_hoe, (coords, item, block, player) => {
     const region = BlockSource.getDefaultForActor(player);
     if((block.id == 2 || block.id == 3) && coords.side == 1) {
@@ -30,4 +29,4 @@ IAHelper.makeAdvancedAnim(ItemID.infinity_hoe, "infinity_hoe", 1, INFINITY_ITEM_
 
 AVA_STUFF.push(ItemID.infinity_hoe);
 Rarity.cosmic(ItemID.infinity_hoe);
-AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_hoe);
+undestroyableItem(ItemID.infinity_hoe);

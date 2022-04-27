@@ -86,7 +86,7 @@
         "utility": "cpp"
     },
     "java.configuration.updateBuildConfiguration": "automatic",
-    "java.project.sourcePaths": [
-        "src/java/avaritia/src"
+    "java.project.referencedLibraries": [
+        "toolchain/classpath/*.jar"
     ]
 }

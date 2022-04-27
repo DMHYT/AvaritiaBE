@@ -37,7 +37,7 @@ const addTooltip = (id: number, key: string) => Item.registerNameOverrideFunctio
 });
 
 const dropItemRandom = (drop: ItemInstance, world: BlockSource, x: number, y: number, z: number) =>
-    world.spawnDroppedItem(x + (rand.nextFloat() * .7 + .15), y + (rand.nextFloat() * .7 + .15), z + (rand.nextFloat() * .7 + .15), drop.id, drop.count, drop.data, drop.extra);
+    world.spawnDroppedItem(x + (rand.nextFloat() * .7 + .15), y + (rand.nextFloat() * .7 + .15), z + (rand.nextFloat() * .7 + .15), drop.id, drop.count, drop.data, drop.extra ?? null);
 
 const hsv2rgb = (h: number, s: number, v: number) => {
     let m: number, n: number, f: number, i: number,
@@ -84,13 +84,9 @@ const ensureWorldLoaded = (action: () => void) => isLevelDisplayed ? action() : 
 Callback.addCallback("LevelDisplayed", () => {
     isLevelDisplayed = true;
     debug_enabled = __config__.getBool("debug");
-    debug_enabled && Logger.Log(`The level has been displayed, executing ${queuedActions.length} queued tasks...`, "AVARITIA DEBUG");
+    debug_enabled && Logger.Log(`The level has been displayed, ${queuedActions.length > 0 ? `executing ${queuedActions.length} queued tasks...` : "no tasks queued."}`, "AVARITIA DEBUG");
     queuedActions.forEach(action => action());
     queuedActions.splice(0, queuedActions.length);
-});
-Callback.addCallback("LevelLeft", () => isLevelDisplayed = false);
-
-ensureWorldLoaded(() => {
     MAX_GAPING_VOID_VIEW_DISTANCE = __config__.getInteger("max_gaping_void_view_distance");
     VOID_PARTICLES_PER_TICK = __config__.getInteger("void_particles_per_tick");
     COLLECTOR_PROCESS_TIME = __config__.getInteger("collector_process_time");
@@ -98,6 +94,7 @@ ensureWorldLoaded(() => {
     EYE_COLOR_UPDATE_FREQUENCY = __config__.getInteger("eye_color_update_frequency");
     EYE_COLOR_RANDOM_SEED_CHANGING = __config__.getBool("eye_color_random_seed_changing");
 });
+Callback.addCallback("LevelLeft", () => isLevelDisplayed = false);
 
 
 const actionsOnGuiChanged: (() => void)[] = [];
@@ -106,8 +103,14 @@ const ensurePlayerInGame = (action: () => void) => isInGame ? action() : actions
 Callback.addCallback("NativeGuiChanged", screen => {
     if(screen == "hud_screen" || screen == "in_game_play_screen") {
         isInGame = true;
-        debug_enabled && Logger.Log(`The player is in game, executing ${actionsOnGuiChanged.length} queued tasks...`, "AVARITIA DEBUG");
+        debug_enabled && Logger.Log(`The player is in game, ${actionsOnGuiChanged.length > 0 ? `executing ${actionsOnGuiChanged.length} queued tasks` : "no tasks queued."}`, "AVARITIA DEBUG");
         actionsOnGuiChanged.forEach(action => action());
         actionsOnGuiChanged.splice(0, actionsOnGuiChanged.length);
     } else isInGame = false;
 });
+
+const undestroyableItem = (id: number) => {
+    KEX.ItemsModule.setExplodable(id, false);
+    KEX.ItemsModule.setFireResistant(id, true);
+    KEX.ItemsModule.setShouldDespawn(id, false);
+}

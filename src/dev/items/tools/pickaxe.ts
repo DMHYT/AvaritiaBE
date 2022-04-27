@@ -1,8 +1,6 @@
 IDRegistry.genItemID("infinity_pickaxe");
-Item.createItem("infinity_pickaxe", "item.avaritia:infinity_pickaxe.name", {name: "infinity_pickaxe", meta: 0}, {stack: 1});
-ToolAPI.addToolMaterial("INFINITY_PICKAXE", {level: 32, durability: 9999, efficiency: 9999, damage: 6});
-ToolLib.setTool(ItemID.infinity_pickaxe, "INFINITY_PICKAXE", ToolType.pickaxe, ItemID.infinity_pickaxe);
-Item.setEnchantType(ItemID.infinity_pickaxe, EEnchantType.PICKAXE, 200);
+ToolAPI.addToolMaterial("INFINITY_PICKAXE", { level: 32, durability: 9999, efficiency: 9999, damage: 6, enchantability: 200 });
+Item.createPickaxeItem("infinity_pickaxe", "item.avaritia:infinity_pickaxe.name", { name: "infinity_pickaxe", meta: 0 }, { stack: 1, tier: "INFINITY_PICKAXE" });
 
 const switch_between_pickaxe_and_hammer = (item: ItemInstance, player: number, hammer: boolean) => {
     item.extra ??= new ItemExtraData();
@@ -10,36 +8,31 @@ const switch_between_pickaxe_and_hammer = (item: ItemInstance, player: number, h
         item.extra.addEnchant(EEnchantment.FORTUNE, 10);
     item.data = 0;
     if(Entity.getSneaking(player))
-        Entity.setCarriedItem(player, ItemID[`infinity_${hammer ? "hammer" : "pickaxe"}`], item.count, item.data, item.extra);
+        Entity.setCarriedItem(player, ItemID[`infinity_${hammer ? "hammer" : "pickaxe"}`], item.count, 0, item.extra);
 }
 
 Item.registerUseFunction(ItemID.infinity_pickaxe, (coords, item, block, player) => switch_between_pickaxe_and_hammer(item, player, true));
 Item.registerNoTargetUseFunction(ItemID.infinity_pickaxe, (item, player) => switch_between_pickaxe_and_hammer(item, player, true));
 
 IDRegistry.genItemID("infinity_hammer");
-Item.createItem("infinity_hammer", "item.avaritia:infinity_pickaxe.name", {name: "infinity_hammer", meta: 0}, {stack: 1, isTech: true});
-ToolLib.setTool(ItemID.infinity_hammer, "INFINITY_PICKAXE", ToolType.pickaxe, ItemID.infinity_hammer);
-Item.setEnchantType(ItemID.infinity_hammer, EEnchantType.PICKAXE, 200);
+Item.createPickaxeItem("infinity_hammer", "item.avaritia:infinity_pickaxe.name", { name: "infinity_hammer", meta: 0 }, { stack: 1, isTech: true, tier: "INFINITY_PICKAXE" });
 
 Item.registerUseFunction(ItemID.infinity_hammer, (coords, item, block, player) => {
     if(Entity.getSneaking(player)){
-        const toollevel = ToolAPI.getToolLevel(item.id);
-        const enchantdata = ToolAPI.getEnchantExtraData(item.extra);
         const region = BlockSource.getDefaultForActor(player);
         const drops: ItemInstance[] = [];
+        region.setDestroyParticlesEnabled(false);
         for(let xx=coords.x-8; xx<coords.x+8; xx++) {
             for(let yy=coords.y-8; yy<coords.y+8; yy++) {
                 for(let zz=coords.z-8; zz<coords.z+8; zz++) {
                     const state = region.getBlock(xx, yy, zz);
                     if(state.id == 0) continue;
-                    const func = Block.getDropFunction(state.id);
-                    if(!func) continue;
-                    const drop = func(coords, state.id, state.data, toollevel, enchantdata, item, region);
-                    if(Array.isArray(drop)) drop.forEach(d => drops.push(itemInstanceFromArray(d)));
-                    region.setBlock(xx, yy, zz, 0, 0);
+                    const drop = region.breakBlockForJsResult(xx, yy, zz, 0, item).items;
+                    if(Array.isArray(drop)) drop.forEach(d => drops.push(d));
                 }
             }
         }
+        region.setDestroyParticlesEnabled(true);
         MatterCluster.makeClusters(drops).forEach(cluster => dropItemRandom(cluster, region, coords.x, coords.y, coords.z));
     }
 });
@@ -61,5 +54,5 @@ IAHelper.makeAdvancedAnim(ItemID.infinity_hammer, "infinity_hammer", 1, INFINITY
 AVA_STUFF.push(ItemID.infinity_pickaxe);
 Rarity.cosmic(ItemID.infinity_pickaxe);
 Rarity.cosmic(ItemID.infinity_hammer);
-AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_pickaxe);
-AvaritiaFuncs.nativeSetUndestroyableItem(ItemID.infinity_hammer);
+undestroyableItem(ItemID.infinity_pickaxe);
+undestroyableItem(ItemID.infinity_hammer);

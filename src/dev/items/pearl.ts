@@ -1,5 +1,6 @@
 IDRegistry.genItemID("endest_pearl");
 Item.createThrowableItem("endest_pearl", "item.avaritia:endest_pearl.name", {name: "endest_pearl", meta: 0}, {stack: 16});
+Item.registerNameOverrideFunction(ItemID.endest_pearl, (item, name) => name + " §c[WIP]§r");
 Rarity.rare(ItemID.endest_pearl);
 
 namespace GapingVoid {

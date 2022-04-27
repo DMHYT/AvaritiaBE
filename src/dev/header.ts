@@ -7,17 +7,18 @@
 ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝╚═╝  ╚═╝  ╚═════╝ ╚══════╝
 */
 
-// © vsdum 2021
+// © dsdekhm 2022
 // YouTube DMH (Russian) - https://www.youtube.com/channel/UCdQKuakM3rnuGV_1VA6XUKQ
 // YouTube vstannumdum (English) - https://www.youtube.com/channel/UCXHpQ_SQ8VPigIvbbzHWWdA
 // My VK - https://www.vk.com/vstannumdum
 // Report bugs in VK Public - https://www.vk.com/dmhmods
 
 IMPORT("ItemAnimHelper");
-IMPORT("ToolLib");
 IMPORT("RecipeTileEntity");
 IMPORT("StorageInterface");
 IMPORT("VanillaSlots");
+
+declare var KEX: KEXAPI;
 
 const Color = android.graphics.Color;
 const JString = java.lang.String;
@@ -39,7 +40,6 @@ const rand = new Random();
 const AVA_STUFF: number[] = [];
 
 const EntityArrow = WRAP_JAVA("vsdum.avaritia.NativeArrow");
-type EntityArrow = ____NativeArrow;
-const AvaritiaFuncs = WRAP_JAVA("vsdum.avaritia.Avaritia");
+type EntityArrow = vsdum.avaritia.NativeArrow;
 
 const INFINITY_ITEM_FRAMES = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1];

@@ -44,6 +44,8 @@ namespace Singularity {
         if(recipes[materialId]) return debug_enabled && Logger.Log(`An error occured while creating singularity recipe. Another recipe has already been registered for the material ${Item.getName(materialId, materialData)}`, "AVARITIA WARNING");
         recipes[materialId] = { id: singularity, countdata: [materialCount, materialData], specific };
     }
+
+    export const removeRecipeFor = (materialId: number) => recipes[materialId] && delete recipes[materialId];
     
     export function registerSingularity(key: string, materialId: Nullable<number>, materialCount: Nullable<number>, materialData: Nullable<number>): void {
         if(!FileTools.ReadJSON(`${__dir__}/resources/res/singularities.json`)[key]) return debug_enabled && Logger.Log(`No textures were generated for singularity \'${key}\', please specify two layer colors in \'resources/res/singularities.json\'`, "AVARITIA ERROR");

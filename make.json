@@ -1,8 +1,8 @@
 {
     "global": {
         "info": {
-            "name": "Avaritia BE",
-            "author": "vsdum",
+            "name": "Avaritia",
+            "author": "dsdekhm",
             "version": "0.9.0",
             "description": "The Minecraft mod to end all mods",
             "icon": "src/icon.png"

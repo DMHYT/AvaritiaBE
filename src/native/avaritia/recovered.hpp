@@ -19,6 +19,11 @@ class Item {
     HashedString nameId;
 };
 
+class I18n {
+    public:
+    static std::__ndk1::string get(std::__ndk1::string const&);
+};
+
 class MobEffect {
     public:
     bool isHarmful() const;
@@ -177,6 +182,13 @@ namespace GlobalContext {
     ServerLevel* getServerLevel();
     LocalPlayer* getLocalPlayer();
 }
+
+#define STATIC_SYMBOL(VAR_NAME, SYMBOL_NAME, PARAM_TYPES) \
+    static void* (*VAR_NAME) PARAM_TYPES = nullptr; \
+    if(VAR_NAME == nullptr) { \
+        VAR_NAME = (void* (*) PARAM_TYPES) SYMBOL("mcpe", SYMBOL_NAME); \
+        Logger::debug("InnerCore-StaticSymbols", "initialized static symbol %s with pointer %p", SYMBOL_NAME, VAR_NAME); \
+    }
 
 
 #endif //AVARITIA_RECOVERED_HPP

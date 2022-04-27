@@ -22,12 +22,15 @@ Callback.addCallback("PostLoaded", () => {
 
 namespace ExtremeCraftingTable {
 
-    export const workbench_obj = new (class extends RecipeTE.Workbench {
-        public _recipes: RecipeTE.Recipe<any>[];
+    export const workbench_obj = new (class extends RecipeTE.Workbench<string> {
+        public _recipes: RecipeTE.Recipe<string>[];
         constructor() { super({ columns: 9, rows: 9 }) }
     })();
 
-    export function addShaped(result: ItemInstance, mask: string[], keys: (string | number)[], func?: RecipeTE.CraftFunction) {
+    const checkIfRecipeNameDoesNotExist = (recipeName: string) => { if(workbench_obj._recipes.findIndex(recipe => recipe.data == recipeName) !== -1) throw new java.lang.IllegalArgumentException(`Extreme crafting recipe with name ${recipeName} already exists, skipping...`); }
+
+    export function addShaped(recipeName: string, result: ItemInstance, mask: string[], keys: (string | number)[], func?: RecipeTE.CraftFunction): void {
+        checkIfRecipeNameDoesNotExist(recipeName);
         if(keys.length % 3 != 0) throw new java.lang.IllegalArgumentException("Key array in extreme crafting table shaped recipe must be like [char, number, number, ...]");
         const ingredients: RecipeTE.IngredientsList = {};
         for(let i=0; i<keys.length; i+=3) {
@@ -35,10 +38,11 @@ namespace ExtremeCraftingTable {
                 ingredients[keys[i]] = {id: keys[i + 1] as number, data: keys[i + 2] as number};
             else throw new java.lang.IllegalArgumentException();
         }
-        workbench_obj.addShapeRecipe(result, mask, ingredients, null, func);
+        workbench_obj.addShapeRecipe(result, mask, ingredients, recipeName, func);
     }
 
-    export function addShapeless(result: ItemInstance, items: [number, number][], func?: RecipeTE.CraftFunction) {
+    export function addShapeless(recipeName: string, result: ItemInstance, items: [number, number][], func?: RecipeTE.CraftFunction): void {
+        checkIfRecipeNameDoesNotExist(recipeName);
         if(items.length > 81) throw new java.lang.IllegalArgumentException("Extreme crafting table has only 81 slots!");
         const counts: {[key: string]: number} = {};
         items.forEach(element => {
@@ -53,7 +57,12 @@ namespace ExtremeCraftingTable {
             const data = parseInt(iddata[1]);
             uniqueIngredients.push({ id, count, data });
         }
-        workbench_obj.addRecipe(result, uniqueIngredients, null, func);
+        workbench_obj.addRecipe(result, uniqueIngredients, recipeName, func);
+    }
+
+    export function remove(recipeName: string): void {
+        const index = workbench_obj._recipes.findIndex(recipe => recipe.data == recipeName);
+        if(index !== -1) workbench_obj._recipes.splice(index, 1);
     }
 
     export function getAllSeparately(): { shaped: RecipePattern[], shapeless: RecipePattern[] } {
