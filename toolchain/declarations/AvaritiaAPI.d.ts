@@ -37,6 +37,25 @@ declare interface AvaritiaAPI {
     addCompressorRecipe(outputId: number, inputId: number, inputCount: number, inputData: number, specific: boolean): void;
     /** Removes neutronium compressor recipe by given input material ID */
     removeCompressorRecipe(inputId: number): void;
+    /**
+     * Registers a new singularity item (you don't have to call `IDRegistry.genItemID` and `Item.createItem` before).
+     * The texture colors of your new singularity must be specified in `"<your mod's resource directory>/singularities.json"`,
+     * as an array of two strings with lowercase HEX representation of the colors. Example:
+     * ```json
+     * {
+     *      "iron": ["#e6e7e8", "#7f7f7f"]
+     * }
+     * ```
+     * The name ID of your singularity will be `"singularity_<key>"`, and the unlocalized name will be
+     * `"item.singularity.<key>.name"`.
+     * @param materialId numeric ID of the material item, from which your singularity will be created in the neutronium compressor.
+     * Can be null if you're going to specify the recipe later using the `addCompressorRecipe` method.
+     * @param materialCount amount of the material item, from which your singularity will be created in the neutronium compressor.
+     * Can be null if you're going to specify the recipe later using the `addCompressorRecipe` method.
+     * @param materialData data of the material item, from which your singularity will be created in the neutronium compressor.
+     * Can be null if you're going to specify the recipe later using the `addCompressorRecipe` method.
+     */
+    registerSingularity(key: string, materialId: Nullable<number>, materialCount: Nullable<number>, materialData: Nullable<number>): void;
     /** @returns some non-exported variable, module or function from the mod, if you need it */
     requireGlobal(something: string): any;
 }

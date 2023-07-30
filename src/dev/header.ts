@@ -24,6 +24,7 @@ const Color = android.graphics.Color;
 const JString = java.lang.String;
 const Integer = java.lang.Integer;
 const Random = java.util.Random;
+const File = java.io.File;
 type HashMap<K, V> = java.util.HashMap<K, V>;
 type UIElement = com.zhekasmirnov.innercore.api.mod.ui.elements.UIElement;
 

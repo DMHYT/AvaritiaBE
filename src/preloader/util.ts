@@ -49,4 +49,16 @@ namespace FileUtil {
         return list;
     }
 
+    export function getListOfDirs(path: string): File[] {
+        const dir = new File(path);
+        const list = [];
+        const files = dir.listFiles();
+        if(!files) return list;
+        for(let i=0; i<files.length; i++) {
+            const file = files[i];
+            if(file.isDirectory()) list.push(file);
+        }
+        return list;
+    }
+
 }

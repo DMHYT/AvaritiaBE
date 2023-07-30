@@ -23,7 +23,7 @@ namespace Gregorizer {
         __loaded_mods.DraconicEvolution && (modifier += 300, multiplier++);
         if(debug_enabled) {
             const mods = Object.keys(__loaded_mods).filter(val => __loaded_mods[val]).length;
-            Logger.Log(`Successfully performed Gregorizer.balance(), it has found ${mods} mods, that change quantity modifying values, and now modifier is ${modifier} and multiplier is ${multiplier}.`, "AVARITIA DEBUG");
+            debug_enabled && Logger.Log(`Successfully performed Gregorizer.balance(), it has found ${mods} mods, that change quantity modifying values, and now modifier is ${modifier} and multiplier is ${multiplier}.`, "AVARITIA DEBUG");
         }
     }
 
@@ -36,7 +36,53 @@ namespace Gregorizer {
 namespace Singularity {
 
     type SingularityData = { id: number, countdata: [number, number], specific: boolean };
-    
+
+    export const colors: {[key: string]: [number, number]} = (() => {
+        const result = FileTools.ReadJSON(`${__dir__}/resources/res/singularities.json`);
+        const modsDir = (() => {
+            const preferencesPath = `${__packdir__}innercore/preferences.json`;
+            if(new File(preferencesPath).exists()) {
+                const innerCoreDir = FileTools.ReadJSON(preferencesPath).pack_selected ?? `${__packdir__}innercore`;
+                return `${innerCoreDir}/mods/`;
+            }
+            return `${__packdir__}innercore/mods/`;
+        })();
+        FileTools.GetListOfDirs(modsDir).forEach(mod => {
+            const modPath = mod.getAbsolutePath();
+            if(modPath !== __dir__ && new File(mod, "build.config").exists()) {
+                FileTools.ReadJSON(`${modPath}/build.config`)?.resources?.forEach(res => {
+                    if(res.resourceType === "resource") {
+                        const singularitiesPath = `${modPath}/${res.path}/singularities.json`;
+                        if(new File(singularitiesPath).exists()) {
+                            const singularitiesJSON = FileTools.ReadJSON(singularitiesPath);
+                            for(let key in singularitiesJSON)
+                                if(
+                                    Array.isArray(singularitiesJSON[key]) &&
+                                    singularitiesJSON[key].length === 2 &&
+                                    typeof singularitiesJSON[key][0] === "string" &&
+                                    typeof singularitiesJSON[key][1] === "string" &&
+                                    /^#[a-f\d]{6}$/i.test(singularitiesJSON[key][0]) &&
+                                    /^#[a-f\d]{6}$/i.test(singularitiesJSON[key][1])
+                                ) {
+                                    if(
+                                        Array.isArray(result[key]) &&
+                                        result[key].length === 2 &&
+                                        (
+                                            result[key][0] !== singularitiesJSON[key][0] ||
+                                            result[key][1] !== singularitiesJSON[key][1]
+                                        ) && debug_enabled
+                                    ) Logger.Log(`Color of singularity \'${key}\' is being overrided from [${result[key].toString()}] to [${singularitiesJSON[key].toString()}]`, "AVARITIA WARNING");
+                                    result[key] = singularitiesJSON[key];
+                                }
+                        }
+                    }
+                })
+            }
+        });
+        debug_enabled && Logger.Log(`Verified ${Object.keys(result).length - 15} custom singularity colors specified by other mods`, "AVARITIA DEBUG");
+        return result;
+    })();
+
     export const recipes: {[key: number]: SingularityData} = {};
     export const singularities: number[] = [];
 
@@ -48,7 +94,7 @@ namespace Singularity {
     export const removeRecipeFor = (materialId: number) => recipes[materialId] && delete recipes[materialId];
     
     export function registerSingularity(key: string, materialId: Nullable<number>, materialCount: Nullable<number>, materialData: Nullable<number>): void {
-        if(!FileTools.ReadJSON(`${__dir__}/resources/res/singularities.json`)[key]) return debug_enabled && Logger.Log(`No textures were generated for singularity \'${key}\', please specify two layer colors in \'resources/res/singularities.json\'`, "AVARITIA ERROR");
+        if(!colors[key]) return debug_enabled && Logger.Log(`No textures were generated for singularity \'${key}\', please specify two layer colors in \'<resource directory>/singularities.json\'`, "AVARITIA ERROR");
         const id = `singularity_${key}`;
         IDRegistry.genItemID(id);
         Item.createItem(id, `item.singularity.${key}.name`, {name: id, meta: 0}, {stack: 64});

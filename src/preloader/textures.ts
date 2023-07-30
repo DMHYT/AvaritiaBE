@@ -13,9 +13,44 @@
             result: { path: "resources/res/animated_items/", name: id }
         });
     }
-    const obj = FileUtil.readJSON(`${__dir__}/resources/res/singularities.json`);
-    Object.keys(obj).forEach(key => {
-        const arr = obj[key];
+    const colors = (() => {
+        const result = FileUtil.readJSON(`${__dir__}/resources/res/singularities.json`);
+        const modsDir = (() => {
+            const preferencesPath = `${__packdir__}innercore/preferences.json`;
+            if(new File(preferencesPath).exists()) {
+                const innerCoreDir = FileUtil.readJSON(preferencesPath).pack_selected ?? `${__packdir__}innercore`;
+                return `${innerCoreDir}/mods/`;
+            }
+            return `${__packdir__}innercore/mods/`;
+        })();
+        FileUtil.getListOfDirs(modsDir).forEach(mod => {
+            const modPath = mod.getAbsolutePath();
+            if(modPath !== __dir__ && new File(mod, "build.config").exists()) {
+                FileUtil.readJSON(`${modPath}/build.config`)?.resources?.forEach(res => {
+                    if(res.resourceType === "resource") {
+                        const singularitiesPath = `${modPath}/${res.path}/singularities.json`;
+                        if(new File(singularitiesPath).exists()) {
+                            const singularitiesJSON = FileUtil.readJSON(singularitiesPath);
+                            for(let key in singularitiesJSON)
+                                if(
+                                    Array.isArray(singularitiesJSON[key]) &&
+                                    singularitiesJSON[key].length === 2 &&
+                                    typeof singularitiesJSON[key][0] === "string" &&
+                                    typeof singularitiesJSON[key][1] === "string" &&
+                                    /^#[a-f\d]{6}$/i.test(singularitiesJSON[key][0]) &&
+                                    /^#[a-f\d]{6}$/i.test(singularitiesJSON[key][1])
+                                ) {
+                                    result[key] = singularitiesJSON[key];
+                                }
+                        }
+                    }
+                })
+            }
+        });
+        return result;
+    })();
+    Object.keys(colors).forEach(key => {
+        const arr = colors[key];
         gen(`singularity_${key}`, hex2rgb(arr[0]), hex2rgb(arr[1]));
     });
 })();
