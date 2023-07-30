@@ -2,8 +2,8 @@
     "global": {
         "info": {
             "name": "Avaritia",
-            "author": "dsdekhm",
-            "version": "0.9.0",
+            "author": "visualstudiodan",
+            "version": "0.9.1",
             "description": "The Minecraft mod to end all mods",
             "icon": "src/icon.png"
         },
@@ -21,7 +21,7 @@
             "nativejs"
         ],
         "excludeFromRelease": [],
-        "pushTo": "storage/emulated/0/games/horizon/packs/Inner_Core_1/innercore/mods/AvaritiaBE",
+        "pushTo": "storage/emulated/0/games/horizon/packs/Inner_Core/innercore/mods/AvaritiaBE",
         "ndkPath": null
     },
     "resources": [

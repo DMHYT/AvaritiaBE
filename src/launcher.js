@@ -1,6 +1,6 @@
 ConfigureMultiplayer({
     name: "Avaritia",
-    version: "0.9.0",
+    version: "0.9.1",
     description: "The Minecraft mod to end all mods",
     isClientOnly: false
 });
