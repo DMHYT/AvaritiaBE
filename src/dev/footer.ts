@@ -273,11 +273,6 @@ if(BORING_FOOD || true) { // TODO make InTeReStInG food some day 0_0
 }
 
 Callback.addCallback("ModsLoaded", () => {
-    Gregorizer.balance();
-    for(let key in Singularity.recipes) {
-        const recipe = Singularity.recipes[key];
-        Singularity.recipes[key].countdata[0] = recipe.specific ? recipe.countdata[0] : Gregorizer.balanceCost(recipe.countdata[0]);
-    }
     const arr = [
         [ItemID.diamond_lattice, 0],
         [ItemID.crystal_matrix_ingot, 0],
@@ -308,4 +303,9 @@ Callback.addCallback("ModsLoaded", () => {
     BlockID.blockPlatinum && (arr.push([ItemID.singularity_platinum, 0]), Singularity.registerRecipeFor(ItemID.singularity_platinum, BlockID.blockPlatinum, 80, 0, false)); // No ThermalFoundation
     BlockID.blockIridium && (arr.push([ItemID.singularity_iridium, 0]), Singularity.registerRecipeFor(ItemID.singularity_iridium, BlockID.blockIridium, 80, 0, false)); // No MorePlanets (no Galacticraft LOL)
     ExtremeCraftingTable.addShapeless("infinity_catalyst", {id: ItemID.infinity_catalyst, count: 1, data: 0}, arr);
+    Gregorizer.balance();
+    for(let key in Singularity.recipes) {
+        const recipe = Singularity.recipes[key];
+        Singularity.recipes[key].countdata[0] = recipe.specific ? recipe.countdata[0] : Gregorizer.balanceCost(recipe.countdata[0]);
+    }
 });
